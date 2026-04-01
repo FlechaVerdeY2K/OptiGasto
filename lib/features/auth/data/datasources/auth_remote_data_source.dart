@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../models/user_model.dart';
 
@@ -24,6 +25,9 @@ abstract class AuthRemoteDataSource {
 
   /// Inicia sesión con Google
   Future<UserModel> signInWithGoogle();
+
+  /// Inicia sesión con Apple
+  Future<UserModel> signInWithApple();
 
   /// Cierra la sesión del usuario actual
   Future<void> signOut();
@@ -189,6 +193,78 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return userModel;
     } catch (e) {
       throw ServerException(message: 'Error al iniciar sesión con Google: $e');
+    }
+  }
+
+  @override
+  Future<UserModel> signInWithApple() async {
+    try {
+      // Solicitar credenciales de Apple
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // Crear credencial de Firebase
+      final oauthCredential = OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      // Iniciar sesión en Firebase
+      final userCredential =
+          await firebaseAuth.signInWithCredential(oauthCredential);
+
+      if (userCredential.user == null) {
+        throw ServerException(message: 'Error al iniciar sesión con Apple');
+      }
+
+      // Verificar si el usuario ya existe en Firestore
+      final doc = await firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (doc.exists) {
+        return UserModel.fromFirestore(doc);
+      }
+
+      // Crear nuevo usuario en Firestore
+      // Apple puede no proporcionar el nombre en intentos posteriores
+      String displayName = 'Usuario';
+      if (appleCredential.givenName != null &&
+          appleCredential.familyName != null) {
+        displayName =
+            '${appleCredential.givenName} ${appleCredential.familyName}';
+      } else if (userCredential.user!.displayName != null) {
+        displayName = userCredential.user!.displayName!;
+      }
+
+      final userModel = UserModel(
+        id: userCredential.user!.uid,
+        email: userCredential.user!.email ?? appleCredential.email ?? '',
+        name: displayName,
+        photoUrl: userCredential.user!.photoURL,
+        createdAt: DateTime.now(),
+      );
+
+      await firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set(userModel.toFirestore());
+
+      return userModel;
+    } catch (e) {
+      if (e is SignInWithAppleAuthorizationException) {
+        if (e.code == AuthorizationErrorCode.canceled) {
+          throw ServerException(message: 'Inicio de sesión cancelado');
+        }
+        throw ServerException(
+            message: 'Error de autorización de Apple: ${e.message}');
+      }
+      throw ServerException(message: 'Error al iniciar sesión con Apple: $e');
     }
   }
 

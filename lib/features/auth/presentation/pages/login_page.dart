@@ -41,6 +41,10 @@ class _LoginPageState extends State<LoginPage> {
     context.read<AuthBloc>().add(const AuthSignInWithGoogleRequested());
   }
 
+  void _loginWithApple() {
+    context.read<AuthBloc>().add(const AuthSignInWithAppleRequested());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,15 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: TextButton(
                         onPressed: isLoading
                             ? null
-                            : () {
-                                // TODO: Implementar recuperar contraseña
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Recuperación de contraseña - Próximamente'),
-                                  ),
-                                );
-                              },
+                            : () => context.go('/forgot-password'),
                         child: const Text('¿Olvidaste tu contraseña?'),
                       ),
                     ),
@@ -214,9 +210,6 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // Nota: Botones de Google/Facebook ocultos hasta configuración
-                    // TODO: Descomentar cuando se configure Google Sign-In en Firebase Console
-                    /*
                     // Divider
                     Row(
                       children: [
@@ -233,48 +226,30 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 24),
                     // Social login buttons
-                    Row(
-                      children: [
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: isLoading ? null : _loginWithGoogle,
-                            icon: const Icon(Icons.g_mobiledata, size: 32),
-                            label: const Text('Google'),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
+                    OutlinedButton.icon(
+                      onPressed: isLoading ? null : _loginWithGoogle,
+                      icon: const Icon(Icons.g_mobiledata, size: 32),
+                      label: const Text('Continuar con Google'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: isLoading
-                                ? null
-                                : () {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                            'Login con Facebook - Próximamente'),
-                                      ),
-                                    );
-                                  },
-                            icon: const Icon(Icons.facebook, size: 24),
-                            label: const Text('Facebook'),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton.icon(
+                      onPressed: isLoading ? null : _loginWithApple,
+                      icon: const Icon(Icons.apple, size: 32),
+                      label: const Text('Continuar con Apple'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      ],
+                      ),
                     ),
                     const SizedBox(height: 24),
-                    */
                     // Register link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -297,15 +272,6 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    // Skip login
-                    TextButton(
-                      onPressed: isLoading
-                          ? null
-                          : () {
-                              context.go('/home');
-                            },
-                      child: const Text('Continuar sin cuenta'),
-                    ),
                   ],
                 ),
               ),

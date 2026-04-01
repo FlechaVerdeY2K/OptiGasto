@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/usecases/get_current_user.dart';
+import '../../domain/usecases/send_password_reset_email.dart';
 import '../../domain/usecases/sign_in_with_email.dart';
 import '../../domain/usecases/sign_out.dart';
 import '../../domain/usecases/sign_up_with_email.dart';
@@ -14,6 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpWithEmail signUpWithEmail;
   final SignOut signOut;
   final GetCurrentUser getCurrentUser;
+  final SendPasswordResetEmail sendPasswordResetEmail;
   final AuthRepository authRepository;
 
   StreamSubscription? _authStateSubscription;
@@ -23,6 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.signUpWithEmail,
     required this.signOut,
     required this.getCurrentUser,
+    required this.sendPasswordResetEmail,
     required this.authRepository,
   }) : super(const AuthInitial()) {
     // Registrar handlers de eventos
@@ -30,6 +33,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignInWithEmailRequested>(_onSignInWithEmailRequested);
     on<AuthSignUpWithEmailRequested>(_onSignUpWithEmailRequested);
     on<AuthSignInWithGoogleRequested>(_onSignInWithGoogleRequested);
+    on<AuthSignInWithAppleRequested>(_onSignInWithAppleRequested);
     on<AuthSignOutRequested>(_onSignOutRequested);
     on<AuthPasswordResetRequested>(_onPasswordResetRequested);
     on<AuthStateChanged>(_onAuthStateChanged);
@@ -115,6 +119,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  /// Handler: Iniciar sesión con Apple
+  Future<void> _onSignInWithAppleRequested(
+    AuthSignInWithAppleRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+
+    final result = await authRepository.signInWithApple();
+
+    result.fold(
+      (failure) => emit(AuthError(message: failure.message)),
+      (user) => emit(AuthAuthenticated(user: user)),
+    );
+  }
+
   /// Handler: Cerrar sesión
   Future<void> _onSignOutRequested(
     AuthSignOutRequested event,
@@ -137,7 +156,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await authRepository.sendPasswordResetEmail(
+    final result = await sendPasswordResetEmail(
       email: event.email,
     );
 

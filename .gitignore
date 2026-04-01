@@ -92,3 +92,5 @@ coverage/
 *.aab
 *.ipa
 *.app
+
+prompt.md
