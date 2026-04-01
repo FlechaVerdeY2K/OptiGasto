@@ -48,6 +48,11 @@ class AuthSignInWithGoogleRequested extends AuthEvent {
   const AuthSignInWithGoogleRequested();
 }
 
+/// Evento: Iniciar sesión con Apple
+class AuthSignInWithAppleRequested extends AuthEvent {
+  const AuthSignInWithAppleRequested();
+}
+
 /// Evento: Cerrar sesión
 class AuthSignOutRequested extends AuthEvent {
   const AuthSignOutRequested();

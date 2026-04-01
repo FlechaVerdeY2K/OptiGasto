@@ -75,8 +75,14 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Failure, UserEntity>> signInWithApple() async {
-    // TODO: Implementar Apple Sign In
-    return Left(ServerFailure(message: 'Apple Sign In no implementado'));
+    try {
+      final user = await remoteDataSource.signInWithApple();
+      return Right(user.toEntity());
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Error inesperado: $e'));
+    }
   }
 
   @override

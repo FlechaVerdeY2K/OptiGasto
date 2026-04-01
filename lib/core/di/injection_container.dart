@@ -7,6 +7,7 @@ import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
 import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/get_current_user.dart';
+import '../../features/auth/domain/usecases/send_password_reset_email.dart';
 import '../../features/auth/domain/usecases/sign_in_with_email.dart';
 import '../../features/auth/domain/usecases/sign_out.dart';
 import '../../features/auth/domain/usecases/sign_up_with_email.dart';
@@ -43,6 +44,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => SignUpWithEmail(sl()));
   sl.registerLazySingleton(() => SignOut(sl()));
   sl.registerLazySingleton(() => GetCurrentUser(sl()));
+  sl.registerLazySingleton(() => SendPasswordResetEmail(sl()));
 
   // ========== BLoC ==========
   sl.registerFactory(
@@ -51,6 +53,7 @@ Future<void> initializeDependencies() async {
       signUpWithEmail: sl(),
       signOut: sl(),
       getCurrentUser: sl(),
+      sendPasswordResetEmail: sl(),
       authRepository: sl(),
     ),
   );

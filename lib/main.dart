@@ -51,11 +51,15 @@ class OptiGastoApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => di.sl<AuthBloc>()
         ..add(const AuthCheckRequested()),
-      child: MaterialApp.router(
-        title: AppConstants.appName,
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        routerConfig: AppRouter.router,
+      child: Builder(
+        builder: (context) {
+          return MaterialApp.router(
+            title: AppConstants.appName,
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            routerConfig: AppRouter.router(context),
+          );
+        },
       ),
     );
   }

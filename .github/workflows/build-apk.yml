@@ -1,0 +1,146 @@
+name: Build Android APK
+
+on:
+  # Trigger on push to main branch
+  push:
+    branches: [ main, master ]
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+  # Trigger on pull requests
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+    
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+    
+    - name: Create dummy Firebase config files
+      run: |
+        # Create dummy google-services.json for Android
+        mkdir -p android/app
+        cat > android/app/google-services.json << 'EOF'
+        {
+          "project_info": {
+            "project_number": "123456789",
+            "project_id": "optigasto-dummy",
+            "storage_bucket": "optigasto-dummy.appspot.com"
+          },
+          "client": [
+            {
+              "client_info": {
+                "mobilesdk_app_id": "1:123456789:android:abcdef123456",
+                "android_client_info": {
+                  "package_name": "com.optigasto.optigasto"
+                }
+              },
+              "oauth_client": [
+                {
+                  "client_id": "123456789-dummy.apps.googleusercontent.com",
+                  "client_type": 3
+                }
+              ],
+              "api_key": [
+                {
+                  "current_key": "AIzaDummyKeyForBuildOnly"
+                }
+              ],
+              "services": {
+                "appinvite_service": {
+                  "other_platform_oauth_client": []
+                }
+              }
+            }
+          ],
+          "configuration_version": "1"
+        }
+        EOF
+        
+        # Create dummy GoogleService-Info.plist for iOS
+        mkdir -p ios/Runner
+        echo '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd"><plist version="1.0"><dict><key>CLIENT_ID</key><string>dummy</string></dict></plist>' > ios/Runner/GoogleService-Info.plist
+        
+        # Create dummy firebase_options.dart
+        mkdir -p lib
+        cat > lib/firebase_options.dart << 'EOF'
+        import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
+        import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
+        
+        class DefaultFirebaseOptions {
+          static FirebaseOptions get currentPlatform {
+            if (kIsWeb) {
+              return web;
+            }
+            switch (defaultTargetPlatform) {
+              case TargetPlatform.android:
+                return android;
+              case TargetPlatform.iOS:
+                return ios;
+              default:
+                throw UnsupportedError('DefaultFirebaseOptions are not supported for this platform.');
+            }
+          }
+          
+          static const FirebaseOptions web = FirebaseOptions(
+            apiKey: 'dummy-api-key',
+            appId: '1:dummy:web:dummy',
+            messagingSenderId: 'dummy',
+            projectId: 'optigasto-dummy',
+            storageBucket: 'optigasto-dummy.appspot.com',
+          );
+          
+          static const FirebaseOptions android = FirebaseOptions(
+            apiKey: 'dummy-api-key',
+            appId: '1:dummy:android:dummy',
+            messagingSenderId: 'dummy',
+            projectId: 'optigasto-dummy',
+            storageBucket: 'optigasto-dummy.appspot.com',
+          );
+          
+          static const FirebaseOptions ios = FirebaseOptions(
+            apiKey: 'dummy-api-key',
+            appId: '1:dummy:ios:dummy',
+            messagingSenderId: 'dummy',
+            projectId: 'optigasto-dummy',
+            storageBucket: 'optigasto-dummy.appspot.com',
+            iosBundleId: 'com.optigasto.optigasto',
+          );
+        }
+        EOF
+    
+    - name: Install dependencies
+      run: flutter pub get
+    
+    - name: Build APK
+      run: flutter build apk --release
+    
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: optigasto-release-apk
+        path: build/app/outputs/flutter-apk/app-release.apk
+        retention-days: 30
+    
+    - name: Create Release (on tag push)
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: build/app/outputs/flutter-apk/app-release.apk
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+# Made with Bob

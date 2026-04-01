@@ -244,9 +244,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Nota: Botón de Google oculto hasta configuración
-                    // TODO: Descomentar cuando se configure Google Sign-In en Firebase Console
-                    /*
                     // Divider
                     Row(
                       children: [
@@ -272,14 +269,28 @@ class _RegisterPageState extends State<RegisterPage> {
                                     const AuthSignInWithGoogleRequested(),
                                   );
                             },
-                      icon: Image.asset(
-                        'assets/images/google_logo.png',
-                        height: 24,
-                        errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.g_mobiledata, size: 24);
-                        },
+                      icon: const Icon(Icons.g_mobiledata, size: 32),
+                      label: const Text('Continuar con Google'),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      label: const Text('Google'),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Botón de Apple
+                    OutlinedButton.icon(
+                      onPressed: isLoading
+                          ? null
+                          : () {
+                              context.read<AuthBloc>().add(
+                                    const AuthSignInWithAppleRequested(),
+                                  );
+                            },
+                      icon: const Icon(Icons.apple, size: 32),
+                      label: const Text('Continuar con Apple'),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
@@ -288,7 +299,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    */
 
                     // Link a login
                     Row(
