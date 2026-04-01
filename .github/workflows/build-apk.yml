@@ -33,7 +33,42 @@ jobs:
       run: |
         # Create dummy google-services.json for Android
         mkdir -p android/app
-        echo '{"project_info":{"project_number":"dummy","project_id":"optigasto-dummy"}}' > android/app/google-services.json
+        cat > android/app/google-services.json << 'EOF'
+        {
+          "project_info": {
+            "project_number": "123456789",
+            "project_id": "optigasto-dummy",
+            "storage_bucket": "optigasto-dummy.appspot.com"
+          },
+          "client": [
+            {
+              "client_info": {
+                "mobilesdk_app_id": "1:123456789:android:abcdef123456",
+                "android_client_info": {
+                  "package_name": "com.optigasto.optigasto"
+                }
+              },
+              "oauth_client": [
+                {
+                  "client_id": "123456789-dummy.apps.googleusercontent.com",
+                  "client_type": 3
+                }
+              ],
+              "api_key": [
+                {
+                  "current_key": "AIzaDummyKeyForBuildOnly"
+                }
+              ],
+              "services": {
+                "appinvite_service": {
+                  "other_platform_oauth_client": []
+                }
+              }
+            }
+          ],
+          "configuration_version": "1"
+        }
+        EOF
         
         # Create dummy GoogleService-Info.plist for iOS
         mkdir -p ios/Runner
