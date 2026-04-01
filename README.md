@@ -192,9 +192,9 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 
 ## 👥 Equipo
 
-- **Product Owner:** [Nombre]
-- **Tech Lead:** [Nombre]
-- **Developers:** [Nombres]
+- **Product Owner:** Edgar Herrera
+- **Tech Lead:** Edgar Herrera
+- **Developers:** Edgar Herrera
 - **UI/UX Designer:** [Nombre]
 
 ## 📞 Contacto

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -229,75 +234,143 @@ class ProfileTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        // Avatar y nombre
-        Center(
-          child: Column(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundColor: AppColors.primary,
-                child: const Icon(
-                  Icons.person,
-                  size: 50,
-                  color: Colors.white,
-                ),
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthUnauthenticated) {
+          context.go('/login');
+        }
+      },
+      builder: (context, state) {
+        // Obtener datos del usuario del estado
+        String userName = 'Usuario';
+        String userEmail = '';
+        String? photoUrl;
+
+        if (state is AuthAuthenticated) {
+          userName = state.user.name ?? 'Usuario';
+          userEmail = state.user.email ?? '';
+          photoUrl = state.user.photoUrl;
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            // Avatar y nombre
+            Center(
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundColor: AppColors.primary,
+                    backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+                    child: photoUrl == null
+                        ? const Icon(
+                            Icons.person,
+                            size: 50,
+                            color: Colors.white,
+                          )
+                        : null,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    userName,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    userEmail,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 16),
-              const Text(
-                'Usuario Demo',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                'demo@optigasto.com',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 32),
-        // Opciones de perfil
-        _ProfileOption(
-          icon: Icons.person_outline,
-          title: 'Editar Perfil',
-          onTap: () {},
-        ),
-        _ProfileOption(
-          icon: Icons.location_on_outlined,
-          title: 'Mis Ubicaciones',
-          onTap: () {},
-        ),
-        _ProfileOption(
-          icon: Icons.local_offer_outlined,
-          title: 'Mis Promociones',
-          onTap: () {},
-        ),
-        _ProfileOption(
-          icon: Icons.settings_outlined,
-          title: 'Configuración',
-          onTap: () {},
-        ),
-        _ProfileOption(
-          icon: Icons.help_outline,
-          title: 'Ayuda',
-          onTap: () {},
-        ),
-        _ProfileOption(
-          icon: Icons.logout,
-          title: 'Cerrar Sesión',
-          onTap: () {},
-          isDestructive: true,
-        ),
-      ],
+            ),
+            const SizedBox(height: 32),
+            // Opciones de perfil
+            _ProfileOption(
+              icon: Icons.person_outline,
+              title: 'Editar Perfil',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Próximamente')),
+                );
+              },
+            ),
+            _ProfileOption(
+              icon: Icons.location_on_outlined,
+              title: 'Mis Ubicaciones',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Próximamente')),
+                );
+              },
+            ),
+            _ProfileOption(
+              icon: Icons.local_offer_outlined,
+              title: 'Mis Promociones',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Próximamente')),
+                );
+              },
+            ),
+            _ProfileOption(
+              icon: Icons.settings_outlined,
+              title: 'Configuración',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Próximamente')),
+                );
+              },
+            ),
+            _ProfileOption(
+              icon: Icons.help_outline,
+              title: 'Ayuda',
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Próximamente')),
+                );
+              },
+            ),
+            _ProfileOption(
+              icon: Icons.logout,
+              title: 'Cerrar Sesión',
+              onTap: () {
+                // Mostrar diálogo de confirmación
+                showDialog(
+                  context: context,
+                  builder: (dialogContext) => AlertDialog(
+                    title: const Text('Cerrar Sesión'),
+                    content: const Text('¿Estás seguro que deseas cerrar sesión?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(dialogContext),
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          context.read<AuthBloc>().add(const AuthSignOutRequested());
+                        },
+                        child: const Text(
+                          'Cerrar Sesión',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              isDestructive: true,
+            ),
+          ],
+        );
+      },
     );
   }
 }
