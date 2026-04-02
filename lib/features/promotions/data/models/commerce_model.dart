@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/commerce_entity.dart';
 
 /// Modelo de comercio para la capa de datos
@@ -42,66 +41,51 @@ class CommerceModel extends CommerceEntity {
     );
   }
 
-  /// Crea un CommerceModel desde un documento de Firestore
-  factory CommerceModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    
+  /// Crea un CommerceModel desde un Map de Supabase
+  factory CommerceModel.fromJson(Map<String, dynamic> json) {
     return CommerceModel(
-      id: doc.id,
-      name: data['name'] ?? '',
-      type: data['type'] ?? '',
-      latitude: (data['location'] as GeoPoint).latitude,
-      longitude: (data['location'] as GeoPoint).longitude,
-      address: data['address'] ?? '',
-      phone: data['phone'],
-      email: data['email'],
-      logo: data['logo'],
-      photos: List<String>.from(data['photos'] ?? []),
-      rating: (data['rating'] ?? 0.0).toDouble(),
-      totalPromotions: data['totalPromotions'] ?? 0,
-      isPremium: data['isPremium'] ?? false,
-      ownerId: data['ownerId'],
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      type: json['type'] ?? '',
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
+      address: json['address'] ?? '',
+      phone: json['phone'],
+      email: json['email'],
+      logo: json['logo'],
+      photos: json['photos'] != null 
+          ? List<String>.from(json['photos'])
+          : [],
+      rating: json['rating'] != null 
+          ? (json['rating'] as num).toDouble()
+          : 0.0,
+      totalPromotions: json['total_promotions'] ?? 0,
+      isPremium: json['is_premium'] ?? false,
+      ownerId: json['owner_id'],
+      createdAt: json['created_at'] != null 
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
     );
   }
 
-  /// Crea un CommerceModel desde un Map
-  factory CommerceModel.fromMap(Map<String, dynamic> map, String id) {
-    return CommerceModel(
-      id: id,
-      name: map['name'] ?? '',
-      type: map['type'] ?? '',
-      latitude: (map['location'] as GeoPoint).latitude,
-      longitude: (map['location'] as GeoPoint).longitude,
-      address: map['address'] ?? '',
-      phone: map['phone'],
-      email: map['email'],
-      logo: map['logo'],
-      photos: List<String>.from(map['photos'] ?? []),
-      rating: (map['rating'] ?? 0.0).toDouble(),
-      totalPromotions: map['totalPromotions'] ?? 0,
-      isPremium: map['isPremium'] ?? false,
-      ownerId: map['ownerId'],
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-    );
-  }
-
-  /// Convierte el CommerceModel a un Map para Firestore
-  Map<String, dynamic> toFirestore() {
+  /// Convierte el CommerceModel a un Map para Supabase
+  Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'type': type,
-      'location': GeoPoint(latitude, longitude),
+      'latitude': latitude,
+      'longitude': longitude,
       'address': address,
       'phone': phone,
       'email': email,
       'logo': logo,
       'photos': photos,
       'rating': rating,
-      'totalPromotions': totalPromotions,
-      'isPremium': isPremium,
-      'ownerId': ownerId,
-      'createdAt': Timestamp.fromDate(createdAt),
+      'total_promotions': totalPromotions,
+      'is_premium': isPremium,
+      'owner_id': ownerId,
+      'created_at': createdAt.toIso8601String(),
     };
   }
 

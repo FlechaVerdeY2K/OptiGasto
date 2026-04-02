@@ -1,13 +1,14 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase_flutter;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/config/supabase_config.dart';
 import '../models/user_model.dart';
 
-/// Data source remoto para autenticación con Firebase
+/// Data source remoto para autenticación con Supabase
 abstract class AuthRemoteDataSource {
-  /// Obtiene el usuario actual de Firebase Auth
+  /// Obtiene el usuario actual de Supabase Auth
   Future<UserModel?> getCurrentUser();
 
   /// Inicia sesión con email y contraseña
@@ -35,7 +36,7 @@ abstract class AuthRemoteDataSource {
   /// Envía un email de recuperación de contraseña
   Future<void> sendPasswordResetEmail({required String email});
 
-  /// Actualiza el perfil del usuario en Firestore
+  /// Actualiza el perfil del usuario en Supabase
   Future<UserModel> updateUserProfile({
     required String userId,
     String? name,
@@ -48,26 +49,27 @@ abstract class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final FirebaseAuth firebaseAuth;
-  final FirebaseFirestore firestore;
+  final SupabaseClient supabase;
   final GoogleSignIn googleSignIn;
 
   AuthRemoteDataSourceImpl({
-    required this.firebaseAuth,
-    required this.firestore,
+    required this.supabase,
     required this.googleSignIn,
   });
 
   @override
   Future<UserModel?> getCurrentUser() async {
     try {
-      final user = firebaseAuth.currentUser;
+      final user = supabase.auth.currentUser;
       if (user == null) return null;
 
-      final doc = await firestore.collection('users').doc(user.uid).get();
-      if (!doc.exists) return null;
+      final response = await supabase
+          .from(SupabaseConfig.usersTable)
+          .select()
+          .eq('id', user.id)
+          .single();
 
-      return UserModel.fromFirestore(doc);
+      return UserModel.fromJson(response);
     } catch (e) {
       throw ServerException(message: 'Error al obtener usuario actual: $e');
     }
@@ -79,27 +81,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
   }) async {
     try {
-      final credential = await firebaseAuth.signInWithEmailAndPassword(
+      final response = await supabase.auth.signInWithPassword(
         email: email,
         password: password,
       );
 
-      if (credential.user == null) {
+      if (response.user == null) {
         throw ServerException(message: 'Error al iniciar sesión');
       }
 
-      final doc = await firestore
-          .collection('users')
-          .doc(credential.user!.uid)
-          .get();
+      final userData = await supabase
+          .from(SupabaseConfig.usersTable)
+          .select()
+          .eq('id', response.user!.id)
+          .single();
 
-      if (!doc.exists) {
-        throw ServerException(message: 'Usuario no encontrado en Firestore');
-      }
-
-      return UserModel.fromFirestore(doc);
-    } on FirebaseAuthException catch (e) {
-      throw ServerException(message: _getAuthErrorMessage(e.code));
+      return UserModel.fromJson(userData);
+    } on supabase_flutter.AuthException catch (e) {
+      throw ServerException(message: _getAuthErrorMessage(e.message));
     } catch (e) {
       throw ServerException(message: 'Error al iniciar sesión: $e');
     }
@@ -112,31 +111,30 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String name,
   }) async {
     try {
-      final credential = await firebaseAuth.createUserWithEmailAndPassword(
+      final response = await supabase.auth.signUp(
         email: email,
         password: password,
       );
 
-      if (credential.user == null) {
+      if (response.user == null) {
         throw ServerException(message: 'Error al crear usuario');
       }
 
-      // Crear documento de usuario en Firestore
+      // Crear el registro del usuario en la tabla users
       final userModel = UserModel(
-        id: credential.user!.uid,
+        id: response.user!.id,
         email: email,
         name: name,
         createdAt: DateTime.now(),
       );
 
-      await firestore
-          .collection('users')
-          .doc(credential.user!.uid)
-          .set(userModel.toFirestore());
+      await supabase
+          .from(SupabaseConfig.usersTable)
+          .insert(userModel.toJson());
 
       return userModel;
-    } on FirebaseAuthException catch (e) {
-      throw ServerException(message: _getAuthErrorMessage(e.code));
+    } on AuthException catch (e) {
+      throw ServerException(message: _getAuthErrorMessage(e.message));
     } catch (e) {
       throw ServerException(message: 'Error al registrar usuario: $e');
     }
@@ -154,41 +152,39 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final GoogleSignInAuthentication googleAuth = 
           await googleUser.authentication;
 
-      final credential = GoogleAuthProvider.credential(
+      final response = await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: googleAuth.idToken!,
         accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
       );
 
-      final userCredential = 
-          await firebaseAuth.signInWithCredential(credential);
-
-      if (userCredential.user == null) {
+      if (response.user == null) {
         throw ServerException(message: 'Error al iniciar sesión con Google');
       }
 
-      // Verificar si el usuario ya existe en Firestore
-      final doc = await firestore
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get();
+      // Verificar si el usuario ya existe en la tabla users
+      final existingUser = await supabase
+          .from(SupabaseConfig.usersTable)
+          .select()
+          .eq('id', response.user!.id)
+          .maybeSingle();
 
-      if (doc.exists) {
-        return UserModel.fromFirestore(doc);
+      if (existingUser != null) {
+        return UserModel.fromJson(existingUser);
       }
 
-      // Crear nuevo usuario en Firestore
+      // Crear nuevo usuario en la tabla users
       final userModel = UserModel(
-        id: userCredential.user!.uid,
-        email: userCredential.user!.email ?? '',
-        name: userCredential.user!.displayName ?? 'Usuario',
-        photoUrl: userCredential.user!.photoURL,
+        id: response.user!.id,
+        email: response.user!.email ?? '',
+        name: response.user!.userMetadata?['full_name'] ?? 'Usuario',
+        photoUrl: response.user!.userMetadata?['avatar_url'],
         createdAt: DateTime.now(),
       );
 
-      await firestore
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set(userModel.toFirestore());
+      await supabase
+          .from(SupabaseConfig.usersTable)
+          .insert(userModel.toJson());
 
       return userModel;
     } catch (e) {
@@ -207,53 +203,47 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         ],
       );
 
-      // Crear credencial de Firebase
-      final oauthCredential = OAuthProvider('apple.com').credential(
-        idToken: appleCredential.identityToken,
-        accessToken: appleCredential.authorizationCode,
+      // Iniciar sesión en Supabase
+      final response = await supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.apple,
+        idToken: appleCredential.identityToken!,
       );
 
-      // Iniciar sesión en Firebase
-      final userCredential =
-          await firebaseAuth.signInWithCredential(oauthCredential);
-
-      if (userCredential.user == null) {
+      if (response.user == null) {
         throw ServerException(message: 'Error al iniciar sesión con Apple');
       }
 
-      // Verificar si el usuario ya existe en Firestore
-      final doc = await firestore
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .get();
+      // Verificar si el usuario ya existe en la tabla users
+      final existingUser = await supabase
+          .from(SupabaseConfig.usersTable)
+          .select()
+          .eq('id', response.user!.id)
+          .maybeSingle();
 
-      if (doc.exists) {
-        return UserModel.fromFirestore(doc);
+      if (existingUser != null) {
+        return UserModel.fromJson(existingUser);
       }
 
-      // Crear nuevo usuario en Firestore
-      // Apple puede no proporcionar el nombre en intentos posteriores
+      // Crear nuevo usuario en la tabla users
       String displayName = 'Usuario';
       if (appleCredential.givenName != null &&
           appleCredential.familyName != null) {
         displayName =
             '${appleCredential.givenName} ${appleCredential.familyName}';
-      } else if (userCredential.user!.displayName != null) {
-        displayName = userCredential.user!.displayName!;
+      } else if (response.user!.userMetadata?['full_name'] != null) {
+        displayName = response.user!.userMetadata!['full_name'];
       }
 
       final userModel = UserModel(
-        id: userCredential.user!.uid,
-        email: userCredential.user!.email ?? appleCredential.email ?? '',
+        id: response.user!.id,
+        email: response.user!.email ?? appleCredential.email ?? '',
         name: displayName,
-        photoUrl: userCredential.user!.photoURL,
         createdAt: DateTime.now(),
       );
 
-      await firestore
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .set(userModel.toFirestore());
+      await supabase
+          .from(SupabaseConfig.usersTable)
+          .insert(userModel.toJson());
 
       return userModel;
     } catch (e) {
@@ -272,7 +262,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> signOut() async {
     try {
       await Future.wait([
-        firebaseAuth.signOut(),
+        supabase.auth.signOut(),
         googleSignIn.signOut(),
       ]);
     } catch (e) {
@@ -283,9 +273,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> sendPasswordResetEmail({required String email}) async {
     try {
-      await firebaseAuth.sendPasswordResetEmail(email: email);
-    } on FirebaseAuthException catch (e) {
-      throw ServerException(message: _getAuthErrorMessage(e.code));
+      await supabase.auth.resetPasswordForEmail(email);
+    } on AuthException catch (e) {
+      throw ServerException(message: _getAuthErrorMessage(e.message));
     } catch (e) {
       throw ServerException(
         message: 'Error al enviar email de recuperación: $e',
@@ -303,13 +293,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       final updates = <String, dynamic>{};
       if (name != null) updates['name'] = name;
-      if (photoUrl != null) updates['photoUrl'] = photoUrl;
+      if (photoUrl != null) updates['photo_url'] = photoUrl;
       if (phone != null) updates['phone'] = phone;
 
-      await firestore.collection('users').doc(userId).update(updates);
+      await supabase
+          .from(SupabaseConfig.usersTable)
+          .update(updates)
+          .eq('id', userId);
 
-      final doc = await firestore.collection('users').doc(userId).get();
-      return UserModel.fromFirestore(doc);
+      final response = await supabase
+          .from(SupabaseConfig.usersTable)
+          .select()
+          .eq('id', userId)
+          .single();
+
+      return UserModel.fromJson(response);
     } catch (e) {
       throw ServerException(message: 'Error al actualizar perfil: $e');
     }
@@ -317,41 +315,42 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Stream<UserModel?> get authStateChanges {
-    return firebaseAuth.authStateChanges().asyncMap((user) async {
+    return supabase.auth.onAuthStateChange.asyncMap((data) async {
+      final user = data.session?.user;
       if (user == null) return null;
 
       try {
-        final doc = await firestore.collection('users').doc(user.uid).get();
-        if (!doc.exists) return null;
-        return UserModel.fromFirestore(doc);
+        final userData = await supabase
+            .from(SupabaseConfig.usersTable)
+            .select()
+            .eq('id', user.id)
+            .single();
+        
+        return UserModel.fromJson(userData);
       } catch (e) {
         return null;
       }
     });
   }
 
-  /// Obtiene un mensaje de error amigable según el código de error de Firebase
-  String _getAuthErrorMessage(String code) {
-    switch (code) {
-      case 'user-not-found':
-        return 'No existe una cuenta con este correo electrónico';
-      case 'wrong-password':
-        return 'Contraseña incorrecta';
-      case 'email-already-in-use':
-        return 'Ya existe una cuenta con este correo electrónico';
-      case 'invalid-email':
-        return 'Correo electrónico inválido';
-      case 'weak-password':
-        return 'La contraseña debe tener al menos 6 caracteres';
-      case 'user-disabled':
-        return 'Esta cuenta ha sido deshabilitada';
-      case 'too-many-requests':
-        return 'Demasiados intentos. Intenta más tarde';
-      case 'operation-not-allowed':
-        return 'Operación no permitida';
-      default:
-        return 'Error de autenticación: $code';
+  /// Obtiene un mensaje de error amigable según el mensaje de error de Supabase
+  String _getAuthErrorMessage(String message) {
+    if (message.contains('Invalid login credentials')) {
+      return 'Correo electrónico o contraseña incorrectos';
+    } else if (message.contains('User already registered')) {
+      return 'Ya existe una cuenta con este correo electrónico';
+    } else if (message.contains('Email not confirmed')) {
+      return 'Por favor confirma tu correo electrónico';
+    } else if (message.contains('Invalid email')) {
+      return 'Correo electrónico inválido';
+    } else if (message.contains('Password should be at least')) {
+      return 'La contraseña debe tener al menos 6 caracteres';
+    } else if (message.contains('User not found')) {
+      return 'No existe una cuenta con este correo electrónico';
+    } else if (message.contains('Too many requests')) {
+      return 'Demasiados intentos. Intenta más tarde';
     }
+    return 'Error de autenticación: $message';
   }
 }
 

@@ -1,0 +1,8 @@
+# Archivo de ejemplo para configuración de firma de APK
+# Copia este archivo como 'key.properties' y completa con tus valores reales
+# NUNCA subas el archivo key.properties real a Git
+
+storePassword=TU_PASSWORD_DEL_KEYSTORE
+keyPassword=TU_PASSWORD_DE_LA_KEY
+keyAlias=optigasto
+storeFile=optigasto-release-key.jks

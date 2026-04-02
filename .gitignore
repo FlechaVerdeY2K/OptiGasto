@@ -93,8 +93,26 @@ coverage/
 *.ipa
 *.app
 
+# Android signing keys (CRITICAL: Never commit these!)
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
 
+# Prompt files
 prompt.md
+Prompt.md
+COMO_OBTENER_ANON_KEY.md
+CONFIGURACION_FINAL.md
 
-# Test data - Firebase credentials
+# Test data
 test_data
+
+# Supabase
+.env
+.env.local
+.env.*.local
+supabase/.branches
+supabase/.temp
+supabase/config.toml
+.supabase/
+

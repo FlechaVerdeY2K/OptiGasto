@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/category_entity.dart';
 
 /// Modelo de categoría para la capa de datos
@@ -22,37 +21,25 @@ class CategoryModel extends CategoryEntity {
     );
   }
 
-  /// Crea un CategoryModel desde un documento de Firestore
-  factory CategoryModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    
+  /// Crea un CategoryModel desde un Map de Supabase
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: doc.id,
-      name: data['name'] ?? '',
-      icon: data['icon'] ?? '',
-      color: data['color'] ?? '#000000',
-      promotionCount: data['promotionCount'] ?? 0,
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      icon: json['icon'] ?? '',
+      color: json['color'] ?? '#000000',
+      promotionCount: json['promotion_count'] ?? 0,
     );
   }
 
-  /// Crea un CategoryModel desde un Map
-  factory CategoryModel.fromMap(Map<String, dynamic> map, String id) {
-    return CategoryModel(
-      id: id,
-      name: map['name'] ?? '',
-      icon: map['icon'] ?? '',
-      color: map['color'] ?? '#000000',
-      promotionCount: map['promotionCount'] ?? 0,
-    );
-  }
-
-  /// Convierte el CategoryModel a un Map para Firestore
-  Map<String, dynamic> toFirestore() {
+  /// Convierte el CategoryModel a un Map para Supabase
+  Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'name': name,
       'icon': icon,
       'color': color,
-      'promotionCount': promotionCount,
+      'promotion_count': promotionCount,
     };
   }
 

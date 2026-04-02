@@ -1,11 +1,12 @@
 import 'dart:math' show cos, sin, asin, sqrt;
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/config/supabase_config.dart';
 import '../models/promotion_model.dart';
 import '../models/category_model.dart';
 import '../models/commerce_model.dart';
 
-/// Data source remoto para promociones con Firestore
+/// Data source remoto para promociones con Supabase
 abstract class PromotionRemoteDataSource {
   /// Obtiene todas las promociones activas
   Future<List<PromotionModel>> getPromotions({
@@ -103,9 +104,9 @@ abstract class PromotionRemoteDataSource {
 }
 
 class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
-  final FirebaseFirestore firestore;
+  final SupabaseClient supabase;
 
-  PromotionRemoteDataSourceImpl({required this.firestore});
+  PromotionRemoteDataSourceImpl({required this.supabase});
 
   @override
   Future<List<PromotionModel>> getPromotions({
@@ -113,31 +114,20 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     String? lastDocumentId,
   }) async {
     try {
-      Query query = firestore
-          .collection('promotions')
-          .orderBy('createdAt', descending: true);
+      var query = supabase
+          .from(SupabaseConfig.promotionsTable)
+          .select()
+          .eq('is_active', true)
+          .order('created_at', ascending: false);
 
       if (limit != null) {
         query = query.limit(limit);
       }
 
-      if (lastDocumentId != null) {
-        final lastDoc = await firestore
-            .collection('promotions')
-            .doc(lastDocumentId)
-            .get();
-        
-        if (lastDoc.exists) {
-          query = query.startAfterDocument(lastDoc);
-        }
-      }
-
-      final snapshot = await query.get();
+      final response = await query;
       
-      // Filtrar solo promociones activas en el cliente
-      return snapshot.docs
-          .map((doc) => PromotionModel.fromFirestore(doc))
-          .where((promotion) => promotion.isActive)
+      return (response as List)
+          .map((json) => PromotionModel.fromJson(json))
           .toList();
     } catch (e) {
       throw ServerException(message: 'Error al obtener promociones: $e');
@@ -147,13 +137,13 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Future<PromotionModel> getPromotionById(String id) async {
     try {
-      final doc = await firestore.collection('promotions').doc(id).get();
+      final response = await supabase
+          .from(SupabaseConfig.promotionsTable)
+          .select()
+          .eq('id', id)
+          .single();
 
-      if (!doc.exists) {
-        throw ServerException(message: 'Promoción no encontrada');
-      }
-
-      return PromotionModel.fromFirestore(doc);
+      return PromotionModel.fromJson(response);
     } catch (e) {
       throw ServerException(message: 'Error al obtener promoción: $e');
     }
@@ -167,31 +157,21 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     int? limit,
   }) async {
     try {
-      // Calcular límites aproximados para la consulta
-      // 1 grado de latitud ≈ 111 km
-      // 1 grado de longitud ≈ 111 km * cos(latitud)
-      final latDelta = radiusInKm / 111.0;
-      final lonDelta = radiusInKm / (111.0 * cos(latitude * 0.0174533));
+      // Obtener todas las promociones activas
+      var query = supabase
+          .from(SupabaseConfig.promotionsTable)
+          .select()
+          .eq('is_active', true);
 
-      final minLat = latitude - latDelta;
-      final maxLat = latitude + latDelta;
-      final minLon = longitude - lonDelta;
-      final maxLon = longitude + lonDelta;
+      // Aplicar limit después de todas las condiciones
+      final limitedQuery = limit != null ? query.limit(limit * 2) : query;
 
-      Query query = firestore
-          .collection('promotions');
+      final response = await limitedQuery;
 
-      if (limit != null) {
-        query = query.limit(limit * 2); // Obtener más para filtrar después
-      }
-
-      final snapshot = await query.get();
-
-      // Filtrar por distancia real y solo promociones activas usando la fórmula de Haversine
-      final promotions = snapshot.docs
-          .map((doc) => PromotionModel.fromFirestore(doc))
+      // Filtrar por distancia real usando la fórmula de Haversine
+      final promotions = (response as List)
+          .map((json) => PromotionModel.fromJson(json))
           .where((promotion) {
-        if (!promotion.isActive) return false;
         final distance = _calculateDistance(
           latitude,
           longitude,
@@ -232,40 +212,22 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     String? lastDocumentId,
   }) async {
     try {
-      // Simplificar query para evitar índice compuesto
-      // Solo filtrar por categoría, ordenar en cliente
-      Query query = firestore
-          .collection('promotions')
-          .where('category', isEqualTo: category);
+      var query = supabase
+          .from(SupabaseConfig.promotionsTable)
+          .select()
+          .eq('category', category)
+          .eq('is_active', true)
+          .order('created_at', ascending: false);
 
       if (limit != null) {
-        query = query.limit(limit * 2); // Obtener más para ordenar después
+        query = query.limit(limit);
       }
 
-      if (lastDocumentId != null) {
-        final lastDoc = await firestore
-            .collection('promotions')
-            .doc(lastDocumentId)
-            .get();
-        
-        if (lastDoc.exists) {
-          query = query.startAfterDocument(lastDoc);
-        }
-      }
-
-      final snapshot = await query.get();
+      final response = await query;
       
-      // Filtrar solo promociones activas y ordenar por fecha en el cliente
-      final promotions = snapshot.docs
-          .map((doc) => PromotionModel.fromFirestore(doc))
-          .where((promotion) => promotion.isActive)
+      return (response as List)
+          .map((json) => PromotionModel.fromJson(json))
           .toList();
-      
-      // Ordenar por fecha de creación (más recientes primero)
-      promotions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      
-      // Aplicar límite si se especificó
-      return limit != null ? promotions.take(limit).toList() : promotions;
     } catch (e) {
       throw ServerException(
           message: 'Error al obtener promociones por categoría: $e');
@@ -279,32 +241,21 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     String? lastDocumentId,
   }) async {
     try {
-      Query query = firestore
-          .collection('promotions')
-          .where('commerceId', isEqualTo: commerceId)
-          .orderBy('createdAt', descending: true);
+      var query = supabase
+          .from(SupabaseConfig.promotionsTable)
+          .select()
+          .eq('commerce_id', commerceId)
+          .eq('is_active', true)
+          .order('created_at', ascending: false);
 
       if (limit != null) {
         query = query.limit(limit);
       }
 
-      if (lastDocumentId != null) {
-        final lastDoc = await firestore
-            .collection('promotions')
-            .doc(lastDocumentId)
-            .get();
-        
-        if (lastDoc.exists) {
-          query = query.startAfterDocument(lastDoc);
-        }
-      }
-
-      final snapshot = await query.get();
+      final response = await query;
       
-      // Filtrar solo promociones activas en el cliente
-      return snapshot.docs
-          .map((doc) => PromotionModel.fromFirestore(doc))
-          .where((promotion) => promotion.isActive)
+      return (response as List)
+          .map((json) => PromotionModel.fromJson(json))
           .toList();
     } catch (e) {
       throw ServerException(
@@ -318,20 +269,20 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     int? limit,
   }) async {
     try {
-      // Búsqueda simple por título (Firestore no soporta búsqueda full-text nativa)
-      // Para producción, considerar usar Algolia o ElasticSearch
-      final snapshot = await firestore
-          .collection('promotions')
-          .orderBy('title')
-          .startAt([query])
-          .endAt(['$query\uf8ff'])
-          .limit(limit ?? 20)
-          .get();
+      // Búsqueda usando ilike (case-insensitive LIKE)
+      var supabaseQuery = supabase
+          .from(SupabaseConfig.promotionsTable)
+          .select()
+          .eq('is_active', true)
+          .or('title.ilike.%$query%,description.ilike.%$query%');
 
-      // Filtrar solo promociones activas en el cliente
-      return snapshot.docs
-          .map((doc) => PromotionModel.fromFirestore(doc))
-          .where((promotion) => promotion.isActive)
+      // Aplicar limit después de todas las condiciones
+      final limitedQuery = limit != null ? supabaseQuery.limit(limit) : supabaseQuery;
+
+      final response = await limitedQuery;
+      
+      return (response as List)
+          .map((json) => PromotionModel.fromJson(json))
           .toList();
     } catch (e) {
       throw ServerException(message: 'Error al buscar promociones: $e');
@@ -343,12 +294,13 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     required PromotionModel promotion,
   }) async {
     try {
-      final docRef = await firestore
-          .collection('promotions')
-          .add(promotion.toFirestore());
+      final response = await supabase
+          .from(SupabaseConfig.promotionsTable)
+          .insert(promotion.toJson())
+          .select()
+          .single();
 
-      final doc = await docRef.get();
-      return PromotionModel.fromFirestore(doc);
+      return PromotionModel.fromJson(response);
     } catch (e) {
       throw ServerException(message: 'Error al crear promoción: $e');
     }
@@ -360,12 +312,16 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     required Map<String, dynamic> updates,
   }) async {
     try {
-      updates['updatedAt'] = Timestamp.now();
+      updates['updated_at'] = DateTime.now().toIso8601String();
 
-      await firestore.collection('promotions').doc(id).update(updates);
+      final response = await supabase
+          .from(SupabaseConfig.promotionsTable)
+          .update(updates)
+          .eq('id', id)
+          .select()
+          .single();
 
-      final doc = await firestore.collection('promotions').doc(id).get();
-      return PromotionModel.fromFirestore(doc);
+      return PromotionModel.fromJson(response);
     } catch (e) {
       throw ServerException(message: 'Error al actualizar promoción: $e');
     }
@@ -374,7 +330,10 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Future<void> deletePromotion(String id) async {
     try {
-      await firestore.collection('promotions').doc(id).delete();
+      await supabase
+          .from(SupabaseConfig.promotionsTable)
+          .delete()
+          .eq('id', id);
     } catch (e) {
       throw ServerException(message: 'Error al eliminar promoción: $e');
     }
@@ -387,39 +346,27 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     required bool isPositive,
   }) async {
     try {
-      final docRef = firestore.collection('promotions').doc(promotionId);
+      // Obtener la promoción actual
+      final promotion = await getPromotionById(promotionId);
 
-      await firestore.runTransaction((transaction) async {
-        final snapshot = await transaction.get(docRef);
+      // Verificar si el usuario ya validó
+      if (promotion.validatedByUsers.contains(userId)) {
+        throw ServerException(
+            message: 'Ya has validado esta promoción');
+      }
 
-        if (!snapshot.exists) {
-          throw ServerException(message: 'Promoción no encontrada');
-        }
+      // Actualizar validaciones
+      final updates = <String, dynamic>{
+        'validated_by_users': [...promotion.validatedByUsers, userId],
+      };
 
-        final data = snapshot.data()!;
-        final validations = data['validations'] as Map<String, dynamic>;
-        final users = List<String>.from(validations['users'] ?? []);
+      if (isPositive) {
+        updates['positive_validations'] = promotion.positiveValidations + 1;
+      } else {
+        updates['negative_validations'] = promotion.negativeValidations + 1;
+      }
 
-        // Verificar si el usuario ya validó
-        if (users.contains(userId)) {
-          throw ServerException(
-              message: 'Ya has validado esta promoción');
-        }
-
-        // Actualizar validaciones
-        users.add(userId);
-        final field = isPositive ? 'positive' : 'negative';
-        validations[field] = (validations[field] ?? 0) + 1;
-        validations['users'] = users;
-
-        transaction.update(docRef, {
-          'validations': validations,
-          'updatedAt': Timestamp.now(),
-        });
-      });
-
-      final doc = await docRef.get();
-      return PromotionModel.fromFirestore(doc);
+      return await updatePromotion(id: promotionId, updates: updates);
     } catch (e) {
       throw ServerException(message: 'Error al validar promoción: $e');
     }
@@ -428,12 +375,22 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Future<void> incrementViews(String promotionId) async {
     try {
-      await firestore.collection('promotions').doc(promotionId).update({
-        'views': FieldValue.increment(1),
-      });
+      // Usar RPC para incrementar atómicamente
+      await supabase.rpc('increment_promotion_views', 
+        params: {'promotion_id': promotionId}
+      );
     } catch (e) {
-      throw ServerException(
-          message: 'Error al incrementar vistas: $e');
+      // Si el RPC no existe, usar update manual
+      try {
+        final promotion = await getPromotionById(promotionId);
+        await updatePromotion(
+          id: promotionId,
+          updates: {'views': promotion.views + 1},
+        );
+      } catch (e2) {
+        throw ServerException(
+            message: 'Error al incrementar vistas: $e2');
+      }
     }
   }
 
@@ -444,20 +401,22 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     required bool isSaved,
   }) async {
     try {
-      final userRef = firestore.collection('users').doc(userId);
-      
-      // Simplificar: solo actualizar el documento del usuario
-      // No actualizar el contador en la promoción para evitar problemas de permisos
       if (isSaved) {
-        // Guardar promoción - usar set con merge para crear si no existe
-        await userRef.set({
-          'savedPromotions': FieldValue.arrayUnion([promotionId]),
-        }, SetOptions(merge: true));
+        // Guardar promoción
+        await supabase
+            .from(SupabaseConfig.savedPromotionsTable)
+            .insert({
+          'user_id': userId,
+          'promotion_id': promotionId,
+          'saved_at': DateTime.now().toIso8601String(),
+        });
       } else {
         // Quitar de guardados
-        await userRef.update({
-          'savedPromotions': FieldValue.arrayRemove([promotionId]),
-        });
+        await supabase
+            .from(SupabaseConfig.savedPromotionsTable)
+            .delete()
+            .eq('user_id', userId)
+            .eq('promotion_id', promotionId);
       }
     } catch (e) {
       throw ServerException(
@@ -468,13 +427,13 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Future<List<CategoryModel>> getCategories() async {
     try {
-      final snapshot = await firestore
-          .collection('categories')
-          .orderBy('name')
-          .get();
+      final response = await supabase
+          .from(SupabaseConfig.categoriesTable)
+          .select()
+          .order('name');
 
-      return snapshot.docs
-          .map((doc) => CategoryModel.fromFirestore(doc))
+      return (response as List)
+          .map((json) => CategoryModel.fromJson(json))
           .toList();
     } catch (e) {
       throw ServerException(message: 'Error al obtener categorías: $e');
@@ -484,13 +443,13 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Future<CommerceModel> getCommerceById(String id) async {
     try {
-      final doc = await firestore.collection('commerces').doc(id).get();
+      final response = await supabase
+          .from(SupabaseConfig.commercesTable)
+          .select()
+          .eq('id', id)
+          .single();
 
-      if (!doc.exists) {
-        throw ServerException(message: 'Comercio no encontrado');
-      }
-
-      return CommerceModel.fromFirestore(doc);
+      return CommerceModel.fromJson(response);
     } catch (e) {
       throw ServerException(message: 'Error al obtener comercio: $e');
     }
@@ -504,13 +463,17 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     int? limit,
   }) async {
     try {
-      final snapshot = await firestore
-          .collection('commerces')
-          .limit(limit ?? 100)
-          .get();
+      var query = supabase
+          .from(SupabaseConfig.commercesTable)
+          .select();
 
-      final commerces = snapshot.docs
-          .map((doc) => CommerceModel.fromFirestore(doc))
+      // Aplicar limit después de todas las condiciones
+      final limitedQuery = limit != null ? query.limit(limit * 2) : query;
+
+      final response = await limitedQuery;
+
+      final commerces = (response as List)
+          .map((json) => CommerceModel.fromJson(json))
           .where((commerce) {
         final distance = _calculateDistance(
           latitude,
@@ -551,16 +514,18 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     int? limit,
   }) async {
     try {
-      final snapshot = await firestore
-          .collection('commerces')
-          .orderBy('name')
-          .startAt([query])
-          .endAt(['$query\uf8ff'])
-          .limit(limit ?? 20)
-          .get();
+      var supabaseQuery = supabase
+          .from(SupabaseConfig.commercesTable)
+          .select()
+          .or('name.ilike.%$query%,type.ilike.%$query%');
 
-      return snapshot.docs
-          .map((doc) => CommerceModel.fromFirestore(doc))
+      // Aplicar limit después de todas las condiciones
+      final limitedQuery = limit != null ? supabaseQuery.limit(limit) : supabaseQuery;
+
+      final response = await limitedQuery;
+      
+      return (response as List)
+          .map((json) => CommerceModel.fromJson(json))
           .toList();
     } catch (e) {
       throw ServerException(message: 'Error al buscar comercios: $e');
@@ -570,19 +535,19 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Stream<List<PromotionModel>> watchPromotions({int? limit}) {
     try {
-      Query query = firestore
-          .collection('promotions')
-          .orderBy('createdAt', descending: true);
+      var query = supabase
+          .from(SupabaseConfig.promotionsTable)
+          .stream(primaryKey: ['id'])
+          .eq('is_active', true)
+          .order('created_at', ascending: false);
 
       if (limit != null) {
         query = query.limit(limit);
       }
 
-      return query.snapshots().map((snapshot) {
-        // Filtrar solo promociones activas en el cliente
-        return snapshot.docs
-            .map((doc) => PromotionModel.fromFirestore(doc))
-            .where((promotion) => promotion.isActive)
+      return query.map((data) {
+        return data
+            .map((json) => PromotionModel.fromJson(json))
             .toList();
       });
     } catch (e) {
@@ -594,15 +559,15 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Stream<PromotionModel> watchPromotion(String id) {
     try {
-      return firestore
-          .collection('promotions')
-          .doc(id)
-          .snapshots()
-          .map((doc) {
-        if (!doc.exists) {
+      return supabase
+          .from(SupabaseConfig.promotionsTable)
+          .stream(primaryKey: ['id'])
+          .eq('id', id)
+          .map((data) {
+        if (data.isEmpty) {
           throw ServerException(message: 'Promoción no encontrada');
         }
-        return PromotionModel.fromFirestore(doc);
+        return PromotionModel.fromJson(data.first);
       });
     } catch (e) {
       throw ServerException(message: 'Error al observar promoción: $e');
