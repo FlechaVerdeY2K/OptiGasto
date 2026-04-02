@@ -9,6 +9,7 @@ import 'core/routes/app_router.dart';
 import 'core/di/injection_container.dart' as di;
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
+import 'features/promotions/presentation/bloc/promotion_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,9 +49,16 @@ class OptiGastoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => di.sl<AuthBloc>()
-        ..add(const AuthCheckRequested()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => di.sl<AuthBloc>()
+            ..add(const AuthCheckRequested()),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<PromotionBloc>(),
+        ),
+      ],
       child: Builder(
         builder: (context) {
           return MaterialApp.router(

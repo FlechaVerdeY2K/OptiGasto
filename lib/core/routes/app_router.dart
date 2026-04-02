@@ -7,6 +7,7 @@ import '../../features/auth/presentation/pages/forgot_password_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_page.dart';
+import '../../features/promotions/presentation/pages/promotion_detail_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
 
@@ -17,6 +18,7 @@ class AppRouter {
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
   static const String home = '/home';
+  static const String promotionDetail = '/promotion-detail';
 
   static GoRouter router(BuildContext context) => GoRouter(
     initialLocation: onboarding,
@@ -70,6 +72,13 @@ class AppRouter {
       GoRoute(
         path: home,
         builder: (context, state) => const HomePage(),
+      ),
+      GoRoute(
+        path: promotionDetail,
+        builder: (context, state) {
+          final promotionId = state.extra as String;
+          return PromotionDetailPage(promotionId: promotionId);
+        },
       ),
     ],
   );

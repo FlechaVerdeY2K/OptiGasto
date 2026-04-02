@@ -1,0 +1,139 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ============================================
+    // FUNCIONES AUXILIARES
+    // ============================================
+    
+    // Verifica si el usuario está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Verifica si el usuario es el propietario del documento
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Verifica si el usuario es admin (puedes agregar lógica personalizada)
+    function isAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+    
+    // ============================================
+    // COLECCIÓN: users
+    // ============================================
+    match /users/{userId} {
+      // Lectura: solo el propietario o admin
+      allow read: if isOwner(userId) || isAdmin();
+      
+      // Creación: solo durante el registro (el userId debe coincidir con el auth.uid)
+      allow create: if isOwner(userId);
+      
+      // Actualización: solo el propietario (permitir crear campos si no existen)
+      allow update: if isOwner(userId);
+      
+      // Eliminación: solo el propietario o admin
+      allow delete: if isOwner(userId) || isAdmin();
+      
+      // Permitir escritura para crear documento si no existe (merge)
+      allow write: if isOwner(userId);
+    }
+    
+    // ============================================
+    // COLECCIÓN: promotions
+    // ============================================
+    match /promotions/{promotionId} {
+      // Lectura: todos los usuarios autenticados pueden leer promociones activas
+      allow read: if isAuthenticated();
+      
+      // Creación: solo usuarios autenticados (comercios o admins)
+      allow create: if isAuthenticated();
+      
+      // Actualización: solo el creador o admin
+      allow update: if isAuthenticated() && 
+                      (resource.data.createdBy == request.auth.uid || isAdmin());
+      
+      // Eliminación: solo el creador o admin
+      allow delete: if isAuthenticated() && 
+                      (resource.data.createdBy == request.auth.uid || isAdmin());
+    }
+    
+    // ============================================
+    // COLECCIÓN: categories
+    // ============================================
+    match /categories/{categoryId} {
+      // Lectura: todos los usuarios autenticados
+      allow read: if isAuthenticated();
+      
+      // Escritura: solo admins
+      allow write: if isAdmin();
+    }
+    
+    // ============================================
+    // COLECCIÓN: commerces
+    // ============================================
+    match /commerces/{commerceId} {
+      // Lectura: todos los usuarios autenticados
+      allow read: if isAuthenticated();
+      
+      // Creación: usuarios autenticados
+      allow create: if isAuthenticated();
+      
+      // Actualización: solo el propietario o admin
+      allow update: if isAuthenticated() && 
+                      (resource.data.ownerId == request.auth.uid || isAdmin());
+      
+      // Eliminación: solo el propietario o admin
+      allow delete: if isAuthenticated() && 
+                      (resource.data.ownerId == request.auth.uid || isAdmin());
+    }
+    
+    // ============================================
+    // SUBCOLECCIÓN: users/{userId}/savedPromotions
+    // ============================================
+    match /users/{userId}/savedPromotions/{promotionId} {
+      // Lectura y escritura: solo el propietario
+      allow read, write: if isOwner(userId);
+    }
+    
+    // ============================================
+    // SUBCOLECCIÓN: users/{userId}/validatedPromotions
+    // ============================================
+    match /users/{userId}/validatedPromotions/{promotionId} {
+      // Lectura y escritura: solo el propietario
+      allow read, write: if isOwner(userId);
+    }
+    
+    // ============================================
+    // COLECCIÓN: promotionValidations (alternativa)
+    // ============================================
+    match /promotionValidations/{validationId} {
+      // Lectura: todos los usuarios autenticados
+      allow read: if isAuthenticated();
+      
+      // Creación: usuarios autenticados
+      allow create: if isAuthenticated() && 
+                      request.resource.data.userId == request.auth.uid;
+      
+      // Actualización: solo el creador
+      allow update: if isAuthenticated() && 
+                      resource.data.userId == request.auth.uid;
+      
+      // Eliminación: solo el creador
+      allow delete: if isAuthenticated() && 
+                      resource.data.userId == request.auth.uid;
+    }
+    
+    // ============================================
+    // REGLA POR DEFECTO: DENEGAR TODO LO DEMÁS
+    // ============================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

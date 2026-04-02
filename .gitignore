@@ -94,3 +94,6 @@ coverage/
 *.app
 
 prompt.md
+
+# Test data - Firebase credentials
+test_data
