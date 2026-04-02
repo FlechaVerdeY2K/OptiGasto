@@ -93,6 +93,7 @@ coverage/
 *.ipa
 *.app
 
+
 prompt.md
 
 # Test data - Firebase credentials
