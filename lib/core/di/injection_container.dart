@@ -25,6 +25,7 @@ import '../../features/location/domain/usecases/get_nearby_promotion_markers.dar
 import '../../features/location/domain/usecases/request_location_permission.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 
+
 final sl = GetIt.instance;
 
 /// Inicializa todas las dependencias de la aplicación
@@ -57,6 +58,7 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+
   // ========== Repositories ==========
   // Auth
   sl.registerLazySingleton<AuthRepository>(
@@ -71,6 +73,7 @@ Future<void> initializeDependencies() async {
       remoteDataSource: sl(),
     ),
   );
+
 
   // Location
   sl.registerLazySingleton<LocationRepository>(
