@@ -10,6 +10,7 @@ import 'core/di/injection_container.dart' as di;
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/promotions/presentation/bloc/promotion_bloc.dart';
+import 'features/location/presentation/bloc/location_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,6 +63,9 @@ class OptiGastoApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => di.sl<PromotionBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<LocationBloc>(),
         ),
       ],
       child: Builder(
