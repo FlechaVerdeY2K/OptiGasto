@@ -66,5 +66,19 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Permisos de Ubicación -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>OptiGasto necesita acceso a tu ubicación para mostrarte ofertas y promociones cercanas.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>OptiGasto necesita acceso a tu ubicación para enviarte notificaciones de ofertas cercanas incluso cuando la app está en segundo plano.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>OptiGasto necesita acceso a tu ubicación para enviarte notificaciones de ofertas cercanas.</string>
+	<!-- Permisos de Cámara -->
+	<key>NSCameraUsageDescription</key>
+	<string>OptiGasto necesita acceso a la cámara para que puedas tomar fotos de promociones y ofertas.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>OptiGasto necesita acceso a tu galería para que puedas seleccionar fotos de promociones.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>OptiGasto necesita permiso para guardar fotos de promociones en tu galería.</string>
 </dict>
 </plist>

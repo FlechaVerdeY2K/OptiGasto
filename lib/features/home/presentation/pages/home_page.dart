@@ -6,6 +6,7 @@ import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../promotions/presentation/pages/promotions_list_page.dart';
+import '../../../location/presentation/pages/map_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +20,7 @@ class _HomePageState extends State<HomePage> {
 
   final List<Widget> _pages = [
     const PromotionsListPage(),
-    const MapTab(),
+    const MapPage(),
     const FavoritesTab(),
     const ProfileTab(),
   ];
@@ -149,44 +150,6 @@ class PromotionsTab extends StatelessWidget {
           imageIcon: Icons.shopping_cart,
         ),
       ],
-    );
-  }
-}
-
-// Tab de Mapa
-class MapTab extends StatelessWidget {
-  const MapTab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.map,
-            size: 100,
-            color: Colors.grey[300],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Mapa de Ofertas',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Próximamente',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey[500],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
