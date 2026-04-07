@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../domain/entities/user_entity.dart';
 
 /// Modelo de usuario para la capa de datos
@@ -38,47 +37,53 @@ class UserModel extends UserEntity {
     );
   }
 
-  /// Crea un UserModel desde un documento de Firestore
-  factory UserModel.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    
+  /// Crea un UserModel desde un Map de Supabase
+  factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: doc.id,
-      email: data['email'] ?? '',
-      name: data['name'] ?? '',
-      photoUrl: data['photoUrl'],
-      phone: data['phone'],
-      latitude: data['location'] != null 
-          ? (data['location'] as GeoPoint).latitude 
+      id: json['id'] ?? '',
+      email: json['email'] ?? '',
+      name: json['name'] ?? '',
+      photoUrl: json['photo_url'],
+      phone: json['phone'],
+      latitude: json['latitude'] != null 
+          ? (json['latitude'] as num).toDouble()
           : null,
-      longitude: data['location'] != null 
-          ? (data['location'] as GeoPoint).longitude 
+      longitude: json['longitude'] != null 
+          ? (json['longitude'] as num).toDouble()
           : null,
-      reputation: data['reputation'] ?? 0,
-      badges: List<String>.from(data['badges'] ?? []),
-      savedPromotions: List<String>.from(data['savedPromotions'] ?? []),
-      totalSavings: (data['totalSavings'] ?? 0).toDouble(),
-      createdAt: (data['createdAt'] as Timestamp).toDate(),
-      isCommerce: data['isCommerce'] ?? false,
+      reputation: json['reputation'] ?? 0,
+      badges: json['badges'] != null 
+          ? List<String>.from(json['badges'])
+          : [],
+      savedPromotions: json['saved_promotions'] != null 
+          ? List<String>.from(json['saved_promotions'])
+          : [],
+      totalSavings: json['total_savings'] != null 
+          ? (json['total_savings'] as num).toDouble()
+          : 0.0,
+      createdAt: json['created_at'] != null 
+          ? DateTime.parse(json['created_at'])
+          : DateTime.now(),
+      isCommerce: json['is_commerce'] ?? false,
     );
   }
 
-  /// Convierte el UserModel a un Map para Firestore
-  Map<String, dynamic> toFirestore() {
+  /// Convierte el UserModel a un Map para Supabase
+  Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'email': email,
       'name': name,
-      'photoUrl': photoUrl,
+      'photo_url': photoUrl,
       'phone': phone,
-      'location': (latitude != null && longitude != null)
-          ? GeoPoint(latitude!, longitude!)
-          : null,
+      'latitude': latitude,
+      'longitude': longitude,
       'reputation': reputation,
       'badges': badges,
-      'savedPromotions': savedPromotions,
-      'totalSavings': totalSavings,
-      'createdAt': Timestamp.fromDate(createdAt),
-      'isCommerce': isCommerce,
+      'saved_promotions': savedPromotions,
+      'total_savings': totalSavings,
+      'created_at': createdAt.toIso8601String(),
+      'is_commerce': isCommerce,
     };
   }
 

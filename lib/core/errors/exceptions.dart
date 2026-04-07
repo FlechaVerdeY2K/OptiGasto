@@ -36,9 +36,9 @@ class NetworkException extends AppException {
   });
 }
 
-/// Excepción de autenticación
-class AuthException extends AppException {
-  AuthException({
+/// Excepción de autenticación personalizada
+class AppAuthException extends AppException {
+  AppAuthException({
     required super.message,
     super.code,
   });
