@@ -297,6 +297,7 @@ class PromotionBloc extends Bloc<PromotionEvent, PromotionState> {
       (promotions) => emit(PromotionLoaded(
         promotions: promotions,
         categories: previousCategories,
+        selectedCategory: null, // Limpiar categoría seleccionada
         hasMore: promotions.length == 20,
       )),
     );

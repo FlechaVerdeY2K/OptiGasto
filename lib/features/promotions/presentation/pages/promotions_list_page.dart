@@ -21,7 +21,6 @@ class PromotionsListPage extends StatefulWidget {
 
 class _PromotionsListPageState extends State<PromotionsListPage> {
   final ScrollController _scrollController = ScrollController();
-  String? _selectedCategory;
 
   @override
   void initState() {
@@ -47,10 +46,10 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
       if (state is PromotionLoaded && state.hasMore) {
         final lastPromotion = state.promotions.lastOrNull;
         if (lastPromotion != null) {
-          if (_selectedCategory != null) {
+          if (state.selectedCategory != null) {
             context.read<PromotionBloc>().add(
                   PromotionFilterByCategoryRequested(
-                    category: _selectedCategory!,
+                    category: state.selectedCategory!,
                     limit: 20,
                     lastDocumentId: lastPromotion.id,
                   ),
@@ -163,9 +162,8 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
             // Filtro "Todas"
             _buildFilterChip(
               label: 'Todas',
-              isSelected: _selectedCategory == null,
+              isSelected: state.selectedCategory == null,
               onTap: () {
-                setState(() => _selectedCategory = null);
                 context.read<PromotionBloc>().add(
                       const PromotionClearFiltersRequested(),
                     );
@@ -178,9 +176,8 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
                 padding: const EdgeInsets.only(right: 8),
                 child: _buildFilterChip(
                   label: category.name,
-                  isSelected: _selectedCategory == category.id,
+                  isSelected: state.selectedCategory == category.id,
                   onTap: () {
-                    setState(() => _selectedCategory = category.id);
                     context.read<PromotionBloc>().add(
                           PromotionFilterByCategoryRequested(
                             category: category.id,
@@ -221,7 +218,7 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
   Widget _buildPromotionsList(PromotionLoaded state) {
     if (state.promotions.isEmpty) {
       return SliverFillRemaining(
-        child: _buildEmptyState(),
+        child: _buildEmptyState(state),
       );
     }
 
@@ -284,7 +281,7 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(PromotionLoaded state) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -303,7 +300,7 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
           ),
           const SizedBox(height: 8),
           Text(
-            _selectedCategory != null
+            state.selectedCategory != null
                 ? 'Intenta con otra categoría'
                 : 'Sé el primero en agregar una',
             style: AppTextStyles.bodyMedium.copyWith(

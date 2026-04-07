@@ -53,12 +53,13 @@ jobs:
     
     - name: Setup Supabase config
       run: |
-        # Create .env file with Supabase credentials from secrets
+        # Create .env file with Supabase credentials and Google Maps API key from secrets
         if [ -n "${{ secrets.SUPABASE_URL }}" ] && [ -n "${{ secrets.SUPABASE_ANON_KEY }}" ]; then
           echo "Using real Supabase configuration from secrets"
           cat > .env << EOF
         SUPABASE_URL=${{ secrets.SUPABASE_URL }}
         SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}
+        GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}
         EOF
           echo "✅ Supabase configuration created"
         else
@@ -67,11 +68,13 @@ jobs:
           cat > .env << EOF
         SUPABASE_URL=https://placeholder.supabase.co
         SUPABASE_ANON_KEY=placeholder-anon-key-for-build-only
+        GOOGLE_MAPS_API_KEY=placeholder-api-key-for-build-only
         EOF
           echo ""
           echo "To enable real Supabase connection, add these secrets to your repository:"
           echo "  - SUPABASE_URL (your Supabase project URL)"
           echo "  - SUPABASE_ANON_KEY (your Supabase anon/public key)"
+          echo "  - GOOGLE_MAPS_API_KEY (your Google Maps API key)"
         fi
     
     - name: Setup Android signing
@@ -99,6 +102,21 @@ jobs:
           echo "  - KEYSTORE_PASSWORD"
           echo "  - KEY_PASSWORD"
           echo "  - KEY_ALIAS"
+        fi
+    
+    - name: Setup Google Maps API Key
+      run: |
+        # Create local.properties with Google Maps API key
+        if [ -n "${{ secrets.GOOGLE_MAPS_API_KEY }}" ]; then
+          echo "Using Google Maps API key from secrets"
+          echo "GOOGLE_MAPS_API_KEY=${{ secrets.GOOGLE_MAPS_API_KEY }}" >> android/local.properties
+          echo "✅ Google Maps API key configured"
+        else
+          echo "⚠️ No Google Maps API key found in secrets"
+          echo "Using placeholder value for build"
+          echo "GOOGLE_MAPS_API_KEY=placeholder-api-key-for-build-only" >> android/local.properties
+          echo ""
+          echo "To enable Google Maps, add GOOGLE_MAPS_API_KEY secret to your repository"
         fi
     
     - name: Install dependencies

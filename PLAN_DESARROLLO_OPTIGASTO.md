@@ -9,822 +9,907 @@ OptiGasto es una aplicación móvil que permite a los consumidores costarricense
 
 **Objetivo:** Desarrollar una aplicación Flutter multiplataforma (Android/iOS) que implemente todas las funcionalidades identificadas en el proyecto de mercadeo.
 
+**Estado Actual:** ✅ Fases 1-4 completadas (Autenticación, Promociones Core, Geolocalización y Mapas, Publicación y Validación)
+
 ---
 
 ## 🎯 Requerimientos Funcionales Principales
 
-### 1. **Gestión de Usuarios**
-- Registro y autenticación (email, Google, Apple Sign-In)
-- Perfil de usuario con historial de ahorro
-- Sistema de reputación y gamificación
-- Programa de embajadores comunitarios
-- Acceso como invitado (sin registro)
+### 1. **Gestión de Usuarios** ✅ PARCIALMENTE COMPLETADO
+- ✅ Registro y autenticación con email
+- ✅ Perfil de usuario básico
+- ✅ Gestión de sesión con BLoC
+- ✅ Logout funcional
+- [ ] Google Sign-In
+- [ ] Apple Sign-In
+- [ ] Editar perfil completo
+- [ ] Sistema de reputación y gamificación
+- [ ] Programa de embajadores comunitarios
+- [ ] Acceso como invitado (sin registro)
+- [ ] Dashboard de ahorro personal
 
-### 2. **Geolocalización y Mapas**
-- Visualización de comercios cercanos en mapa
-- Filtrado por distancia y tipo de comercio
-- Ruta de Ahorro Inteligente (optimización de ruta)
-- Notificaciones push basadas en ubicación
-- Detección automática de zona geográfica
+### 2. **Geolocalización y Mapas** ✅ COMPLETADO
+- ✅ Visualización de comercios cercanos en mapa
+- ✅ Filtrado por distancia y tipo de comercio
+- ✅ Detección automática de zona geográfica
+- ✅ Markers con clustering
+- ✅ Info windows personalizados
+- [ ] Ruta de Ahorro Inteligente (optimización de ruta)
+- [ ] Notificaciones push basadas en ubicación
 
-### 3. **Gestión de Promociones**
-- Visualización de ofertas geolocalizadas
-- Publicación de promociones con evidencia fotográfica
-- Sistema de validación comunitaria
-- Reportar promociones vencidas
-- Guardar promociones favoritas
-- Compartir promociones en redes sociales
+### 3. **Gestión de Promociones** ✅ COMPLETADO
+- ✅ Visualización de ofertas geolocalizadas
+- ✅ Publicación de promociones con evidencia fotográfica
+- ✅ Sistema de validación comunitaria
+- ✅ Reportar promociones vencidas
+- ✅ Guardar promociones favoritas
+- [ ] Compartir promociones en redes sociales
+- [ ] Búsqueda avanzada por producto
 
-### 4. **Sistema Colaborativo**
-- Subir fotos de promociones (OCR opcional)
-- Validar ofertas existentes (thumbs up/down)
-- Sistema de confiabilidad de información
-- Rankings de colaboradores activos
-- Insignias y recompensas
+### 4. **Sistema Colaborativo** ✅ COMPLETADO
+- ✅ Subir fotos de promociones
+- ✅ Validar ofertas existentes (thumbs up/down)
+- ✅ Sistema de confiabilidad de información
+- [ ] Rankings de colaboradores activos
+- [ ] Insignias y recompensas
+- [ ] OCR para lectura automática (opcional)
 
-### 5. **Búsqueda y Filtros**
-- Búsqueda por producto, categoría o comercio
-- Filtros por tipo de descuento
-- Filtros por categoría de producto
-- Ordenamiento por distancia, descuento, fecha
+### 5. **Búsqueda y Filtros** ✅ PARCIALMENTE COMPLETADO
+- ✅ Filtros por categoría de producto
+- ✅ Ordenamiento por distancia
+- [ ] Búsqueda por producto específico
+- [ ] Búsqueda por comercio
+- [ ] Filtros por tipo de descuento
+- [ ] Ordenamiento por descuento, fecha
 
-### 6. **Notificaciones**
-- Alertas de promociones cercanas
-- Notificaciones de promociones guardadas
-- Recordatorios de caducidad
-- Notificaciones personalizadas según historial
+### 6. **Notificaciones** ❌ PENDIENTE
+- [ ] Alertas de promociones cercanas
+- [ ] Notificaciones de promociones guardadas
+- [ ] Recordatorios de caducidad
+- [ ] Notificaciones personalizadas según historial
 
-### 7. **Panel de Comercios (B2B)**
-- Registro de comercios
-- Publicación de promociones propias
-- Estadísticas de visibilidad
-- Planes freemium (básico/premium)
+### 7. **Panel de Comercios (B2B)** ❌ PENDIENTE
+- [ ] Registro de comercios
+- [ ] Publicación de promociones propias
+- [ ] Estadísticas de visibilidad
+- [ ] Planes freemium (básico/premium)
 
-### 8. **Analítica y Métricas**
-- Dashboard de ahorro personal
-- Historial de promociones utilizadas
-- Estadísticas de uso
-- Métricas de ahorro mensual
+### 8. **Analítica y Métricas** ❌ PENDIENTE
+- [ ] Dashboard de ahorro personal
+- [ ] Historial de promociones utilizadas
+- [ ] Estadísticas de uso
+- [ ] Métricas de ahorro mensual
 
 ---
 
 ## 🏗️ Arquitectura de la Aplicación
 
-### **Patrón de Arquitectura: Clean Architecture + BLoC**
+### **Patrón de Arquitectura: Clean Architecture + BLoC** ✅ IMPLEMENTADO
 
 ```
 lib/
 ├── core/
-│   ├── constants/
-│   ├── errors/
-│   ├── network/
-│   ├── theme/
-│   └── utils/
+│   ├── config/supabase_config.dart ✅
+│   ├── constants/ ✅
+│   ├── di/injection_container.dart ✅
+│   ├── errors/ ✅
+│   ├── routes/app_router.dart ✅
+│   ├── theme/ ✅
+│   └── utils/ ✅
 ├── features/
-│   ├── auth/
+│   ├── auth/ ✅ COMPLETADO
 │   │   ├── data/
 │   │   ├── domain/
 │   │   └── presentation/
-│   ├── promotions/
+│   ├── promotions/ ✅ COMPLETADO
 │   │   ├── data/
 │   │   ├── domain/
 │   │   └── presentation/
-│   ├── map/
+│   ├── location/ ✅ COMPLETADO
 │   │   ├── data/
 │   │   ├── domain/
 │   │   └── presentation/
-│   ├── profile/
+│   ├── onboarding/ ✅ COMPLETADO
+│   │   └── presentation/pages/
+│   ├── home/ ✅ COMPLETADO
+│   │   └── presentation/pages/home_page.dart
+│   ├── route/ ❌ PENDIENTE
 │   │   ├── data/
 │   │   ├── domain/
 │   │   └── presentation/
-│   └── commerce/
+│   ├── notifications/ ❌ PENDIENTE
+│   │   ├── data/
+│   │   ├── domain/
+│   │   └── presentation/
+│   ├── profile/ ❌ PENDIENTE (parcial en auth)
+│   │   ├── data/
+│   │   ├── domain/
+│   │   └── presentation/
+│   ├── gamification/ ❌ PENDIENTE
+│   │   ├── data/
+│   │   ├── domain/
+│   │   └── presentation/
+│   └── commerce/ ❌ PENDIENTE
 │       ├── data/
 │       ├── domain/
 │       └── presentation/
-└── main.dart
+└── main.dart ✅
 ```
-
-### **Capas de la Arquitectura**
-
-1. **Presentation Layer (UI + BLoC)**
-   - Widgets y pantallas
-   - BLoC para gestión de estado
-   - Manejo de eventos y estados
-
-2. **Domain Layer (Business Logic)**
-   - Entidades
-   - Casos de uso
-   - Interfaces de repositorios
-
-3. **Data Layer**
-   - Implementación de repositorios
-   - Modelos de datos
-   - Data sources (remote/local)
 
 ---
 
 ## 🛠️ Stack Tecnológico
 
-### **Framework y Lenguaje**
+### **Framework y Lenguaje** ✅
 - **Flutter 3.x** (Dart 3.x)
 - Soporte para Android 6.0+ (API 23+)
 - Soporte para iOS 12.0+
+- Soporte para Web
 
-### **Gestión de Estado**
+### **Gestión de Estado** ✅
 - **flutter_bloc** (^8.1.0) - Patrón BLoC
 - **equatable** (^2.0.5) - Comparación de objetos
 
-### **Backend y Base de Datos**
-- **Firebase Suite:**
-  - Firebase Auth (autenticación)
-  - Cloud Firestore (base de datos NoSQL)
-  - Firebase Storage (almacenamiento de imágenes)
-  - Firebase Cloud Messaging (notificaciones push)
-  - Firebase Analytics (analítica)
-  - Firebase Crashlytics (monitoreo de errores)
+### **Backend y Base de Datos** ✅
+- **Supabase:**
+  - ✅ Supabase Auth (autenticación)
+  - ✅ Supabase Database (PostgreSQL con PostGIS)
+  - ✅ Supabase Storage (almacenamiento de imágenes)
+  - ✅ Row Level Security (RLS)
+  - [ ] Supabase Realtime (actualizaciones en tiempo real)
+  - [ ] Supabase Edge Functions (funciones serverless)
 
-### **Mapas y Geolocalización**
+### **Mapas y Geolocalización** ✅
 - **google_maps_flutter** (^2.5.0) - Mapas
 - **geolocator** (^10.1.0) - Geolocalización
 - **geocoding** (^2.1.1) - Geocodificación
-- **flutter_polyline_points** (^2.0.0) - Rutas optimizadas
+- [ ] **flutter_polyline_points** (^2.0.0) - Rutas optimizadas
 
-### **Imágenes y Multimedia**
-- **image_picker** (^1.0.4) - Captura de fotos
-- **cached_network_image** (^3.3.0) - Cache de imágenes
-- **image_cropper** (^5.0.0) - Recorte de imágenes
-- **google_ml_kit** (^0.16.0) - OCR (opcional)
+### **Imágenes y Multimedia** ✅ PARCIALMENTE
+- ✅ **image_picker** (^1.0.4) - Captura de fotos
+- ✅ **flutter_image_compress** (^2.1.0) - Compresión
+- ✅ **path_provider** (^2.1.4) - Acceso a directorios
+- [ ] **cached_network_image** (^3.3.0) - Cache de imágenes
+- [ ] **image_cropper** (^5.0.0) - Recorte de imágenes
+- [ ] **google_ml_kit** (^0.16.0) - OCR (opcional)
 
-### **Networking**
-- **dio** (^5.3.3) - Cliente HTTP
-- **retrofit** (^4.0.3) - API REST
-- **connectivity_plus** (^5.0.1) - Estado de conexión
+### **Networking** ✅
+- **supabase_flutter** (^2.0.0) - Cliente Supabase
+- **dartz** (^0.10.1) - Programación funcional
 
-### **Almacenamiento Local**
-- **shared_preferences** (^2.2.2) - Preferencias
-- **hive** (^2.2.3) - Base de datos local
-- **flutter_secure_storage** (^9.0.0) - Almacenamiento seguro
+### **Almacenamiento Local** ❌ PENDIENTE
+- [ ] **shared_preferences** (^2.2.2) - Preferencias
+- [ ] **hive** (^2.2.3) - Base de datos local
+- [ ] **flutter_secure_storage** (^9.0.0) - Almacenamiento seguro
 
-### **UI/UX**
-- **flutter_svg** (^2.0.9) - Iconos SVG
-- **shimmer** (^3.0.0) - Efectos de carga
-- **flutter_rating_bar** (^4.0.1) - Calificaciones
-- **badges** (^3.1.2) - Insignias
-- **animations** (^2.0.8) - Animaciones
+### **UI/UX** ✅ PARCIALMENTE
+- ✅ Material Design 3
+- ✅ Tema personalizado
+- [ ] **flutter_svg** (^2.0.9) - Iconos SVG
+- [ ] **shimmer** (^3.0.0) - Efectos de carga
+- [ ] **flutter_rating_bar** (^4.0.1) - Calificaciones
+- [ ] **badges** (^3.1.2) - Insignias
+- [ ] **animations** (^2.0.8) - Animaciones
 
-### **Notificaciones**
-- **flutter_local_notifications** (^16.1.0) - Notificaciones locales
-- **firebase_messaging** (^14.7.0) - Push notifications
+### **Notificaciones** ❌ PENDIENTE
+- [ ] **flutter_local_notifications** (^16.1.0) - Notificaciones locales
+- [ ] **supabase_flutter** (^2.0.0) - Push notifications con Realtime
 
-### **Utilidades**
-- **intl** (^0.18.1) - Internacionalización
-- **url_launcher** (^6.2.1) - Abrir URLs
-- **share_plus** (^7.2.1) - Compartir contenido
-- **permission_handler** (^11.0.1) - Permisos
-
-### **Testing**
-- **mockito** (^5.4.3) - Mocks
-- **bloc_test** (^9.1.5) - Testing de BLoCs
-- **integration_test** - Tests de integración
-
----
-
-## 📱 Pantallas Principales
-
-### **1. Onboarding y Autenticación**
-- Splash Screen
-- Onboarding (3-4 slides)
-- Login/Registro
-- Recuperación de contraseña
-
-### **2. Home y Navegación**
-- Home con mapa de promociones
-- Lista de promociones cercanas
-- Búsqueda y filtros
-- Bottom Navigation Bar (Home, Mapa, Agregar, Favoritos, Perfil)
-
-### **3. Mapa y Geolocalización**
-- Mapa interactivo con markers
-- Detalle de comercio al tocar marker
-- Ruta de Ahorro Inteligente
-- Filtros en mapa
-
-### **4. Promociones**
-- Detalle de promoción
-- Galería de fotos
-- Validación comunitaria
-- Compartir promoción
-- Reportar promoción
-
-### **5. Agregar Promoción**
-- Captura de foto
-- Selección de comercio
-- Formulario de promoción
-- Categorización
-- Fecha de vencimiento
-
-### **6. Perfil de Usuario**
-- Información personal
-- Estadísticas de ahorro
-- Historial de promociones
-- Insignias y logros
-- Configuración
-
-### **7. Comercios**
-- Listado de comercios
-- Detalle de comercio
-- Promociones del comercio
-- Cómo llegar
-
-### **8. Panel de Comercio (B2B)**
-- Dashboard de comercio
-- Publicar promoción
-- Estadísticas
-- Gestión de promociones
-
----
-
-## 🗄️ Modelo de Datos
-
-### **User**
-```dart
-{
-  id: String,
-  email: String,
-  name: String,
-  photoUrl: String?,
-  phone: String?,
-  location: GeoPoint,
-  reputation: int,
-  badges: List<String>,
-  savedPromotions: List<String>,
-  totalSavings: double,
-  createdAt: Timestamp,
-  isCommerce: bool
-}
-```
-
-### **Promotion**
-```dart
-{
-  id: String,
-  title: String,
-  description: String,
-  commerceId: String,
-  commerceName: String,
-  category: String,
-  discount: String,
-  originalPrice: double?,
-  discountedPrice: double?,
-  images: List<String>,
-  location: GeoPoint,
-  address: String,
-  validUntil: Timestamp,
-  createdBy: String,
-  validations: {
-    positive: int,
-    negative: int,
-    users: List<String>
-  },
-  views: int,
-  saves: int,
-  isActive: bool,
-  isPremium: bool,
-  createdAt: Timestamp,
-  updatedAt: Timestamp
-}
-```
-
-### **Commerce**
-```dart
-{
-  id: String,
-  name: String,
-  type: String, // supermercado, pulpería, comercio chino, etc.
-  location: GeoPoint,
-  address: String,
-  phone: String?,
-  email: String?,
-  logo: String?,
-  photos: List<String>,
-  rating: double,
-  totalPromotions: int,
-  isPremium: bool,
-  ownerId: String?,
-  createdAt: Timestamp
-}
-```
-
-### **Validation**
-```dart
-{
-  id: String,
-  promotionId: String,
-  userId: String,
-  isValid: bool,
-  comment: String?,
-  createdAt: Timestamp
-}
-```
-
----
-
-## 🔐 Seguridad y Privacidad
-
-### **Autenticación**
-- Firebase Authentication
-- Tokens JWT para API
-- Refresh tokens
-- Biometría (opcional)
-
-### **Permisos**
-- Ubicación (siempre/en uso)
-- Cámara
-- Almacenamiento
-- Notificaciones
-
-### **Protección de Datos**
-- Encriptación de datos sensibles
-- HTTPS para todas las comunicaciones
-- Cumplimiento con GDPR y leyes locales
-- Política de privacidad clara
-
-### **Reglas de Firestore**
-```javascript
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Users
-    match /users/{userId} {
-      allow read: if request.auth != null;
-      allow write: if request.auth.uid == userId;
-    }
-    
-    // Promotions
-    match /promotions/{promotionId} {
-      allow read: if true;
-      allow create: if request.auth != null;
-      allow update: if request.auth.uid == resource.data.createdBy;
-      allow delete: if request.auth.uid == resource.data.createdBy;
-    }
-    
-    // Commerces
-    match /commerces/{commerceId} {
-      allow read: if true;
-      allow write: if request.auth != null && 
-                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isCommerce == true;
-    }
-  }
-}
-```
-
----
-
-## 📊 Analítica y Métricas
-
-### **Eventos a Trackear**
-- Registro de usuario
-- Login
-- Visualización de promoción
-- Guardado de promoción
-- Validación de promoción
-- Publicación de promoción
-- Búsqueda realizada
-- Filtros aplicados
-- Ruta generada
-- Compartir promoción
-
-### **KPIs Principales**
-- DAU/MAU (usuarios activos)
-- Tasa de retención
-- Promociones publicadas/día
-- Validaciones por promoción
-- Ahorro promedio por usuario
-- Tiempo en app
-- Tasa de conversión (invitado → registrado)
+### **Utilidades** ✅ PARCIALMENTE
+- ✅ **intl** (^0.18.1) - Internacionalización
+- ✅ **go_router** (^13.0.0) - Navegación
+- ✅ **get_it** (^7.6.0) - Dependency Injection
+- [ ] **url_launcher** (^6.2.1) - Abrir URLs
+- [ ] **share_plus** (^7.2.1) - Compartir contenido
+- [ ] **permission_handler** (^11.0.1) - Permisos
 
 ---
 
 ## 🚀 Fases de Desarrollo
 
-### **FASE 1: MVP (8-10 semanas)**
+### **FASE 1: MVP - Autenticación y Fundamentos** ✅ COMPLETADA
+**Duración:** Semanas 1-4
 
-#### Semana 1-2: Setup y Fundamentos
-- [ ] Configuración del proyecto Flutter
-- [ ] Configuración de Firebase
-- [ ] Estructura de carpetas (Clean Architecture)
-- [ ] Setup de dependencias
-- [ ] Configuración de CI/CD básico
-- [ ] Diseño de UI/UX (Figma)
+**Completado:**
+- [x] Configuración del proyecto Flutter
+- [x] Configuración de Supabase (Auth, Database, Storage)
+- [x] Estructura de carpetas (Clean Architecture)
+- [x] Setup de dependencias (flutter_bloc, get_it, dartz, go_router)
+- [x] Tema y constantes de la app (AppColors, AppTheme)
+- [x] Implementar Supabase Auth completo
+- [x] Pantallas de login/registro funcionales
+- [x] Perfil de usuario con datos reales
+- [x] Gestión de sesión con BLoC
+- [x] Onboarding screens (3 slides)
+- [x] Logout funcional con confirmación
+- [x] Gestión de sesión en rutas (redirect en go_router)
+- [x] Recuperación de contraseña (ForgotPasswordPage)
 
-#### Semana 3-4: Autenticación y Perfil
-- [ ] Implementar Firebase Auth
-- [ ] Pantallas de login/registro
-- [ ] Perfil de usuario básico
-- [ ] Gestión de sesión
-- [ ] Onboarding screens
-
-#### Semana 5-6: Promociones Core
-- [ ] Modelo de datos de promociones
-- [ ] Listado de promociones
-- [ ] Detalle de promoción
-- [ ] Búsqueda básica
-- [ ] Filtros simples
-
-#### Semana 7-8: Geolocalización y Mapa
-- [ ] Integración de Google Maps
-- [ ] Geolocalización del usuario
-- [ ] Markers de comercios
-- [ ] Filtrado por distancia
-- [ ] Detalle de comercio
-
-#### Semana 9-10: Publicación y Validación
-- [ ] Captura de fotos
-- [ ] Formulario de promoción
-- [ ] Publicación en Firestore
-- [ ] Sistema de validación (like/dislike)
-- [ ] Reportar promociones
-
-**Entregables Fase 1:**
-- App funcional con features core
-- Usuarios pueden ver y publicar promociones
-- Geolocalización básica
-- Sistema de validación comunitaria
+**Entregables:**
+- ✅ App funcional con autenticación completa
+- ✅ Usuarios pueden registrarse y hacer login
+- ✅ Gestión de sesión persistente
+- ✅ Recuperación de contraseña
 
 ---
 
-### **FASE 2: Funcionalidades Avanzadas (6-8 semanas)**
+### **FASE 2: Promociones Core** ✅ COMPLETADA
+**Duración:** Semanas 5-6
 
-#### Semana 11-12: Ruta Inteligente
-- [ ] Algoritmo de optimización de ruta
+**Completado:**
+- [x] Crear modelo de datos de promociones
+  - `PromotionEntity` (domain) ✅
+  - `PromotionModel` (data) ✅
+  - `CategoryEntity` y `CommerceEntity` ✅
+- [x] Implementar repositorio de promociones
+  - `PromotionRepository` (abstracto) ✅
+  - `PromotionRepositoryImpl` con Supabase ✅
+  - `PromotionRemoteDataSource` ✅
+- [x] Crear BLoC de promociones
+  - Estados: Initial, Loading, Loaded, Error, DetailLoaded, SaveToggled ✅
+  - Eventos: Fetch, Filter, Search, Detail, Validate, ToggleSave ✅
+- [x] Pantallas de promociones
+  - Lista de promociones con cards ✅
+  - Detalle de promoción ✅
+  - Filtros por categoría ✅
+  - Scroll infinito con paginación ✅
+- [x] Integrar con HomePage (tab de Ofertas) ✅
+
+**Entregables:**
+- [x] Usuarios pueden ver promociones ✅
+- [x] Sistema de filtros por categoría ✅
+- [x] Detalle completo de promoción ✅
+- [x] Botón de favoritos funcional ✅
+- [x] Sistema de validación comunitaria (likes/dislikes) ✅
+- [x] Pull-to-refresh ✅
+
+---
+
+### **FASE 3: Geolocalización y Mapas** ✅ COMPLETADA
+**Duración:** Semanas 7-8
+
+**Completado:**
+- [x] Integración de Google Maps
+  - Configurar API key para Android, iOS y Web ✅
+  - Implementar mapa interactivo con `google_maps_flutter` ✅
+  - Markers de comercios y promociones ✅
+  - Clustering de markers ✅
+- [x] Geolocalización del usuario
+  - Permisos de ubicación (Android/iOS) ✅
+  - Obtener ubicación actual con `geolocator` ✅
+  - Actualización en tiempo real con stream ✅
+  - Manejo de estados de permisos ✅
+- [x] Funcionalidades de mapa
+  - Filtrado por distancia (1km, 5km, 10km, 20km) ✅
+  - Detalle de comercio/promoción al tocar marker ✅
+  - Navegación a ubicación del usuario ✅
+  - Controles de zoom y tipo de mapa ✅
+- [x] Tab de Mapa funcional
+  - Visualización de promociones cercanas ✅
+  - Info windows personalizados ✅
+  - Filtros por tipo (promociones/comercios) ✅
+  - Modal de detalles con información completa ✅
+
+**Arquitectura Implementada:**
+- Domain Layer:
+  - `LocationEntity` con cálculo de distancias (Haversine) ✅
+  - `MapMarkerEntity` con tipos de marcadores ✅
+  - `LocationRepository` (abstracto) con 12 métodos ✅
+  - 5 Use Cases completos ✅
+
+- Data Layer:
+  - `LocationModel` con conversión desde Geolocator ✅
+  - `MapMarkerModel` con factory methods ✅
+  - `LocationRemoteDataSource` ✅
+  - `LocationRepositoryImpl` ✅
+
+- Presentation Layer:
+  - `LocationBloc` con 14 handlers ✅
+  - `MapPage` con UI completa ✅
+
+**Base de Datos:**
+- Migración SQL con funciones PostGIS:
+  - `nearby_promotions(lat, lng, radius_km)` ✅
+  - `nearby_commerces(lat, lng, radius_km)` ✅
+  - `calculate_distance(lat1, lng1, lat2, lng2)` ✅
+
+**Entregables:**
+- ✅ Mapa interactivo funcional
+- ✅ Geolocalización en tiempo real
+- ✅ Markers con clustering
+- ✅ Filtros por distancia
+- ✅ Detalle de promociones desde mapa
+
+---
+
+### **FASE 4: Publicación y Validación** ✅ COMPLETADA
+**Duración:** Semanas 9-10
+
+**Completado:**
+- [x] Captura y subida de fotos
+  - Integrar `image_picker` ✅
+  - Comprimir imágenes con `flutter_image_compress` ✅
+  - Subir a Supabase Storage ✅
+  - Manejo de permisos de cámara y galería ✅
+- [x] Formulario de promoción
+  - Selección de comercio con búsqueda ✅
+  - Categorización (8 categorías) ✅
+  - Fecha de vencimiento ✅
+  - Descripción y precio ✅
+  - Validación completa de formulario ✅
+- [x] Sistema de validación comunitaria
+  - Like/Dislike de promociones ✅
+  - Contador de validaciones ✅
+  - Actualización en tiempo real ✅
+- [x] Reportar promociones
+  - Formulario de reporte con motivos ✅
+  - Tabla `reports` en base de datos ✅
+  - RLS policies configuradas ✅
+
+**Arquitectura Implementada:**
+- Domain Layer:
+  - Use Case: `CreatePromotion` ✅
+  - Use Case: `UploadPromotionImages` ✅
+  - Use Case: `ReportPromotion` ✅
+
+- Data Layer:
+  - Métodos de Storage en data source ✅
+  - UPSERT para favoritos ✅
+
+- Presentation Layer:
+  - `PublishPromotionBloc` completo ✅
+  - `ImagePickerWidget` ✅
+  - `CommerceSearchWidget` ✅
+  - `PublishPromotionPage` ✅
+
+**Bugs Corregidos:**
+- ✅ Selección de imágenes desde galería
+- ✅ Slider de radio en mapa
+- ✅ Filtros de categoría
+- ✅ Toggle de favoritos (UPSERT)
+
+**Entregables:**
+- ✅ Usuarios pueden publicar promociones
+- ✅ Captura y compresión de fotos
+- ✅ Selección de comercio
+- ✅ Validación comunitaria funcional
+- ✅ Sistema de reportes
+
+---
+
+### **FASE 5: Funcionalidades Avanzadas** 🚀 PENDIENTE
+**Duración:** Semanas 11-14
+
+#### **Ruta Inteligente (Semanas 11-12):** ❌ PENDIENTE
+- [ ] Algoritmo de optimización de ruta (TSP - Traveling Salesman Problem)
 - [ ] Integración con Google Directions API
-- [ ] Visualización de ruta en mapa
-- [ ] Estimación de tiempo y distancia
+- [ ] Visualización de ruta en mapa con polylines
+- [ ] Estimación de tiempo y distancia total
 - [ ] Guardar rutas favoritas
+- [ ] Reordenar puntos de la ruta manualmente
+- [ ] Exportar ruta a Google Maps/Waze
 
-#### Semana 13-14: Notificaciones
-- [ ] Firebase Cloud Messaging
-- [ ] Notificaciones push
-- [ ] Notificaciones locales
+**Dependencias necesarias:**
+```yaml
+flutter_polyline_points: ^2.0.0
+google_directions_api: ^0.9.0
+```
+
+**Arquitectura necesaria:**
+```
+lib/features/route/
+├── domain/
+│   ├── entities/
+│   │   ├── route_entity.dart
+│   │   ├── route_point_entity.dart
+│   │   └── route_step_entity.dart
+│   ├── repositories/route_repository.dart
+│   └── usecases/
+│       ├── calculate_optimal_route.dart
+│       ├── save_route.dart
+│       ├── get_saved_routes.dart
+│       └── export_route.dart
+├── data/
+│   ├── models/
+│   │   ├── route_model.dart
+│   │   └── route_point_model.dart
+│   ├── datasources/route_remote_data_source.dart
+│   └── repositories/route_repository_impl.dart
+└── presentation/
+    ├── bloc/
+    │   ├── route_bloc.dart
+    │   ├── route_event.dart
+    │   └── route_state.dart
+    ├── pages/
+    │   ├── route_planner_page.dart
+    │   └── saved_routes_page.dart
+    └── widgets/
+        ├── route_map_widget.dart
+        ├── route_point_card.dart
+        └── route_summary_widget.dart
+```
+
+#### **Notificaciones (Semanas 13-14):** ❌ PENDIENTE
+- [ ] Supabase Realtime setup para notificaciones
+- [ ] Notificaciones push de promociones cercanas
+- [ ] Notificaciones locales programadas
+- [ ] Preferencias de notificaciones por categoría
+- [ ] Notificaciones geolocalizadas (geofencing)
+- [ ] Recordatorios de caducidad de promociones guardadas
+- [ ] Notificaciones de nuevas promociones en comercios favoritos
+
+**Dependencias necesarias:**
+```yaml
+supabase_flutter: ^2.0.0  # Ya incluido, usar Realtime
+flutter_local_notifications: ^16.1.0
+```
+
+**Arquitectura necesaria:**
+```
+lib/features/notifications/
+├── domain/
+│   ├── entities/
+│   │   ├── notification_entity.dart
+│   │   └── notification_preference_entity.dart
+│   ├── repositories/notification_repository.dart
+│   └── usecases/
+│       ├── send_notification.dart
+│       ├── schedule_notification.dart
+│       ├── get_notification_preferences.dart
+│       └── update_notification_preferences.dart
+├── data/
+│   ├── models/
+│   │   ├── notification_model.dart
+│   │   └── notification_preference_model.dart
+│   ├── datasources/notification_remote_data_source.dart
+│   └── repositories/notification_repository_impl.dart
+└── presentation/
+    ├── bloc/
+    │   ├── notification_bloc.dart
+    │   ├── notification_event.dart
+    │   └── notification_state.dart
+    └── pages/
+        └── notification_settings_page.dart
+```
+
+**Entregables Fase 5:**
+- [ ] Ruta de Ahorro Inteligente funcional
+- [ ] Sistema de notificaciones completo
 - [ ] Preferencias de notificaciones
-- [ ] Notificaciones geolocalizadas
-
-#### Semana 15-16: Gamificación
-- [ ] Sistema de puntos
-- [ ] Insignias y logros
-- [ ] Rankings de usuarios
-- [ ] Programa de embajadores
-- [ ] Recompensas
-
-#### Semana 17-18: Panel de Comercios
-- [ ] Registro de comercios
-- [ ] Dashboard de comercio
-- [ ] Publicación de promociones propias
-- [ ] Estadísticas básicas
-- [ ] Modelo freemium
-
-**Entregables Fase 2:**
-- Ruta de Ahorro Inteligente
-- Sistema de notificaciones completo
-- Gamificación implementada
-- Panel B2B funcional
+- [ ] Geofencing implementado
 
 ---
 
-### **FASE 3: Optimización y Lanzamiento (4-6 semanas)**
+### **FASE 6: Gamificación** 🎮 PENDIENTE
+**Duración:** Semanas 15-16
 
-#### Semana 19-20: Analítica y Métricas
-- [ ] Firebase Analytics
-- [ ] Dashboard de ahorro personal
-- [ ] Métricas de uso
-- [ ] Reportes de ahorro
+#### **Sistema de Puntos y Reputación:**
+- [ ] Puntos por publicar promociones (+10 pts)
+- [ ] Puntos por validar promociones (+5 pts)
+- [ ] Puntos por usar promociones (+3 pts)
+- [ ] Puntos por reportar promociones inválidas (+2 pts)
+- [ ] Sistema de niveles (Bronce, Plata, Oro, Platino, Diamante)
+- [ ] Multiplicadores de puntos por racha
+- [ ] Penalización por reportes falsos (-10 pts)
+- [ ] Tabla de usuarios en base de datos con campo `points` y `level`
+
+#### **Insignias y Logros:**
+- [ ] Diseño de 15+ badges diferentes
+- [ ] Sistema de desbloqueo progresivo
+- [ ] Insignias especiales por eventos
+- [ ] Visualización en perfil
+- [ ] Compartir logros en redes sociales
+- [ ] Notificaciones de nuevas insignias
+- [ ] Tabla `badges` y `user_badges` en base de datos
+
+**Insignias propuestas:**
+- 🥉 "Primer Ahorro" - Primera promoción guardada
+- 📸 "Fotógrafo" - 10 promociones publicadas
+- 📸 "Paparazzi" - 50 promociones publicadas
+- ✅ "Validador" - 50 validaciones realizadas
+- ✅ "Inspector" - 200 validaciones realizadas
+- 🗺️ "Explorador" - Visitar 20 comercios diferentes
+- 🗺️ "Aventurero" - Visitar 50 comercios diferentes
+- 💰 "Ahorrador" - Ahorrar ₡10,000 en un mes
+- 💰 "Ahorrador Pro" - Ahorrar ₡50,000 en un mes
+- 💎 "Millonario del Ahorro" - Ahorrar ₡100,000 en un mes
+- 🔥 "Racha de Fuego" - 7 días consecutivos usando la app
+- 🔥 "Imparable" - 30 días consecutivos usando la app
+- 👑 "Embajador" - Top 10 del ranking mensual
+- 🌟 "Leyenda" - Top 3 del ranking mensual
+- 🎯 "Precisión" - 100% de validaciones correctas (mínimo 20)
+
+#### **Rankings y Leaderboards:**
+- [ ] Leaderboard semanal/mensual/anual
+- [ ] Top colaboradores por región
+- [ ] Top ahorradores
+- [ ] Ranking de comercios más populares
+- [ ] Filtros por categoría en rankings
+- [ ] Tabla `leaderboards` en base de datos
+
+**Arquitectura necesaria:**
+```
+lib/features/gamification/
+├── domain/
+│   ├── entities/
+│   │   ├── badge_entity.dart
+│   │   ├── achievement_entity.dart
+│   │   ├── leaderboard_entity.dart
+│   │   └── user_level_entity.dart
+│   ├── repositories/gamification_repository.dart
+│   └── usecases/
+│       ├── award_points.dart
+│       ├── unlock_badge.dart
+│       ├── get_leaderboard.dart
+│       ├── get_user_badges.dart
+│       └── check_achievements.dart
+├── data/
+│   ├── models/
+│   │   ├── badge_model.dart
+│   │   ├── achievement_model.dart
+│   │   └── leaderboard_model.dart
+│   ├── datasources/gamification_remote_data_source.dart
+│   └── repositories/gamification_repository_impl.dart
+└── presentation/
+    ├── bloc/
+    │   ├── gamification_bloc.dart
+    │   ├── gamification_event.dart
+    │   └── gamification_state.dart
+    ├── pages/
+    │   ├── badges_page.dart
+    │   ├── leaderboard_page.dart
+    │   └── achievements_page.dart
+    └── widgets/
+        ├── badge_card.dart
+        ├── leaderboard_item.dart
+        ├── level_progress_bar.dart
+        └── achievement_card.dart
+```
+
+**Entregables Fase 6:**
+- [ ] Sistema de puntos funcional
+- [ ] 15+ insignias implementadas
+- [ ] Leaderboards semanales y mensuales
+- [ ] Visualización de logros en perfil
+
+---
+
+### **FASE 7: Panel de Comercios (B2B)** 🏪 PENDIENTE
+**Duración:** Semanas 17-18
+
+#### **Registro y Verificación:**
+- [ ] Formulario de registro de comercio
+- [ ] Verificación de comercio (manual/automática)
+- [ ] Subida de documentos (cédula jurídica, patente)
+- [ ] Aprobación por administrador
+- [ ] Notificación de aprobación/rechazo
+- [ ] Tabla `commerce_applications` en base de datos
+
+#### **Dashboard de Comercio:**
+- [ ] Estadísticas de visibilidad (vistas, clics, guardados)
+- [ ] Promociones activas del comercio
+- [ ] Gráficas de rendimiento (últimos 30 días)
+- [ ] Análisis de competencia
+- [ ] Métricas de engagement (validaciones, reportes)
+- [ ] Tabla `commerce_stats` en base de datos
+
+#### **Gestión de Promociones Propias:**
+- [ ] Formulario simplificado para comercios
+- [ ] Programar publicación de promociones
+- [ ] Editar promociones activas
+- [ ] Pausar/reactivar promociones
+- [ ] Duplicar promociones
+- [ ] Historial de promociones
+- [ ] Plantillas de promociones
+
+#### **Modelo Freemium:**
+- [ ] Plan básico (gratis):
+  - 3 promociones activas simultáneas
+  - Estadísticas básicas
+  - Sin destacados
+  - Marca de agua en imágenes
+- [ ] Plan premium (₡15,000/mes):
+  - Promociones ilimitadas
+  - Estadísticas avanzadas
+  - Promociones destacadas (aparecen primero)
+  - Soporte prioritario
+  - Sin marca de agua
+  - Badge de "Comercio Verificado"
+- [ ] Integración de pagos (Stripe/PayPal/SINPE Móvil)
+- [ ] Gestión de suscripciones
+- [ ] Tabla `subscriptions` en base de datos
+
+**Arquitectura necesaria:**
+```
+lib/features/commerce/
+├── domain/
+│   ├── entities/
+│   │   ├── commerce_stats_entity.dart
+│   │   ├── subscription_entity.dart
+│   │   └── commerce_application_entity.dart
+│   ├── repositories/commerce_repository.dart
+│   └── usecases/
+│       ├── register_commerce.dart
+│       ├── get_commerce_stats.dart
+│       ├── manage_subscription.dart
+│       ├── create_commerce_promotion.dart
+│       └── get_commerce_promotions.dart
+├── data/
+│   ├── models/
+│   │   ├── commerce_stats_model.dart
+│   │   └── subscription_model.dart
+│   ├── datasources/commerce_remote_data_source.dart
+│   └── repositories/commerce_repository_impl.dart
+└── presentation/
+    ├── bloc/
+    │   ├── commerce_bloc.dart
+    │   ├── commerce_event.dart
+    │   └── commerce_state.dart
+    ├── pages/
+    │   ├── commerce_registration_page.dart
+    │   ├── commerce_dashboard_page.dart
+    │   ├── commerce_promotions_page.dart
+    │   └── subscription_page.dart
+    └── widgets/
+        ├── stats_widget.dart
+        ├── promotion_manager_widget.dart
+        └── subscription_card.dart
+```
+
+**Entregables Fase 7:**
+- [ ] Registro de comercios funcional
+- [ ] Dashboard B2B completo
+- [ ] Gestión de promociones propias
+- [ ] Modelo freemium implementado
+
+---
+
+### **FASE 8: Perfil de Usuario Completo** 👤 PENDIENTE
+**Duración:** Semanas 19-20
+
+#### **Edición de Perfil:**
+- [ ] Editar nombre y teléfono
+- [ ] Cambiar foto de perfil con recorte
+- [ ] Cambiar contraseña
+- [ ] Eliminar cuenta
+- [ ] Configuración de privacidad
+
+#### **Dashboard de Ahorro:**
+- [ ] Gráfica de ahorro mensual (últimos 6 meses)
+- [ ] Ahorro total acumulado
+- [ ] Promociones utilizadas este mes
+- [ ] Categoría con más ahorro
+- [ ] Comercio favorito
+- [ ] Estadísticas de uso (días activos, promociones vistas)
+
+#### **Historial:**
+- [ ] Historial de promociones guardadas
+- [ ] Historial de promociones utilizadas
+- [ ] Historial de validaciones
+- [ ] Historial de publicaciones
+- [ ] Exportar historial a PDF/CSV
+
+#### **Configuración:**
+- [ ] Preferencias de notificaciones
+- [ ] Radio de búsqueda predeterminado
+- [ ] Categorías favoritas
+- [ ] Modo oscuro
+- [ ] Idioma (Español/Inglés)
+- [ ] Unidades (km/millas)
+
+**Dependencias necesarias:**
+```yaml
+fl_chart: ^0.65.0  # Para gráficas
+image_cropper: ^5.0.0  # Para recortar foto
+pdf: ^3.10.0  # Para exportar PDF
+```
+
+**Arquitectura necesaria:**
+```
+lib/features/profile/
+├── domain/
+│   ├── entities/
+│   │   ├── user_stats_entity.dart
+│   │   ├── savings_history_entity.dart
+│   │   └── user_preferences_entity.dart
+│   ├── repositories/profile_repository.dart
+│   └── usecases/
+│       ├── update_profile.dart
+│       ├── get_user_stats.dart
+│       ├── get_savings_history.dart
+│       ├── update_preferences.dart
+│       └── export_history.dart
+├── data/
+│   ├── models/
+│   │   ├── user_stats_model.dart
+│   │   ├── savings_history_model.dart
+│   │   └── user_preferences_model.dart
+│   ├── datasources/profile_remote_data_source.dart
+│   └── repositories/profile_repository_impl.dart
+└── presentation/
+    ├── bloc/
+    │   ├── profile_bloc.dart
+    │   ├── profile_event.dart
+    │   └── profile_state.dart
+    ├── pages/
+    │   ├── edit_profile_page.dart
+    │   ├── savings_dashboard_page.dart
+    │   ├── history_page.dart
+    │   └── settings_page.dart
+    └── widgets/
+        ├── stats_card.dart
+        ├── savings_chart.dart
+        ├── history_item.dart
+        └── preference_tile.dart
+```
+
+**Entregables Fase 8:**
+- [ ] Edición completa de perfil
+- [ ] Dashboard de ahorro con gráficas
+- [ ] Historial completo
+- [ ] Configuración avanzada
+
+---
+
+### **FASE 9: Búsqueda y Filtros Avanzados** 🔍 PENDIENTE
+**Duración:** Semanas 21-22
+
+#### **Búsqueda Avanzada:**
+- [ ] Búsqueda por producto específico
+- [ ] Búsqueda por comercio
+- [ ] Búsqueda por rango de precio
+- [ ] Búsqueda por porcentaje de descuento
+- [ ] Historial de búsquedas
+- [ ] Sugerencias de búsqueda (autocomplete)
+- [ ] Búsqueda por voz
+- [ ] Búsqueda con filtros combinados
+
+#### **Filtros Avanzados:**
+- [ ] Filtro por tipo de descuento (%, ₡, 2x1, 3x2)
+- [ ] Filtro por rango de fechas
+- [ ] Filtro por calificación de comercio
+- [ ] Filtro por validaciones positivas (>80%)
+- [ ] Ordenamiento múltiple (distancia + descuento)
+- [ ] Guardar filtros favoritos
+- [ ] Filtros rápidos predefinidos
+
+#### **Compartir y Social:**
+- [ ] Compartir promoción en WhatsApp
+- [ ] Compartir en Facebook/Instagram
+- [ ] Generar imagen para compartir (con QR)
+- [ ] Link profundo a promoción
+- [ ] Programa de referidos con código
+- [ ] Invitar amigos con recompensa
+
+**Dependencias necesarias:**
+```yaml
+share_plus: ^7.2.1  # Para compartir
+url_launcher: ^6.2.1  # Para abrir URLs
+speech_to_text: ^6.5.0  # Para búsqueda por voz
+qr_flutter: ^4.1.0  # Para generar QR
+```
+
+**Entregables Fase 9:**
+- [ ] Búsqueda avanzada funcional
+- [ ] Filtros combinados
+- [ ] Compartir en redes sociales
+- [ ] Programa de referidos
+
+---
+
+### **FASE 10: Optimización y Lanzamiento** 🎯 PENDIENTE
+**Duración:** Semanas 23-24
+
+#### **Analítica y Métricas:**
+- [ ] Supabase Analytics configurado
+- [ ] Eventos personalizados trackeados
+- [ ] Dashboard de métricas en tiempo real
 - [ ] A/B testing setup
+- [ ] Crashlytics (opcional con Sentry)
 
-#### Semana 21-22: Optimización
-- [ ] Optimización de rendimiento
-- [ ] Reducción de tamaño de app
+#### **Optimización:**
+- [ ] Optimización de rendimiento (60 FPS)
+- [ ] Reducción de tamaño de app (<50MB)
+- [ ] Lazy loading de imágenes
+- [ ] Cache de datos
 - [ ] Mejora de UX basada en feedback
 - [ ] Corrección de bugs
 - [ ] Testing exhaustivo
 
-#### Semana 23-24: Preparación para Lanzamiento
-- [ ] Testing en dispositivos reales
-- [ ] Preparación de assets (iconos, screenshots)
-- [ ] Descripción de stores
+#### **Preparación para Lanzamiento:**
+- [ ] Testing en dispositivos reales (10+ dispositivos)
+- [ ] Preparación de assets:
+  - Icono de app (1024x1024)
+  - Screenshots (6+ por plataforma)
+  - Feature graphic
+  - Video promocional (30 segundos)
+- [ ] Descripción de stores (ES/EN)
 - [ ] Política de privacidad
 - [ ] Términos y condiciones
-- [ ] Video promocional
-- [ ] Documentación
+- [ ] Documentación completa
+- [ ] Guía de usuario
+- [ ] FAQs
 
-**Entregables Fase 3:**
-- App optimizada y pulida
-- Documentación completa
-- Assets para stores
-- App lista para publicación
-
----
-
-### **FASE 4: Post-Lanzamiento (Continuo)**
-
-#### Mes 1-2 Post-Lanzamiento
-- [ ] Monitoreo de crashes
-- [ ] Análisis de métricas
-- [ ] Recolección de feedback
-- [ ] Hotfixes críticos
-- [ ] Iteraciones rápidas
-
-#### Mes 3-6 Post-Lanzamiento
-- [ ] Nuevas funcionalidades basadas en feedback
-- [ ] Expansión de categorías
-- [ ] Mejoras de UI/UX
-- [ ] Optimización de algoritmos
-- [ ] Marketing y crecimiento
+**Entregables Fase 10:**
+- [ ] App optimizada y pulida
+- [ ] Documentación completa
+- [ ] Assets para stores
+- [ ] App lista para publicación
 
 ---
 
-## 🧪 Estrategia de Testing
+## 🔮 Funcionalidades Futuras (Post-Lanzamiento)
 
-### **Unit Tests**
-- Casos de uso
-- Repositorios
-- Modelos de datos
-- Utilidades
-
-### **Widget Tests**
-- Widgets individuales
-- Pantallas completas
-- Interacciones de UI
-
-### **Integration Tests**
-- Flujos completos de usuario
-- Integración con Firebase
-- Geolocalización
-- Notificaciones
-
-### **Cobertura Objetivo**
-- Unit tests: >80%
-- Widget tests: >60%
-- Integration tests: Flujos críticos
-
----
-
-## 📦 Estrategia de Despliegue
-
-### **Ambientes**
-1. **Development**
-   - Firebase proyecto dev
-   - Testing continuo
-   - Builds diarios
-
-2. **Staging**
-   - Firebase proyecto staging
-   - Testing de QA
-   - Builds semanales
-
-3. **Production**
-   - Firebase proyecto prod
-   - Releases controlados
-   - Builds por versión
-
-### **CI/CD**
-- **GitHub Actions** o **Codemagic**
-- Build automático en cada PR
-- Tests automáticos
-- Deploy a Firebase App Distribution
-- Deploy a TestFlight (iOS) y Play Console (Android)
-
-### **Versionamiento**
-- Semantic Versioning (MAJOR.MINOR.PATCH)
-- Changelog detallado
-- Release notes
-
----
-
-## 💰 Estimación de Costos
-
-### **Desarrollo**
-- **Equipo Mínimo:**
-  - 1 Flutter Developer Senior (Lead)
-  - 1 Flutter Developer Mid
-  - 1 UI/UX Designer
-  - 1 Backend Developer (Firebase)
-  - 1 QA Tester
-
-- **Duración:** 18-24 semanas
-- **Costo Estimado:** $40,000 - $60,000 USD
-
-### **Infraestructura (Mensual)**
-- Firebase Blaze Plan: $50-200/mes
-- Google Maps API: $100-300/mes
-- Hosting web: $10-20/mes
-- **Total:** $160-520/mes
-
-### **Servicios Adicionales**
-- Apple Developer Program: $99/año
-- Google Play Console: $25 (único)
-- Dominio: $15/año
-- SSL Certificate: Gratis (Let's Encrypt)
-
----
-
-## 🎨 Guía de Diseño
-
-### **Paleta de Colores**
-```dart
-// Colores principales
-Primary: #2E7D32 (Verde - ahorro, sostenibilidad)
-Secondary: #FF6F00 (Naranja - promociones, urgencia)
-Accent: #0277BD (Azul - confianza)
-
-// Colores de soporte
-Success: #4CAF50
-Warning: #FFC107
-Error: #F44336
-Info: #2196F3
-
-// Neutrales
-Background: #FAFAFA
-Surface: #FFFFFF
-Text Primary: #212121
-Text Secondary: #757575
-```
-
-### **Tipografía**
-- **Primary Font:** Roboto
-- **Headings:** Roboto Bold
-- **Body:** Roboto Regular
-- **Captions:** Roboto Light
-
-### **Componentes Clave**
-- Cards con sombras suaves
-- Botones con bordes redondeados
-- Iconos Material Design
-- Animaciones fluidas
-- Bottom sheets para acciones
-
----
-
-## 📈 Roadmap de Funcionalidades Futuras
-
-### **Corto Plazo (3-6 meses)**
+### **Corto Plazo (3-6 meses):**
 - [ ] OCR para lectura automática de precios
 - [ ] Comparador de precios por producto
 - [ ] Lista de compras inteligente
 - [ ] Integración con WhatsApp Business
-- [ ] Modo oscuro
+- [ ] Modo oscuro completo
+- [ ] Widget de home screen
 
-### **Mediano Plazo (6-12 meses)**
-- [ ] Programa de referidos
+### **Mediano Plazo (6-12 meses):**
+- [ ] Programa de referidos con recompensas
 - [ ] Cashback y recompensas
 - [ ] Integración con bancos (tarjetas)
 - [ ] Predicción de precios con ML
 - [ ] Asistente virtual (chatbot)
+- [ ] Realidad aumentada para ver promociones
 
-### **Largo Plazo (12+ meses)**
-- [ ] Expansión a otros países
+### **Largo Plazo (12+ meses):**
+- [ ] Expansión a otros países (Panamá, Nicaragua)
 - [ ] Marketplace de productos
 - [ ] Delivery integrado
 - [ ] Wallet digital
 - [ ] Programa de fidelización multi-comercio
+- [ ] API pública para desarrolladores
 
 ---
 
-## 🚨 Riesgos y Mitigación
+## 📊 Métricas de Éxito
 
-### **Riesgos Técnicos**
-
-| Riesgo | Probabilidad | Impacto | Mitigación |
-|--------|--------------|---------|------------|
-| Problemas de rendimiento con muchos markers | Media | Alto | Clustering de markers, lazy loading |
-| Consumo excesivo de batería | Alta | Medio | Optimizar geolocalización, usar geofencing |
-| Problemas con OCR | Media | Bajo | Hacer OCR opcional, permitir entrada manual |
-| Escalabilidad de Firebase | Baja | Alto | Monitoreo constante, plan de migración |
-
-### **Riesgos de Negocio**
-
-| Riesgo | Probabilidad | Impacto | Mitigación |
-|--------|--------------|---------|------------|
-| Baja adopción de usuarios | Media | Alto | Marketing agresivo, programa de referidos |
-| Información desactualizada | Alta | Alto | Sistema de caducidad automática, incentivos |
-| Resistencia de comercios | Media | Medio | Onboarding simplificado, casos de éxito |
-| Competencia de grandes players | Alta | Alto | Enfoque en nicho local, diferenciación |
-
----
-
-## 📚 Documentación Requerida
-
-### **Técnica**
-- [ ] README.md completo
-- [ ] Guía de contribución
-- [ ] Documentación de API
-- [ ] Guía de arquitectura
-- [ ] Guía de estilo de código
-
-### **Usuario**
-- [ ] Manual de usuario
-- [ ] FAQs
-- [ ] Tutoriales en video
-- [ ] Guía de comercios
-
-### **Legal**
-- [ ] Términos y condiciones
-- [ ] Política de privacidad
-- [ ] Política de cookies
-- [ ] Acuerdo de comercios
-
----
-
-## 🎯 Métricas de Éxito
-
-### **Técnicas**
+### **Técnicas:**
 - Tiempo de carga < 3 segundos
 - Crash rate < 1%
 - App size < 50MB
 - Tiempo de respuesta API < 500ms
+- 60 FPS en animaciones
+- Cobertura de tests >70%
 
-### **Negocio**
+### **Negocio:**
 - 10,000 descargas en primer mes
 - 30% de retención a 30 días
 - 100 promociones activas/día
 - 5,000 validaciones/semana
 - 50 comercios registrados en 3 meses
+- 4.5+ estrellas en stores
 
 ---
 
-## 🔄 Proceso de Desarrollo
+## 💰 Estimación de Costos
 
-### **Metodología: Scrum**
-- Sprints de 2 semanas
-- Daily standups
-- Sprint planning
-- Sprint review
-- Sprint retrospective
+### **Desarrollo (Fases 1-10):**
+- **Equipo Mínimo:**
+  - 1 Flutter Developer Senior (Lead)
+  - 1 Flutter Developer Mid
+  - 1 UI/UX Designer
+  - 1 Backend Developer (Supabase)
+  - 1 QA Tester
 
-### **Herramientas**
-- **Gestión:** Jira o Linear
-- **Diseño:** Figma
-- **Código:** GitHub
-- **CI/CD:** GitHub Actions
-- **Comunicación:** Slack
-- **Documentación:** Notion
+- **Duración:** 24 semanas (6 meses)
+- **Costo Estimado:** $50,000 - $70,000 USD
 
----
+### **Infraestructura (Mensual):**
+- Supabase Pro Plan: $25/mes (hasta 100GB)
+- Google Maps API: $100-300/mes
+- Hosting web: $10-20/mes
+- **Total:** $185-445/mes
 
-## 📞 Equipo y Roles
-
-### **Equipo Core**
-1. **Product Owner**
-   - Define prioridades
-   - Gestiona backlog
-   - Valida entregables
-
-2. **Scrum Master**
-   - Facilita ceremonias
-   - Remueve impedimentos
-   - Mejora procesos
-
-3. **Tech Lead (Flutter)**
-   - Arquitectura técnica
-   - Code reviews
-   - Mentoring
-
-4. **Flutter Developers (2)**
-   - Desarrollo de features
-   - Testing
-   - Documentación
-
-5. **UI/UX Designer**
-   - Diseño de interfaces
-   - Prototipos
-   - User research
-
-6. **Backend Developer**
-   - Firebase setup
-   - Cloud Functions
-   - APIs
-
-7. **QA Engineer**
-   - Testing manual
-   - Testing automatizado
-   - Reportes de bugs
-
----
-
-## 🎓 Capacitación del Equipo
-
-### **Tecnologías Clave**
-- Flutter & Dart avanzado
-- Clean Architecture
-- BLoC pattern
-- Firebase suite
-- Google Maps API
-- Testing en Flutter
-
-### **Recursos**
-- Documentación oficial
-- Cursos en Udemy/Pluralsight
-- Flutter Community
-- Code reviews internos
+### **Servicios Adicionales:**
+- Apple Developer Program: $99/año
+- Google Play Console: $25 (único)
+- Dominio: $15/año
+- SSL Certificate: Gratis (Let's Encrypt)
 
 ---
 
@@ -838,112 +923,38 @@ Este plan de desarrollo proporciona una hoja de ruta completa para la implementa
 4. **Generar valor** tanto para usuarios como comercios
 5. **Adaptarse** a cambios del mercado
 
-### **Próximos Pasos Inmediatos**
+### **Estado Actual:**
+✅ **Fases 1-4 completadas** (40% del proyecto)
+- Autenticación completa
+- Promociones core funcionales
+- Geolocalización y mapas
+- Publicación y validación
 
-1. ✅ Aprobar plan de desarrollo
-2. ⏳ Conformar equipo de desarrollo
-3. ⏳ Setup de infraestructura (Firebase, GitHub)
-4. ⏳ Diseño UI/UX en Figma
-5. ⏳ Inicio de Sprint 1
+### **Próximos Pasos Prioritarios:**
 
----
+**Opción A - Ruta Inteligente (Fase 5):**
+- Alta demanda de usuarios
+- Diferenciador clave vs competencia
+- Complejidad técnica media-alta
+- Impacto en engagement: Alto
 
-## 📄 Anexos
+**Opción B - Notificaciones (Fase 5):**
+- Crítico para retención
+- Aumenta uso diario de la app
+- Complejidad técnica media
+- Impacto en retención: Muy Alto
 
-### **A. Estructura de Carpetas Detallada**
-```
-optigasto/
-├── android/
-├── ios/
-├── lib/
-│   ├── core/
-│   │   ├── constants/
-│   │   │   ├── app_constants.dart
-│   │   │   ├── api_constants.dart
-│   │   │   └── route_constants.dart
-│   │   ├── errors/
-│   │   │   ├── exceptions.dart
-│   │   │   └── failures.dart
-│   │   ├── network/
-│   │   │   ├── network_info.dart
-│   │   │   └── dio_client.dart
-│   │   ├── theme/
-│   │   │   ├── app_theme.dart
-│   │   │   ├── app_colors.dart
-│   │   │   └── app_text_styles.dart
-│   │   └── utils/
-│   │       ├── validators.dart
-│   │       ├── formatters.dart
-│   │       └── helpers.dart
-│   ├── features/
-│   │   ├── auth/
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   ├── models/
-│   │   │   │   └── repositories/
-│   │   │   ├── domain/
-│   │   │   │   ├── entities/
-│   │   │   │   ├── repositories/
-│   │   │   │   └── usecases/
-│   │   │   └── presentation/
-│   │   │       ├── bloc/
-│   │   │       ├── pages/
-│   │   │       └── widgets/
-│   │   ├── promotions/
-│   │   ├── map/
-│   │   ├── profile/
-│   │   └── commerce/
-│   ├── injection_container.dart
-│   └── main.dart
-├── test/
-├── pubspec.yaml
-└── README.md
-```
+**Opción C - Perfil Completo (Fase 8):**
+- Mejora experiencia de usuario
+- Necesario para gamificación
+- Complejidad técnica baja
+- Impacto en satisfacción: Alto
 
-### **B. Comandos Útiles**
-```bash
-# Crear proyecto
-flutter create optigasto
-
-# Instalar dependencias
-flutter pub get
-
-# Generar código (freezed, json_serializable)
-flutter pub run build_runner build --delete-conflicting-outputs
-
-# Ejecutar tests
-flutter test
-
-# Ejecutar app
-flutter run
-
-# Build para producción
-flutter build apk --release
-flutter build ios --release
-
-# Analizar código
-flutter analyze
-
-# Formatear código
-dart format .
-```
-
-### **C. Configuración de Firebase**
-```bash
-# Instalar FlutterFire CLI
-dart pub global activate flutterfire_cli
-
-# Configurar Firebase
-flutterfire configure
-
-# Esto generará:
-# - firebase_options.dart
-# - Configuración para Android e iOS
-```
+**Recomendación:** Iniciar con **Notificaciones** (Opción B) por su alto impacto en retención, seguido de **Perfil Completo** (Opción C) y luego **Ruta Inteligente** (Opción A).
 
 ---
 
-**Documento creado:** 31 de marzo de 2026  
-**Versión:** 1.0  
+**Documento actualizado:** 7 de abril de 2026  
+**Versión:** 2.0  
 **Autor:** Equipo OptiGasto  
-**Estado:** Aprobación pendiente
+**Estado:** Fases 1-4 completadas ✅

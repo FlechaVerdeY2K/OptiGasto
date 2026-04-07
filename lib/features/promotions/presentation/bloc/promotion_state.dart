@@ -50,14 +50,16 @@ class PromotionLoaded extends PromotionState {
     List<PromotionEntity>? promotions,
     List<CategoryEntity>? categories,
     String? selectedCategory,
+    bool clearSelectedCategory = false,
     String? searchQuery,
+    bool clearSearchQuery = false,
     bool? hasMore,
   }) {
     return PromotionLoaded(
       promotions: promotions ?? this.promotions,
       categories: categories ?? this.categories,
-      selectedCategory: selectedCategory ?? this.selectedCategory,
-      searchQuery: searchQuery ?? this.searchQuery,
+      selectedCategory: clearSelectedCategory ? null : (selectedCategory ?? this.selectedCategory),
+      searchQuery: clearSearchQuery ? null : (searchQuery ?? this.searchQuery),
       hasMore: hasMore ?? this.hasMore,
     );
   }

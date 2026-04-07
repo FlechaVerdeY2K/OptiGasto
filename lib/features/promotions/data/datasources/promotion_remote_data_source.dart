@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'dart:math' show cos, sin, asin, sqrt;
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/config/supabase_config.dart';
 import '../models/promotion_model.dart';
@@ -101,6 +104,20 @@ abstract class PromotionRemoteDataSource {
 
   /// Stream que emite cambios en una promoción específica
   Stream<PromotionModel> watchPromotion(String id);
+
+  /// Sube imágenes de promoción a Supabase Storage
+  Future<List<String>> uploadPromotionImages({
+    required List<File> images,
+    String? promotionId,
+  });
+
+  /// Reporta una promoción
+  Future<void> reportPromotion({
+    required String promotionId,
+    required String userId,
+    required String reason,
+    String? description,
+  });
 }
 
 class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
@@ -402,14 +419,14 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   }) async {
     try {
       if (isSaved) {
-        // Guardar promoción
+        // Guardar promoción usando upsert para evitar duplicados
         await supabase
             .from(SupabaseConfig.savedPromotionsTable)
-            .insert({
+            .upsert({
           'user_id': userId,
           'promotion_id': promotionId,
           'saved_at': DateTime.now().toIso8601String(),
-        });
+        }, onConflict: 'user_id,promotion_id');
       } else {
         // Quitar de guardados
         await supabase
@@ -599,6 +616,100 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
   double _toRadians(double degrees) {
     return degrees * 0.0174533; // pi / 180
+  }
+
+  @override
+  Future<List<String>> uploadPromotionImages({
+    required List<File> images,
+    String? promotionId,
+  }) async {
+    try {
+      final uploadedUrls = <String>[];
+      final uuid = const Uuid();
+      final id = promotionId ?? uuid.v4();
+
+      for (int i = 0; i < images.length; i++) {
+        final file = images[i];
+        
+        // Comprimir imagen
+        final compressedFile = await _compressImage(file);
+        
+        // Generar nombre único para el archivo
+        final fileName = '${id}_${i}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final filePath = 'promotions/$id/$fileName';
+
+        // Subir a Supabase Storage
+        await supabase.storage
+            .from(SupabaseConfig.promotionsBucket)
+            .upload(
+              filePath,
+              compressedFile,
+              fileOptions: const FileOptions(
+                cacheControl: '3600',
+                upsert: false,
+              ),
+            );
+
+        // Obtener URL pública
+        final publicUrl = supabase.storage
+            .from(SupabaseConfig.promotionsBucket)
+            .getPublicUrl(filePath);
+
+        uploadedUrls.add(publicUrl);
+      }
+
+      return uploadedUrls;
+    } catch (e) {
+      throw ServerException(message: 'Error al subir imágenes: $e');
+    }
+  }
+
+  @override
+  Future<void> reportPromotion({
+    required String promotionId,
+    required String userId,
+    required String reason,
+    String? description,
+  }) async {
+    try {
+      await supabase.from(SupabaseConfig.reportsTable).insert({
+        'promotion_id': promotionId,
+        'user_id': userId,
+        'reason': reason,
+        'description': description,
+        'status': 'pending',
+        'created_at': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      throw ServerException(message: 'Error al reportar promoción: $e');
+    }
+  }
+
+  /// Comprime una imagen para reducir su tamaño
+  Future<File> _compressImage(File file) async {
+    try {
+      final filePath = file.absolute.path;
+      final lastIndex = filePath.lastIndexOf('.');
+      final outPath = '${filePath.substring(0, lastIndex)}_compressed.jpg';
+
+      final result = await FlutterImageCompress.compressAndGetFile(
+        filePath,
+        outPath,
+        quality: 85,
+        minWidth: 1920,
+        minHeight: 1080,
+        format: CompressFormat.jpeg,
+      );
+
+      if (result == null) {
+        throw ServerException(message: 'Error al comprimir imagen');
+      }
+
+      return File(result.path);
+    } catch (e) {
+      // Si falla la compresión, retornar el archivo original
+      return file;
+    }
   }
 }
 

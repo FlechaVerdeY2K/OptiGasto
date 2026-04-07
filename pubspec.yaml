@@ -37,6 +37,7 @@ dependencies:
   # Images
   image_picker: ^1.1.2
   image_cropper: ^8.0.2
+  flutter_image_compress: ^2.3.0
 
   # Networking
   dio: ^5.5.0+1
@@ -62,6 +63,8 @@ dependencies:
   permission_handler: ^11.3.1
   uuid: ^4.4.2
   logger: ^2.4.0
+  path_provider: ^2.1.4
+  path: ^1.9.0
 
   # Dependency Injection
   get_it: ^7.7.0
