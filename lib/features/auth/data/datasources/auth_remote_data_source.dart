@@ -143,13 +143,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+      // Intentar inicio de sesión silencioso primero (recomendado para web)
+      GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
+      
+      // Si falla el inicio silencioso, usar el flujo interactivo
+      googleUser ??= await googleSignIn.signIn();
       
       if (googleUser == null) {
         throw ServerException(message: 'Inicio de sesión cancelado');
       }
 
-      final GoogleSignInAuthentication googleAuth = 
+      final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
       final response = await supabase.auth.signInWithIdToken(
