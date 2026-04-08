@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
@@ -305,6 +306,46 @@ class PromotionRepositoryImpl implements PromotionRepository {
           .map((promotion) => promotion.toEntity());
     } catch (e) {
       throw ServerException(message: 'Error al observar promoción: $e');
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> uploadPromotionImages({
+    required List<File> images,
+    String? promotionId,
+  }) async {
+    try {
+      final urls = await remoteDataSource.uploadPromotionImages(
+        images: images,
+        promotionId: promotionId,
+      );
+      return Right(urls);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Error inesperado: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> reportPromotion({
+    required String promotionId,
+    required String userId,
+    required String reason,
+    String? description,
+  }) async {
+    try {
+      await remoteDataSource.reportPromotion(
+        promotionId: promotionId,
+        userId: userId,
+        reason: reason,
+        description: description,
+      );
+      return const Right(null);
+    } on ServerException catch (e) {
+      return Left(ServerFailure(message: e.message));
+    } catch (e) {
+      return Left(ServerFailure(message: 'Error inesperado: $e'));
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
 import '../entities/promotion_entity.dart';
@@ -101,6 +102,20 @@ abstract class PromotionRepository {
 
   /// Stream que emite cambios en una promoción específica
   Stream<PromotionEntity> watchPromotion(String id);
+
+  /// Sube imágenes de promoción a Supabase Storage
+  Future<Either<Failure, List<String>>> uploadPromotionImages({
+    required List<File> images,
+    String? promotionId,
+  });
+
+  /// Reporta una promoción
+  Future<Either<Failure, void>> reportPromotion({
+    required String promotionId,
+    required String userId,
+    required String reason,
+    String? description,
+  });
 }
 
 // Made with Bob

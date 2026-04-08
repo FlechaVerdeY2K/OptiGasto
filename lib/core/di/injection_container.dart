@@ -14,7 +14,11 @@ import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/promotions/data/datasources/promotion_remote_data_source.dart';
 import '../../features/promotions/data/repositories/promotion_repository_impl.dart';
 import '../../features/promotions/domain/repositories/promotion_repository.dart';
+import '../../features/promotions/domain/usecases/create_promotion.dart';
+import '../../features/promotions/domain/usecases/upload_promotion_images.dart';
+import '../../features/promotions/domain/usecases/report_promotion.dart';
 import '../../features/promotions/presentation/bloc/promotion_bloc.dart';
+import '../../features/promotions/presentation/bloc/publish_promotion_bloc.dart';
 import '../../features/location/data/datasources/location_remote_data_source.dart';
 import '../../features/location/data/repositories/location_repository_impl.dart';
 import '../../features/location/domain/repositories/location_repository.dart';
@@ -97,6 +101,11 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => CheckLocationPermission(sl()));
   sl.registerLazySingleton(() => RequestLocationPermission(sl()));
 
+  // Promotions
+  sl.registerLazySingleton(() => CreatePromotion(sl()));
+  sl.registerLazySingleton(() => UploadPromotionImages(sl()));
+  sl.registerLazySingleton(() => ReportPromotion(sl()));
+
   // ========== BLoC ==========
   // Auth
   sl.registerFactory(
@@ -114,6 +123,16 @@ Future<void> initializeDependencies() async {
   sl.registerFactory(
     () => PromotionBloc(
       repository: sl(),
+    ),
+  );
+
+  // Publish Promotion
+  sl.registerFactory(
+    () => PublishPromotionBloc(
+      createPromotion: sl(),
+      uploadPromotionImages: sl(),
+      getCurrentUser: sl(),
+      getCurrentLocation: sl(),
     ),
   );
 

@@ -15,6 +15,13 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
+// Cargar propiedades locales (incluye Google Maps API Key)
+val localPropertiesFile = rootProject.file("local.properties")
+val localProperties = Properties()
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
 android {
     namespace = "com.optigasto.optigasto"
     compileSdk = flutter.compileSdkVersion
@@ -37,6 +44,10 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         multiDexEnabled = true
+        
+        // Configurar Google Maps API Key desde local.properties
+        val googleMapsApiKey = localProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: "placeholder-api-key"
+        manifestPlaceholders["GOOGLE_MAPS_API_KEY"] = googleMapsApiKey
     }
 
     signingConfigs {

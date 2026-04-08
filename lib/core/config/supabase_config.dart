@@ -24,9 +24,11 @@ class SupabaseConfig {
   static const String categoriesTable = 'categories';
   static const String commercesTable = 'commerces';
   static const String savedPromotionsTable = 'saved_promotions';
+  static const String reportsTable = 'reports';
   
   /// Nombres de los buckets de almacenamiento
   static const String promotionImagesBucket = 'promotion-images';
+  static const String promotionsBucket = 'promotions'; // Bucket principal para promociones
   static const String userAvatarsBucket = 'user-avatars';
   static const String commerceLogosBucket = 'commerce-logos';
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../../core/routes/app_router.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
@@ -77,17 +78,21 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO: Implementar agregar promoción
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Agregar promoción - Próximamente'),
-            ),
-          );
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final result = await context.push(AppRouter.publishPromotion);
+          if (result == true && context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('¡Promoción publicada exitosamente!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
         },
         backgroundColor: AppColors.secondary,
-        child: const Icon(Icons.add),
+        icon: const Icon(Icons.add),
+        label: const Text('Publicar'),
       ),
     );
   }
