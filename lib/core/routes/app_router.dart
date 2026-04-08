@@ -10,6 +10,7 @@ import '../../features/onboarding/presentation/pages/onboarding_page.dart';
 import '../../features/promotions/presentation/pages/promotion_detail_page.dart';
 import '../../features/promotions/presentation/pages/publish_promotion_page.dart';
 import '../../features/notifications/presentation/pages/notification_settings_page.dart';
+import '../../features/notifications/presentation/pages/notifications_list_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
 
@@ -23,6 +24,7 @@ class AppRouter {
   static const String promotionDetail = '/promotion-detail';
   static const String publishPromotion = '/publish-promotion';
   static const String notificationSettings = '/notification-settings';
+  static const String notificationsList = '/notifications';
 
   static GoRouter router(BuildContext context) => GoRouter(
     initialLocation: onboarding,
@@ -91,6 +93,10 @@ class AppRouter {
       GoRoute(
         path: notificationSettings,
         builder: (context, state) => const NotificationSettingsPage(),
+      ),
+      GoRoute(
+        path: notificationsList,
+        builder: (context, state) => const NotificationsListPage(),
       ),
     ],
   );
