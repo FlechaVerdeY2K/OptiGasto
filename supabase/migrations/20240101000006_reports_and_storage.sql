@@ -44,6 +44,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS reports_updated_at ON reports;
+
 CREATE TRIGGER reports_updated_at
     BEFORE UPDATE ON reports
     FOR EACH ROW
@@ -57,6 +59,7 @@ CREATE TRIGGER reports_updated_at
 ALTER TABLE reports ENABLE ROW LEVEL SECURITY;
 
 -- Política: Cualquier usuario autenticado puede crear reportes
+DROP POLICY IF EXISTS "Users can create reports" ON reports;
 CREATE POLICY "Users can create reports"
     ON reports
     FOR INSERT
@@ -64,6 +67,7 @@ CREATE POLICY "Users can create reports"
     WITH CHECK (auth.uid() = user_id);
 
 -- Política: Los usuarios pueden ver sus propios reportes
+DROP POLICY IF EXISTS "Users can view their own reports" ON reports;
 CREATE POLICY "Users can view their own reports"
     ON reports
     FOR SELECT
@@ -83,11 +87,13 @@ VALUES ('promotions', 'promotions', true)
 ON CONFLICT (id) DO NOTHING;
 
 -- Políticas de storage para el bucket de promociones
+DROP POLICY IF EXISTS "Anyone can view promotion images" ON storage.objects;
 CREATE POLICY "Anyone can view promotion images"
     ON storage.objects FOR SELECT
     TO public
     USING (bucket_id = 'promotions');
 
+DROP POLICY IF EXISTS "Authenticated users can upload promotion images" ON storage.objects;
 CREATE POLICY "Authenticated users can upload promotion images"
     ON storage.objects FOR INSERT
     TO authenticated
@@ -96,6 +102,7 @@ CREATE POLICY "Authenticated users can upload promotion images"
         AND auth.uid()::text = (storage.foldername(name))[1]
     );
 
+DROP POLICY IF EXISTS "Users can update their own promotion images" ON storage.objects;
 CREATE POLICY "Users can update their own promotion images"
     ON storage.objects FOR UPDATE
     TO authenticated
@@ -104,6 +111,7 @@ CREATE POLICY "Users can update their own promotion images"
         AND auth.uid()::text = (storage.foldername(name))[1]
     );
 
+DROP POLICY IF EXISTS "Users can delete their own promotion images" ON storage.objects;
 CREATE POLICY "Users can delete their own promotion images"
     ON storage.objects FOR DELETE
     TO authenticated
@@ -158,6 +166,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS check_promotion_reports_trigger ON reports;
 CREATE TRIGGER check_promotion_reports_trigger
     AFTER INSERT ON reports
     FOR EACH ROW
