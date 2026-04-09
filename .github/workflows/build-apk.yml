@@ -119,6 +119,22 @@ jobs:
           echo "To enable Google Maps, add GOOGLE_MAPS_API_KEY secret to your repository"
         fi
     
+    - name: Setup Firebase configuration
+      run: |
+        # Create google-services.json from secret
+        if [ -n "${{ secrets.GOOGLE_SERVICES_JSON }}" ]; then
+          echo "Setting up Firebase google-services.json from secrets"
+          echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > android/app/google-services.json
+          echo "✅ Firebase configuration created"
+        else
+          echo "⚠️ No Firebase configuration found in secrets"
+          echo "Using example file for build"
+          cp android/app/google-services.json.example android/app/google-services.json
+          echo ""
+          echo "To enable Firebase, add GOOGLE_SERVICES_JSON secret to your repository"
+          echo "Content should be the full google-services.json file content"
+        fi
+    
     - name: Install dependencies
       run: flutter pub get
     

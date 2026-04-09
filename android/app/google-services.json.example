@@ -1,26 +1,43 @@
 {
   "project_info": {
-    "project_number": "YOUR_PROJECT_NUMBER",
+    "project_number": "448966879427",
     "project_id": "optigasto",
-    "storage_bucket": "optigasto.appspot.com"
+    "storage_bucket": "optigasto.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "YOUR_MOBILE_SDK_APP_ID",
+        "mobilesdk_app_id": "1:448966879427:android:1a43c6c984faacb2dd1a76",
         "android_client_info": {
           "package_name": "com.optigasto.optigasto"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "448966879427-h53d85de4aq6nb5s5210klhhusgt2v97.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "YOUR_API_KEY"
+          "current_key": "AIzaSyAliXMa3OZHI9QsaMo-hXoIDrvuQ0TtzB8"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "448966879427-h53d85de4aq6nb5s5210klhhusgt2v97.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "448966879427-45jd2kspreh1cmmqob6trolnsaajf6dm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.optigasto.optigasto"
+              }
+            }
+          ]
         }
       }
     }
