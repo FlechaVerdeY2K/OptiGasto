@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -39,6 +40,7 @@ import '../../features/notifications/domain/usecases/mark_as_read.dart';
 import '../../features/notifications/domain/usecases/send_local_notification.dart';
 import '../../features/notifications/domain/usecases/update_notification_preferences.dart';
 import '../../features/notifications/presentation/bloc/notification_bloc.dart';
+import '../../features/notifications/data/services/fcm_service.dart';
 
 
 final sl = GetIt.instance;
@@ -50,6 +52,7 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => Supabase.instance.client);
   sl.registerLazySingleton(() => GoogleSignIn());
   sl.registerLazySingleton(() => FlutterLocalNotificationsPlugin());
+  sl.registerLazySingleton(() => FirebaseMessaging.instance);
 
   // ========== Data Sources ==========
   // Auth
@@ -79,6 +82,15 @@ Future<void> initializeDependencies() async {
     () => NotificationRemoteDataSourceImpl(
       supabaseClient: sl(),
       localNotifications: sl(),
+    ),
+  );
+
+  // FCM Service
+  sl.registerLazySingleton<FCMService>(
+    () => FCMService(
+      firebaseMessaging: sl(),
+      localNotifications: sl(),
+      supabaseClient: sl(),
     ),
   );
 

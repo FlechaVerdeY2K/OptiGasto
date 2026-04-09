@@ -376,10 +376,11 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     _realtimeSubscription = repository.subscribeToNotifications().listen(
       (notification) {
         add(NotificationReceived(notification.id));
-        emit(NewNotificationReceived(notification));
+        // Don't emit here - use add() to trigger new event instead
       },
       onError: (error) {
-        emit(NotificationError(error.toString()));
+        // Don't emit here - log error instead
+        print('Realtime notification error: $error');
       },
     );
 
