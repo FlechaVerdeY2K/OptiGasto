@@ -48,7 +48,7 @@ app.*.map.json
 # Keep these files private and never commit them to public repositories
 android/app/google-services.json
 ios/Runner/GoogleService-Info.plist
-lib/firebase_options.dart
+# Note: lib/firebase_options.dart is safe to commit (contains public client keys)
 
 # Environment files
 .env
