@@ -9,7 +9,7 @@ OptiGasto es una aplicación móvil que permite a los consumidores costarricense
 
 **Objetivo:** Desarrollar una aplicación Flutter multiplataforma (Android/iOS) que implemente todas las funcionalidades identificadas en el proyecto de mercadeo.
 
-**Estado Actual:** ✅ Fases 1-4 completadas (Autenticación, Promociones Core, Geolocalización y Mapas, Publicación y Validación)
+**Estado Actual:** ✅ Fases 1-5 completadas (Autenticación, Promociones Core, Geolocalización y Mapas, Publicación y Validación, Notificaciones con FCM)
 
 ---
 
@@ -62,11 +62,16 @@ OptiGasto es una aplicación móvil que permite a los consumidores costarricense
 - [ ] Filtros por tipo de descuento
 - [ ] Ordenamiento por descuento, fecha
 
-### 6. **Notificaciones** ❌ PENDIENTE
-- [ ] Alertas de promociones cercanas
-- [ ] Notificaciones de promociones guardadas
-- [ ] Recordatorios de caducidad
-- [ ] Notificaciones personalizadas según historial
+### 6. **Notificaciones** ✅ COMPLETADO
+- ✅ Firebase Cloud Messaging (FCM) para push notifications
+- ✅ Notificaciones locales con flutter_local_notifications
+- ✅ Supabase Realtime para notificaciones en tiempo real
+- ✅ Sistema de preferencias de notificaciones
+- ✅ Geofencing básico para promociones cercanas
+- ✅ Badge con contador de notificaciones no leídas
+- ✅ 7 tipos de notificaciones (promotion_nearby, promotion_expiring, etc.)
+- ✅ Edge Function para envío automático vía FCM HTTP v1 API
+- ✅ Database Webhook configurado
 
 ### 7. **Panel de Comercios (B2B)** ❌ PENDIENTE
 - [ ] Registro de comercios
@@ -117,10 +122,20 @@ lib/
 │   │   ├── data/
 │   │   ├── domain/
 │   │   └── presentation/
-│   ├── notifications/ ❌ PENDIENTE
+│   ├── notifications/ ✅ COMPLETADO
 │   │   ├── data/
+│   │   │   ├── datasources/notification_remote_data_source.dart
+│   │   │   ├── models/ (notification_model, notification_preference_model)
+│   │   │   ├── repositories/notification_repository_impl.dart
+│   │   │   └── services/fcm_service.dart
 │   │   ├── domain/
+│   │   │   ├── entities/ (notification_entity, notification_preference_entity)
+│   │   │   ├── repositories/notification_repository.dart
+│   │   │   └── usecases/ (6 use cases)
 │   │   └── presentation/
+│   │       ├── bloc/ (notification_bloc, events, states)
+│   │       ├── pages/ (notification_settings_page, notifications_list_page)
+│   │       └── widgets/
 │   ├── profile/ ❌ PENDIENTE (parcial en auth)
 │   │   ├── data/
 │   │   ├── domain/
@@ -156,8 +171,8 @@ lib/
   - ✅ Supabase Database (PostgreSQL con PostGIS)
   - ✅ Supabase Storage (almacenamiento de imágenes)
   - ✅ Row Level Security (RLS)
-  - [ ] Supabase Realtime (actualizaciones en tiempo real)
-  - [ ] Supabase Edge Functions (funciones serverless)
+  - ✅ Supabase Realtime (actualizaciones en tiempo real)
+  - ✅ Supabase Edge Functions (funciones serverless)
 
 ### **Mapas y Geolocalización** ✅
 - **google_maps_flutter** (^2.5.0) - Mapas
@@ -191,9 +206,11 @@ lib/
 - [ ] **badges** (^3.1.2) - Insignias
 - [ ] **animations** (^2.0.8) - Animaciones
 
-### **Notificaciones** ❌ PENDIENTE
-- [ ] **flutter_local_notifications** (^16.1.0) - Notificaciones locales
-- [ ] **supabase_flutter** (^2.0.0) - Push notifications con Realtime
+### **Notificaciones** ✅ COMPLETADO
+- ✅ **firebase_core** (^3.6.0) - Firebase SDK
+- ✅ **firebase_messaging** (^15.1.3) - Firebase Cloud Messaging
+- ✅ **flutter_local_notifications** (^17.2.2) - Notificaciones locales
+- ✅ **supabase_flutter** (^2.5.0) - Push notifications con Realtime
 
 ### **Utilidades** ✅ PARCIALMENTE
 - ✅ **intl** (^0.18.1) - Internacionalización
@@ -377,10 +394,74 @@ lib/
 
 ---
 
-### **FASE 5: Funcionalidades Avanzadas** 🚀 PENDIENTE
-**Duración:** Semanas 11-14
+### **FASE 5: Notificaciones Push** ✅ COMPLETADA
+**Duración:** Semanas 11-12
 
-#### **Ruta Inteligente (Semanas 11-12):** ❌ PENDIENTE
+#### **Sistema de Notificaciones (Semanas 11-12):** ✅ COMPLETADO
+- [x] Firebase Cloud Messaging (FCM) configurado
+- [x] FCM Service para gestión de tokens y mensajes
+- [x] Notificaciones locales con flutter_local_notifications
+- [x] Supabase Realtime para notificaciones en tiempo real
+- [x] Tabla `notifications` con RLS y Realtime habilitado
+- [x] Tabla `notification_preferences` para configuración por usuario
+- [x] Tabla `fcm_tokens` para gestión de dispositivos
+- [x] Edge Function `send-fcm-notification` con FCM HTTP v1 API
+- [x] Database Webhook para envío automático
+- [x] UI de lista de notificaciones con paginación
+- [x] Badge en HomePage con contador de no leídas
+- [x] Página de configuración de preferencias
+- [x] Geofencing básico para promociones cercanas
+- [x] 7 tipos de notificaciones implementados
+- [x] Background message handlers para iOS/Android/Web
+- [x] Service Worker para notificaciones web
+
+**Arquitectura Implementada:**
+- Domain Layer:
+  - `NotificationEntity` con 7 tipos de notificaciones ✅
+  - `NotificationPreferenceEntity` ✅
+  - `NotificationRepository` (abstracto) ✅
+  - 6 Use Cases completos ✅
+
+- Data Layer:
+  - `NotificationModel` con conversión desde/hacia JSON ✅
+  - `NotificationPreferenceModel` ✅
+  - `NotificationRemoteDataSource` con Supabase Realtime ✅
+  - `NotificationRepositoryImpl` ✅
+  - `FCMService` para gestión de tokens y mensajes ✅
+
+- Presentation Layer:
+  - `NotificationBloc` con 10+ handlers ✅
+  - `NotificationsListPage` con paginación ✅
+  - `NotificationSettingsPage` ✅
+
+**Base de Datos:**
+- Migraciones SQL:
+  - `20240101000010_notifications_setup.sql` (notifications, preferences) ✅
+  - `20240101000011_fcm_tokens.sql` (fcm_tokens) ✅
+  - `20240101000012_notification_webhook.sql` (webhook trigger) ✅
+- Funciones:
+  - `create_notification()` ✅
+  - `get_unread_notifications_count()` ✅
+  - `mark_all_notifications_read()` ✅
+
+**Backend:**
+- Edge Function: `send-fcm-notification` ✅
+- Webhook configurado en Supabase Dashboard ✅
+- Secrets: `FIREBASE_SERVICE_ACCOUNT` ✅
+
+**Entregables Fase 5:**
+- ✅ Push notifications con FCM (iOS/Android/Web)
+- ✅ Notificaciones en tiempo real con Supabase
+- ✅ Sistema de preferencias completo
+- ✅ Geofencing básico implementado
+- ✅ UI completa de notificaciones
+
+---
+
+### **FASE 6: Ruta Inteligente** 🚀 PENDIENTE
+**Duración:** Semanas 13-14
+
+#### **Ruta Inteligente (Semanas 13-14):** ❌ PENDIENTE
 - [ ] Algoritmo de optimización de ruta (TSP - Traveling Salesman Problem)
 - [ ] Integración con Google Directions API
 - [ ] Visualización de ruta en mapa con polylines
@@ -429,58 +510,15 @@ lib/features/route/
         └── route_summary_widget.dart
 ```
 
-#### **Notificaciones (Semanas 13-14):** ❌ PENDIENTE
-- [ ] Supabase Realtime setup para notificaciones
-- [ ] Notificaciones push de promociones cercanas
-- [ ] Notificaciones locales programadas
-- [ ] Preferencias de notificaciones por categoría
-- [ ] Notificaciones geolocalizadas (geofencing)
-- [ ] Recordatorios de caducidad de promociones guardadas
-- [ ] Notificaciones de nuevas promociones en comercios favoritos
-
-**Dependencias necesarias:**
-```yaml
-supabase_flutter: ^2.0.0  # Ya incluido, usar Realtime
-flutter_local_notifications: ^16.1.0
-```
-
-**Arquitectura necesaria:**
-```
-lib/features/notifications/
-├── domain/
-│   ├── entities/
-│   │   ├── notification_entity.dart
-│   │   └── notification_preference_entity.dart
-│   ├── repositories/notification_repository.dart
-│   └── usecases/
-│       ├── send_notification.dart
-│       ├── schedule_notification.dart
-│       ├── get_notification_preferences.dart
-│       └── update_notification_preferences.dart
-├── data/
-│   ├── models/
-│   │   ├── notification_model.dart
-│   │   └── notification_preference_model.dart
-│   ├── datasources/notification_remote_data_source.dart
-│   └── repositories/notification_repository_impl.dart
-└── presentation/
-    ├── bloc/
-    │   ├── notification_bloc.dart
-    │   ├── notification_event.dart
-    │   └── notification_state.dart
-    └── pages/
-        └── notification_settings_page.dart
-```
-
-**Entregables Fase 5:**
+**Entregables Fase 6:**
 - [ ] Ruta de Ahorro Inteligente funcional
-- [ ] Sistema de notificaciones completo
-- [ ] Preferencias de notificaciones
-- [ ] Geofencing implementado
+- [ ] Optimización TSP implementada
+- [ ] Integración con Google Directions API
+- [ ] Exportar a Google Maps/Waze
 
 ---
 
-### **FASE 6: Gamificación** 🎮 PENDIENTE
+### **FASE 7: Gamificación** 🎮 PENDIENTE
 **Duración:** Semanas 15-16
 
 #### **Sistema de Puntos y Reputación:**
@@ -566,7 +604,7 @@ lib/features/gamification/
         └── achievement_card.dart
 ```
 
-**Entregables Fase 6:**
+**Entregables Fase 7:**
 - [ ] Sistema de puntos funcional
 - [ ] 15+ insignias implementadas
 - [ ] Leaderboards semanales y mensuales
@@ -574,7 +612,7 @@ lib/features/gamification/
 
 ---
 
-### **FASE 7: Panel de Comercios (B2B)** 🏪 PENDIENTE
+### **FASE 8: Panel de Comercios (B2B)** 🏪 PENDIENTE
 **Duración:** Semanas 17-18
 
 #### **Registro y Verificación:**
