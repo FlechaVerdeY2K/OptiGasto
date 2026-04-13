@@ -11,6 +11,7 @@ import '../../features/promotions/presentation/pages/promotion_detail_page.dart'
 import '../../features/promotions/presentation/pages/publish_promotion_page.dart';
 import '../../features/notifications/presentation/pages/notification_settings_page.dart';
 import '../../features/notifications/presentation/pages/notifications_list_page.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
 
@@ -25,6 +26,7 @@ class AppRouter {
   static const String publishPromotion = '/publish-promotion';
   static const String notificationSettings = '/notification-settings';
   static const String notificationsList = '/notifications';
+  static const String profile = '/profile';
 
   static GoRouter router(BuildContext context) => GoRouter(
     initialLocation: onboarding,
@@ -97,6 +99,10 @@ class AppRouter {
       GoRoute(
         path: notificationsList,
         builder: (context, state) => const NotificationsListPage(),
+      ),
+      GoRoute(
+        path: profile,
+        builder: (context, state) => const ProfilePage(),
       ),
     ],
   );
