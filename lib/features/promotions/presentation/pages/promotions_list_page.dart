@@ -6,6 +6,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../../settings/presentation/bloc/settings_bloc.dart';
 import '../bloc/promotion_bloc.dart';
 import '../bloc/promotion_event.dart';
 import '../bloc/promotion_state.dart';
@@ -21,6 +22,10 @@ class PromotionsListPage extends StatefulWidget {
 
 class _PromotionsListPageState extends State<PromotionsListPage> {
   final ScrollController _scrollController = ScrollController();
+  // Caché del último estado cargado. Cuando el bloc pasa a PromotionDetailLoaded
+  // (al abrir el detalle) o vuelve a PromotionLoading al refrescar, este caché
+  // permite que la lista siga visible en lugar de mostrar un spinner indefinido.
+  PromotionLoaded? _lastLoadedState;
 
   @override
   void initState() {
@@ -114,6 +119,18 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
         }
       },
       builder: (context, state) {
+        // Mantener caché del último estado con lista cargada
+        if (state is PromotionLoaded) {
+          _lastLoadedState = state;
+        }
+
+        // Estado efectivo a renderizar: el actual si es PromotionLoaded,
+        // o el caché si el bloc está en otro estado (ej. PromotionDetailLoaded
+        // al volver del detalle, o PromotionRefreshing durante el pull-to-refresh).
+        final displayState = (state is PromotionLoaded)
+            ? state
+            : _lastLoadedState;
+
         return RefreshIndicator(
           onRefresh: () async {
             context.read<PromotionBloc>().add(const PromotionRefreshRequested());
@@ -123,19 +140,19 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
           child: CustomScrollView(
             controller: _scrollController,
             slivers: [
-              // Filtros de categorías
-              if (state is PromotionLoaded && state.categories.isNotEmpty)
+              // Filtros de categorías (usa el estado efectivo)
+              if (displayState != null && displayState.categories.isNotEmpty)
                 SliverToBoxAdapter(
-                  child: _buildCategoryFilters(state),
+                  child: _buildCategoryFilters(displayState),
                 ),
-              
+
               // Lista de promociones
-              if (state is PromotionLoading && state is! PromotionRefreshing)
+              if (displayState != null)
+                _buildPromotionsList(displayState)
+              else if (state is PromotionLoading && state is! PromotionRefreshing)
                 const SliverFillRemaining(
                   child: Center(child: CircularProgressIndicator()),
                 )
-              else if (state is PromotionLoaded)
-                _buildPromotionsList(state)
               else if (state is PromotionError)
                 SliverFillRemaining(
                   child: _buildErrorState(state.message),
@@ -204,13 +221,13 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
       selected: isSelected,
       onSelected: (_) => onTap(),
       selectedColor: AppColors.primary,
-      backgroundColor: AppColors.surface,
+      backgroundColor: Theme.of(context).cardColor,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.white : AppColors.textPrimary,
+        color: isSelected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color,
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
       side: BorderSide(
-        color: isSelected ? AppColors.primary : AppColors.border,
+        color: isSelected ? AppColors.primary : Theme.of(context).dividerColor,
       ),
     );
   }
@@ -222,32 +239,83 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
       );
     }
 
-    return SliverPadding(
-      padding: const EdgeInsets.all(16),
-      sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            if (index >= state.promotions.length) {
-              // Indicador de carga al final
-              return state.hasMore
-                  ? const Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  : const SizedBox.shrink();
+    return BlocBuilder<SettingsBloc, SettingsState>(
+      builder: (context, settingsState) {
+        // Filtrar promociones según settings
+        var filteredPromotions = state.promotions;
+        
+        if (settingsState is SettingsLoaded) {
+          filteredPromotions = state.promotions.where((promo) {
+            // Filtro de descuento mínimo
+            // Extraer el porcentaje del string discount (ej: "20%" -> 20)
+            final discountStr = promo.discount.replaceAll(RegExp(r'[^0-9.]'), '');
+            final discount = double.tryParse(discountStr) ?? 0;
+            if (discount < settingsState.settings.minDiscountPercentage) {
+              return false;
             }
+            
+            // Filtro de promociones vencidas
+            if (settingsState.settings.hideExpiredPromotions && promo.isExpired) {
+              return false;
+            }
+            
+            return true;
+          }).toList();
+        }
 
-            final promotion = state.promotions[index];
-            final authState = context.read<AuthBloc>().state;
-            final userId = authState is AuthAuthenticated ? authState.user.id : '';
-            final isFavorite = authState is AuthAuthenticated
-                ? authState.user.savedPromotions.contains(promotion.id)
-                : false;
+        if (filteredPromotions.isEmpty) {
+          return SliverFillRemaining(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.filter_alt_off,
+                    size: 64,
+                    color: Theme.of(context).disabledColor,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'No hay promociones que cumplan los filtros',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Ajusta tus filtros en Configuración',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
 
-            return PromotionCard(
-              promotion: promotion,
+        return SliverPadding(
+          padding: const EdgeInsets.all(16),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                if (index >= filteredPromotions.length) {
+                  // Indicador de carga al final
+                  return state.hasMore
+                      ? const Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : const SizedBox.shrink();
+                }
+
+                final promotion = filteredPromotions[index];
+                final authState = context.read<AuthBloc>().state;
+                final userId = authState is AuthAuthenticated ? authState.user.id : '';
+                final isFavorite = authState is AuthAuthenticated
+                    ? authState.user.savedPromotions.contains(promotion.id)
+                    : false;
+
+                return PromotionCard(
+                  promotion: promotion,
               isFavorite: isFavorite,
               onTap: () {
                 // Incrementar vistas
@@ -273,11 +341,13 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
                           );
                     }
                   : null,
-            );
-          },
-          childCount: state.promotions.length + (state.hasMore ? 1 : 0),
-        ),
-      ),
+                );
+              },
+              childCount: filteredPromotions.length + (state.hasMore ? 1 : 0),
+            ),
+          ),
+        );
+      },
     );
   }
 

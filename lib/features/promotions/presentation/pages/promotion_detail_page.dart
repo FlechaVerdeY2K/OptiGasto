@@ -298,7 +298,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
           // Título
           Text(
             promotion.title,
-            style: AppTextStyles.h3,
+            style: AppTextStyles.h3.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : AppTextStyles.h3.color,
+            ),
           ),
           const SizedBox(height: 12),
           
@@ -386,7 +390,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
         children: [
           Text(
             'Comercio',
-            style: AppTextStyles.h5,
+            style: AppTextStyles.h5.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : AppTextStyles.h5.color,
+            ),
           ),
           const SizedBox(height: 12),
           Row(
@@ -411,7 +419,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                   children: [
                     Text(
                       promotion.commerceName,
-                      style: AppTextStyles.h6,
+                      style: AppTextStyles.h6.copyWith(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : AppTextStyles.h6.color,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -463,12 +475,20 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
         children: [
           Text(
             'Descripción',
-            style: AppTextStyles.h5,
+            style: AppTextStyles.h5.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : AppTextStyles.h5.color,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             promotion.description,
-            style: AppTextStyles.bodyLarge,
+            style: AppTextStyles.bodyLarge.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white70
+                  : AppTextStyles.bodyLarge.color,
+            ),
           ),
         ],
       ),
@@ -490,7 +510,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
         children: [
           Text(
             'Validación Comunitaria',
-            style: AppTextStyles.h5,
+            style: AppTextStyles.h5.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : AppTextStyles.h5.color,
+            ),
           ),
           const SizedBox(height: 12),
           
@@ -611,7 +635,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
         children: [
           Text(
             'Información Adicional',
-            style: AppTextStyles.h5,
+            style: AppTextStyles.h5.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : AppTextStyles.h5.color,
+            ),
           ),
           const SizedBox(height: 12),
           _buildInfoRow(
@@ -782,7 +810,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
             const SizedBox(height: 16),
             Text(
               'Error al cargar promoción',
-              style: AppTextStyles.h5,
+              style: AppTextStyles.h5.copyWith(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : AppTextStyles.h5.color,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),

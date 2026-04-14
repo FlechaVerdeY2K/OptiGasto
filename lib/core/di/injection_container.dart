@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
@@ -41,7 +42,18 @@ import '../../features/notifications/domain/usecases/send_local_notification.dar
 import '../../features/notifications/domain/usecases/update_notification_preferences.dart';
 import '../../features/notifications/presentation/bloc/notification_bloc.dart';
 import '../../features/notifications/data/services/fcm_service.dart';
-
+import '../../features/profile/data/datasources/profile_remote_data_source.dart';
+import '../../features/profile/data/repositories/profile_repository_impl.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/domain/usecases/get_promotion_history.dart';
+import '../../features/profile/domain/usecases/get_user_profile.dart';
+import '../../features/profile/domain/usecases/get_user_stats.dart';
+import '../../features/profile/domain/usecases/mark_promotion_as_used.dart';
+import '../../features/profile/domain/usecases/update_user_profile.dart';
+import '../../features/profile/domain/usecases/upload_profile_photo.dart';
+import '../../features/profile/presentation/bloc/profile_bloc.dart';
+import '../../features/settings/data/settings_service.dart';
+import '../../features/settings/presentation/bloc/settings_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -53,6 +65,10 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => GoogleSignIn());
   sl.registerLazySingleton(() => FlutterLocalNotificationsPlugin());
   sl.registerLazySingleton(() => FirebaseMessaging.instance);
+  
+  // SharedPreferences
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
 
   // ========== Data Sources ==========
   // Auth
@@ -94,6 +110,17 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  // Profile
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => ProfileRemoteDataSourceImpl(
+      supabase: sl(),
+    ),
+  );
+
+  // Settings
+  sl.registerLazySingleton<SettingsService>(
+    () => SettingsService(sl()),
+  );
 
   // ========== Repositories ==========
   // Auth
@@ -125,6 +152,13 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  // Profile
+  sl.registerLazySingleton<ProfileRepository>(
+    () => ProfileRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
+
   // ========== Use Cases ==========
   // Auth
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
@@ -152,6 +186,14 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => UpdateNotificationPreferences(sl()));
   sl.registerLazySingleton(() => SendLocalNotification(sl()));
   sl.registerLazySingleton(() => CheckNearbyPromotions(sl()));
+
+  // Profile
+  sl.registerLazySingleton(() => GetUserProfile(sl()));
+  sl.registerLazySingleton(() => UpdateUserProfile(sl()));
+  sl.registerLazySingleton(() => UploadProfilePhoto(sl()));
+  sl.registerLazySingleton(() => GetUserStats(sl()));
+  sl.registerLazySingleton(() => GetPromotionHistory(sl()));
+  sl.registerLazySingleton(() => MarkPromotionAsUsed(sl()));
 
   // ========== BLoC ==========
   // Auth
@@ -192,6 +234,7 @@ Future<void> initializeDependencies() async {
       checkLocationPermission: sl(),
       requestLocationPermission: sl(),
       repository: sl(),
+      settingsService: sl(),
     ),
   );
 
@@ -206,6 +249,23 @@ Future<void> initializeDependencies() async {
       checkNearbyPromotions: sl(),
       repository: sl(),
     ),
+  );
+
+  // Profile
+  sl.registerFactory(
+    () => ProfileBloc(
+      getUserProfile: sl(),
+      updateUserProfile: sl(),
+      uploadProfilePhoto: sl(),
+      getUserStats: sl(),
+      getPromotionHistory: sl(),
+      markPromotionAsUsed: sl(),
+    ),
+  );
+
+  // Settings
+  sl.registerFactory(
+    () => SettingsBloc(sl()),
   );
 }
 

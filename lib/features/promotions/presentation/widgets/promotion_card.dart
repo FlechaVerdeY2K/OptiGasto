@@ -55,7 +55,13 @@ class PromotionCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               promotion.title,
-                              style: AppTextStyles.h6,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -85,16 +91,16 @@ class PromotionCard extends StatelessWidget {
                       // Comercio
                       Row(
                         children: [
-                          const Icon(
+                          Icon(
                             Icons.store,
                             size: 14,
-                            color: AppColors.textSecondary,
+                            color: Theme.of(context).textTheme.bodySmall?.color,
                           ),
                           const SizedBox(width: 4),
                           Expanded(
                             child: Text(
                               promotion.commerceName,
-                              style: AppTextStyles.bodySmall,
+                              style: Theme.of(context).textTheme.bodySmall,
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -112,8 +118,10 @@ class PromotionCard extends StatelessWidget {
                                 symbol: '₡',
                                 decimalDigits: 0,
                               ).format(promotion.discountedPrice),
-                              style: AppTextStyles.promotionPrice.copyWith(
+                              style: TextStyle(
                                 fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.success,
                               ),
                             ),
                             const SizedBox(width: 8),
@@ -122,9 +130,9 @@ class PromotionCard extends StatelessWidget {
                                 symbol: '₡',
                                 decimalDigits: 0,
                               ).format(promotion.originalPrice),
-                              style: AppTextStyles.bodySmall.copyWith(
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
                                 decoration: TextDecoration.lineThrough,
-                                color: AppColors.textDisabled,
+                                color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                               ),
                             ),
                           ],
@@ -132,8 +140,10 @@ class PromotionCard extends StatelessWidget {
                       else
                         Text(
                           promotion.discount,
-                          style: AppTextStyles.promotionDiscount.copyWith(
+                          style: TextStyle(
                             fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.success,
                           ),
                         ),
                       const SizedBox(height: 8),
@@ -147,12 +157,12 @@ class PromotionCard extends StatelessWidget {
                           Icon(
                             Icons.visibility,
                             size: 14,
-                            color: Colors.grey[500],
+                            color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             '${promotion.views}',
-                            style: AppTextStyles.bodySmall,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           const Spacer(),
                           // Fecha de expiración
@@ -166,7 +176,7 @@ class PromotionCard extends StatelessWidget {
                 IconButton(
                   icon: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? AppColors.error : Colors.grey[400],
+                    color: isFavorite ? AppColors.error : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
                   ),
                   onPressed: onFavorite,
                   padding: EdgeInsets.zero,
