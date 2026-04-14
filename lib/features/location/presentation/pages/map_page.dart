@@ -20,6 +20,10 @@ class _MapPageState extends State<MapPage> {
   double _currentRadius = 5.0; // Radio en kilómetros
   bool _showPromotions = true;
   bool _showCommerces = true;
+  // Indica si el mapa ya mostró marcadores al menos una vez.
+  // Solo se usa el spinner de pantalla completa en la carga inicial.
+  bool _mapInitialized = false;
+  bool _isReloading = false;
 
   // Ubicación por defecto (San José, Costa Rica)
   static const LatLng _defaultLocation = LatLng(9.9281, -84.0907);
@@ -216,14 +220,25 @@ class _MapPageState extends State<MapPage> {
                 );
               });
             }
+            // El mapa ya tiene datos — las próximas cargas son recargas
+            if (!_mapInitialized) setState(() => _mapInitialized = true);
+            if (_isReloading) setState(() => _isReloading = false);
+          } else if (state is LocationLoading) {
+            // Solo activar el indicador de recarga si el mapa ya fue inicializado
+            if (_mapInitialized && !_isReloading) {
+              setState(() => _isReloading = true);
+            }
           } else if (state is LocationError) {
+            if (_isReloading) setState(() => _isReloading = false);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.message)),
             );
           }
         },
         builder: (context, state) {
-          if (state is LocationLoading) {
+          // Solo mostrar spinner de pantalla completa en la carga inicial
+          // (antes de que el mapa haya mostrado marcadores por primera vez)
+          if (state is LocationLoading && !_mapInitialized) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -244,6 +259,15 @@ class _MapPageState extends State<MapPage> {
                 zoomControlsEnabled: false,
                 mapToolbarEnabled: false,
               ),
+
+              // Barra de progreso durante recarga de marcadores (no destruye el mapa)
+              if (_isReloading)
+                const Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  child: LinearProgressIndicator(),
+                ),
 
               // Controles superiores
               Positioned(

@@ -6,6 +6,7 @@ import '../../domain/usecases/request_location_permission.dart';
 import '../../domain/usecases/get_nearby_promotion_markers.dart';
 import '../../domain/usecases/get_nearby_commerce_markers.dart';
 import '../../domain/repositories/location_repository.dart';
+import '../../../settings/data/settings_service.dart';
 import 'location_event.dart';
 import 'location_state.dart';
 
@@ -17,6 +18,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final GetNearbyPromotionMarkers getNearbyPromotionMarkers;
   final GetNearbyCommerceMarkers getNearbyCommerceMarkers;
   final LocationRepository repository;
+  final SettingsService settingsService;
 
   StreamSubscription? _locationSubscription;
 
@@ -27,6 +29,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     required this.getNearbyPromotionMarkers,
     required this.getNearbyCommerceMarkers,
     required this.repository,
+    required this.settingsService,
   }) : super(const LocationInitial()) {
     // Registrar handlers de eventos
     on<LocationGetCurrentRequested>(_onGetCurrentRequested);
@@ -185,10 +188,14 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
+    // Usar radio de settings si no se especifica
+    final settings = settingsService.getSettings();
+    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+
     final result = await getNearbyPromotionMarkers(
       latitude: event.latitude,
       longitude: event.longitude,
-      radiusInKm: event.radiusInKm,
+      radiusInKm: radiusToUse,
       limit: event.limit,
     );
 
@@ -196,7 +203,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       (failure) => emit(LocationError(message: failure.message)),
       (markers) => emit(LocationMarkersLoaded(
         markers: markers,
-        radiusInKm: event.radiusInKm,
+        radiusInKm: radiusToUse,
         showPromotions: true,
         showCommerces: false,
       )),
@@ -210,10 +217,14 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
+    // Usar radio de settings si no se especifica
+    final settings = settingsService.getSettings();
+    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+
     final result = await getNearbyCommerceMarkers(
       latitude: event.latitude,
       longitude: event.longitude,
-      radiusInKm: event.radiusInKm,
+      radiusInKm: radiusToUse,
       limit: event.limit,
     );
 
@@ -221,7 +232,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       (failure) => emit(LocationError(message: failure.message)),
       (markers) => emit(LocationMarkersLoaded(
         markers: markers,
-        radiusInKm: event.radiusInKm,
+        radiusInKm: radiusToUse,
         showPromotions: false,
         showCommerces: true,
       )),
@@ -235,18 +246,22 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
+    // Usar radio de settings si no se especifica
+    final settings = settingsService.getSettings();
+    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+
     // Cargar promociones y comercios en paralelo
     final results = await Future.wait([
       getNearbyPromotionMarkers(
         latitude: event.latitude,
         longitude: event.longitude,
-        radiusInKm: event.radiusInKm,
+        radiusInKm: radiusToUse,
         limit: event.limit,
       ),
       getNearbyCommerceMarkers(
         latitude: event.latitude,
         longitude: event.longitude,
-        radiusInKm: event.radiusInKm,
+        radiusInKm: radiusToUse,
         limit: event.limit,
       ),
     ]);
@@ -276,7 +291,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     emit(LocationMarkersLoaded(
       markers: allMarkers.cast(),
-      radiusInKm: event.radiusInKm,
+      radiusInKm: radiusToUse,
       showPromotions: true,
       showCommerces: true,
     ));

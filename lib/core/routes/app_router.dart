@@ -12,8 +12,18 @@ import '../../features/promotions/presentation/pages/publish_promotion_page.dart
 import '../../features/notifications/presentation/pages/notification_settings_page.dart';
 import '../../features/notifications/presentation/pages/notifications_list_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/edit_profile_page.dart';
+import '../../features/profile/presentation/pages/user_stats_page.dart';
+import '../../features/profile/presentation/pages/promotion_history_page.dart';
+import '../../features/settings/presentation/pages/app_settings_page.dart';
+import '../../features/settings/presentation/pages/location_settings_page.dart';
+import '../../features/settings/presentation/pages/theme_settings_page.dart';
+import '../../features/settings/presentation/pages/filters_settings_page.dart';
+import '../../features/settings/presentation/pages/privacy_settings_page.dart';
+import '../../features/settings/presentation/pages/data_settings_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
+import '../../features/auth/domain/entities/user_entity.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -27,6 +37,15 @@ class AppRouter {
   static const String notificationSettings = '/notification-settings';
   static const String notificationsList = '/notifications';
   static const String profile = '/profile';
+  static const String editProfile = '/edit-profile';
+  static const String userStats = '/user-stats';
+  static const String promotionHistory = '/promotion-history';
+  static const String settings = '/settings';
+  static const String locationSettings = '/settings/location';
+  static const String themeSettings = '/settings/theme';
+  static const String filtersSettings = '/settings/filters';
+  static const String privacySettings = '/settings/privacy';
+  static const String dataSettings = '/settings/data';
 
   static GoRouter router(BuildContext context) => GoRouter(
     initialLocation: onboarding,
@@ -103,6 +122,45 @@ class AppRouter {
       GoRoute(
         path: profile,
         builder: (context, state) => const ProfilePage(),
+      ),
+      GoRoute(
+        path: editProfile,
+        builder: (context, state) {
+          final user = state.extra as UserEntity;
+          return EditProfilePage(user: user);
+        },
+      ),
+      GoRoute(
+        path: userStats,
+        builder: (context, state) => const UserStatsPage(),
+      ),
+      GoRoute(
+        path: promotionHistory,
+        builder: (context, state) => const PromotionHistoryPage(),
+      ),
+      GoRoute(
+        path: settings,
+        builder: (context, state) => const AppSettingsPage(),
+      ),
+      GoRoute(
+        path: locationSettings,
+        builder: (context, state) => const LocationSettingsPage(),
+      ),
+      GoRoute(
+        path: themeSettings,
+        builder: (context, state) => const ThemeSettingsPage(),
+      ),
+      GoRoute(
+        path: filtersSettings,
+        builder: (context, state) => const FiltersSettingsPage(),
+      ),
+      GoRoute(
+        path: privacySettings,
+        builder: (context, state) => const PrivacySettingsPage(),
+      ),
+      GoRoute(
+        path: dataSettings,
+        builder: (context, state) => const DataSettingsPage(),
       ),
     ],
   );

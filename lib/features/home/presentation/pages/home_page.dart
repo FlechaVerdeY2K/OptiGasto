@@ -306,9 +306,7 @@ class ProfileTab extends StatelessWidget {
               icon: Icons.person_outline,
               title: 'Editar Perfil',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Próximamente')),
-                );
+                context.push('/profile');
               },
             ),
             _ProfileOption(
@@ -333,9 +331,7 @@ class ProfileTab extends StatelessWidget {
               icon: Icons.settings_outlined,
               title: 'Configuración',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Próximamente')),
-                );
+                context.push(AppRouter.settings);
               },
             ),
             _ProfileOption(
