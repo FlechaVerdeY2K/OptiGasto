@@ -65,7 +65,6 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => GoogleSignIn());
   sl.registerLazySingleton(() => FlutterLocalNotificationsPlugin());
   sl.registerLazySingleton(() => FirebaseMessaging.instance);
-  
   // SharedPreferences
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
@@ -116,7 +115,6 @@ Future<void> initializeDependencies() async {
       supabase: sl(),
     ),
   );
-
   // Settings
   sl.registerLazySingleton<SettingsService>(
     () => SettingsService(sl()),
@@ -262,7 +260,6 @@ Future<void> initializeDependencies() async {
       markPromotionAsUsed: sl(),
     ),
   );
-
   // Settings
   sl.registerFactory(
     () => SettingsBloc(sl()),

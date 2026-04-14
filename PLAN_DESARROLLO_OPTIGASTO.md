@@ -9,7 +9,7 @@ OptiGasto es una aplicación móvil que permite a los consumidores costarricense
 
 **Objetivo:** Desarrollar una aplicación Flutter multiplataforma (Android/iOS) que implemente todas las funcionalidades identificadas en el proyecto de mercadeo.
 
-**Estado Actual:** Fases 1–6 implementadas. La funcionalidad core está completa. Los 4 bugs activos de la Fase 6 fueron corregidos el 14 de abril de 2026 (ver sección de bugs más abajo). Listo para iniciar Fase 7.
+**Estado Actual:** Fases 1–6 implementadas. La funcionalidad core está completa. Incluye las funcionalidades de notificaciones de la Fase 5 y las correcciones/expansiones de la Fase 6. Los 4 bugs activos de la Fase 6 fueron corregidos el 14 de abril de 2026 (ver sección de bugs más abajo). Listo para iniciar Fase 7.
 
 **Versión del documento:** 3.0 — 14 de abril de 2026
 
@@ -138,12 +138,15 @@ USING (bucket_id = 'promotion-images');
 - [ ] Filtros combinados avanzados (Fase 10)
 
 ### 6. Notificaciones ✅ COMPLETADO
-- ✅ Firebase Cloud Messaging (FCM)
-- ✅ Notificaciones locales
-- ✅ Supabase Realtime
-- ✅ Sistema de preferencias
-- ✅ Geofencing básico
-- ✅ 7 tipos de notificaciones
+- ✅ Firebase Cloud Messaging (FCM) para push notifications
+- ✅ Notificaciones locales con flutter_local_notifications
+- ✅ Supabase Realtime para notificaciones en tiempo real
+- ✅ Sistema de preferencias de notificaciones
+- ✅ Geofencing básico para promociones cercanas
+- ✅ Badge con contador de notificaciones no leídas
+- ✅ 7 tipos de notificaciones (promotion_nearby, promotion_expiring, etc.)
+- ✅ Edge Function para envío automático vía FCM HTTP v1 API
+- ✅ Database Webhook configurado
 
 ### 7. Panel de Comercios (B2B) ❌ PENDIENTE (Fase 9)
 
@@ -176,7 +179,7 @@ lib/
 │   ├── route/        ❌ PENDIENTE (Fase 7)
 │   ├── gamification/ ❌ PENDIENTE (Fase 8)
 │   └── commerce/     ❌ PENDIENTE (Fase 9)
-└── main.dart
+└── main.dart ✅
 ```
 
 ---
@@ -227,6 +230,173 @@ Resolver SEC-1, SEC-2, SEC-3 y verificar SEC-4 descritos arriba antes de continu
 #### Algoritmo TSP:
 Implementar **Nearest Neighbor Greedy** en Dart puro para 2–10 puntos. Esta aproximación da resultados aceptables para el caso de uso (no más de 10 tiendas en una ruta de compras) sin necesidad de librerías externas.
 
+```dart
+// Pseudocódigo del algoritmo
+List<RoutePointEntity> optimizeRoute(
+  LocationEntity origin,
+  List<RoutePointEntity> points,
+) {
+  final unvisited = List<RoutePointEntity>.from(points);
+  final route = <RoutePointEntity>[];
+  var current = origin;
+
+- Presentation Layer:
+  - `LocationBloc` con 14 handlers ✅
+  - `MapPage` con UI completa ✅
+
+**Base de Datos:**
+- Migración SQL con funciones PostGIS:
+  - `nearby_promotions(lat, lng, radius_km)` ✅
+  - `nearby_commerces(lat, lng, radius_km)` ✅
+  - `calculate_distance(lat1, lng1, lat2, lng2)` ✅
+
+**Entregables:**
+- ✅ Mapa interactivo funcional
+- ✅ Geolocalización en tiempo real
+- ✅ Markers con clustering
+- ✅ Filtros por distancia
+- ✅ Detalle de promociones desde mapa
+
+---
+
+### **FASE 4: Publicación y Validación** ✅ COMPLETADA
+**Duración:** Semanas 9-10
+
+**Completado:**
+- [x] Captura y subida de fotos
+  - Integrar `image_picker` ✅
+  - Comprimir imágenes con `flutter_image_compress` ✅
+  - Subir a Supabase Storage ✅
+  - Manejo de permisos de cámara y galería ✅
+- [x] Formulario de promoción
+  - Selección de comercio con búsqueda ✅
+  - Categorización (8 categorías) ✅
+  - Fecha de vencimiento ✅
+  - Descripción y precio ✅
+  - Validación completa de formulario ✅
+- [x] Sistema de validación comunitaria
+  - Like/Dislike de promociones ✅
+  - Contador de validaciones ✅
+  - Actualización en tiempo real ✅
+- [x] Reportar promociones
+  - Formulario de reporte con motivos ✅
+  - Tabla `reports` en base de datos ✅
+  - RLS policies configuradas ✅
+
+**Arquitectura Implementada:**
+- Domain Layer:
+  - Use Case: `CreatePromotion` ✅
+  - Use Case: `UploadPromotionImages` ✅
+  - Use Case: `ReportPromotion` ✅
+
+- Data Layer:
+  - Métodos de Storage en data source ✅
+  - UPSERT para favoritos ✅
+
+- Presentation Layer:
+  - `PublishPromotionBloc` completo ✅
+  - `ImagePickerWidget` ✅
+  - `CommerceSearchWidget` ✅
+  - `PublishPromotionPage` ✅
+
+**Bugs Corregidos:**
+- ✅ Selección de imágenes desde galería
+- ✅ Slider de radio en mapa
+- ✅ Filtros de categoría
+- ✅ Toggle de favoritos (UPSERT)
+
+**Entregables:**
+- ✅ Usuarios pueden publicar promociones
+- ✅ Captura y compresión de fotos
+- ✅ Selección de comercio
+- ✅ Validación comunitaria funcional
+- ✅ Sistema de reportes
+
+---
+
+### **FASE 5: Notificaciones Push** ✅ COMPLETADA
+**Duración:** Semanas 11-12
+
+#### **Sistema de Notificaciones (Semanas 11-12):** ✅ COMPLETADO
+- [x] Firebase Cloud Messaging (FCM) configurado
+- [x] FCM Service para gestión de tokens y mensajes
+- [x] Notificaciones locales con flutter_local_notifications
+- [x] Supabase Realtime para notificaciones en tiempo real
+- [x] Tabla `notifications` con RLS y Realtime habilitado
+- [x] Tabla `notification_preferences` para configuración por usuario
+- [x] Tabla `fcm_tokens` para gestión de dispositivos
+- [x] Edge Function `send-fcm-notification` con FCM HTTP v1 API
+- [x] Database Webhook para envío automático
+- [x] UI de lista de notificaciones con paginación
+- [x] Badge en HomePage con contador de no leídas
+- [x] Página de configuración de preferencias
+- [x] Geofencing básico para promociones cercanas
+- [x] 7 tipos de notificaciones implementados
+- [x] Background message handlers para iOS/Android/Web
+- [x] Service Worker para notificaciones web
+
+**Arquitectura Implementada:**
+- Domain Layer:
+  - `NotificationEntity` con 7 tipos de notificaciones ✅
+  - `NotificationPreferenceEntity` ✅
+  - `NotificationRepository` (abstracto) ✅
+  - 6 Use Cases completos ✅
+
+- Data Layer:
+  - `NotificationModel` con conversión desde/hacia JSON ✅
+  - `NotificationPreferenceModel` ✅
+  - `NotificationRemoteDataSource` con Supabase Realtime ✅
+  - `NotificationRepositoryImpl` ✅
+  - `FCMService` para gestión de tokens y mensajes ✅
+
+- Presentation Layer:
+  - `NotificationBloc` con 10+ handlers ✅
+  - `NotificationsListPage` con paginación ✅
+  - `NotificationSettingsPage` ✅
+
+**Base de Datos:**
+- Migraciones SQL:
+  - `20240101000010_notifications_setup.sql` (notifications, preferences) ✅
+  - `20240101000011_fcm_tokens.sql` (fcm_tokens) ✅
+  - `20240101000012_notification_webhook.sql` (webhook trigger) ✅
+- Funciones:
+  - `create_notification()` ✅
+  - `get_unread_notifications_count()` ✅
+  - `mark_all_notifications_read()` ✅
+
+**Backend:**
+- Edge Function: `send-fcm-notification` ✅
+- Webhook configurado en Supabase Dashboard ✅
+- Secrets: `FIREBASE_SERVICE_ACCOUNT` ✅
+
+**Entregables Fase 5:**
+- ✅ Push notifications con FCM (iOS/Android/Web)
+- ✅ Notificaciones en tiempo real con Supabase
+- ✅ Sistema de preferencias completo
+- ✅ Geofencing básico implementado
+- ✅ UI completa de notificaciones
+
+---
+
+### **FASE 6: Ruta Inteligente** 🚀 PENDIENTE
+**Duración:** Semanas 13-14
+
+#### **Ruta Inteligente (Semanas 13-14):** ❌ PENDIENTE
+- [ ] Algoritmo de optimización de ruta (TSP - Traveling Salesman Problem)
+- [ ] Integración con Google Directions API
+- [ ] Visualización de ruta en mapa con polylines
+- [ ] Estimación de tiempo y distancia total
+- [ ] Guardar rutas favoritas
+- [ ] Reordenar puntos de la ruta manualmente
+- [ ] Exportar ruta a Google Maps/Waze
+
+**Dependencias necesarias:**
+```yaml
+flutter_polyline_points: ^2.0.0
+google_directions_api: ^0.9.0
+```
+
+#### Algoritmo base (pseudocódigo)
 ```dart
 // Pseudocódigo del algoritmo
 List<RoutePointEntity> optimizeRoute(
@@ -303,8 +473,8 @@ lib/features/route/
 ---
 
 ### FASE 9: Búsqueda Avanzada y Compartir 🔍 PENDIENTE
-*(anteriormente Fase 10)*  
-**Duración estimada:** Semanas 17–18  
+*(anteriormente Fase 10)*
+**Duración estimada:** Semanas 17–18
 **Costo:** $0 (queries Supabase + paquetes ya en pubspec)
 
 #### Búsqueda Avanzada:
