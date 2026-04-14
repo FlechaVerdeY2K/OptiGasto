@@ -1,15 +1,18 @@
 /// Configuración de Supabase para OptiGasto
-/// 
-/// IMPORTANTE: Debes reemplazar estos valores con los de tu proyecto de Supabase
-/// Los puedes encontrar en: https://app.supabase.com/project/_/settings/api
+///
+/// Las credenciales se inyectan en tiempo de compilación con:
+///   flutter run --dart-define-from-file=.env
+///   flutter build apk --dart-define-from-file=.env
+///
+/// Nunca hardcodear valores reales aquí.
 class SupabaseConfig {
-  /// URL de tu proyecto de Supabase
-  /// Ejemplo: https://xyzcompany.supabase.co
-  static const String supabaseUrl = 'https://xbdvrhzthyyqjyshzehg.supabase.co';
-  
-  /// Anon/Public key de tu proyecto de Supabase
-  /// Esta key es segura para usar en el cliente
-  static const String supabaseAnonKey = 'sb_publishable_L4EHYgveDUNeFXnq3S3xRw_BkcJpHW-';
+  /// URL del proyecto Supabase (inyectada vía --dart-define-from-file=.env)
+  static const String supabaseUrl =
+      String.fromEnvironment('SUPABASE_URL');
+
+  /// Anon/Public key del proyecto Supabase (inyectada vía --dart-define-from-file=.env)
+  static const String supabaseAnonKey =
+      String.fromEnvironment('SUPABASE_ANON_KEY');
   
   /// Configuración de autenticación
   static const bool persistSession = true;

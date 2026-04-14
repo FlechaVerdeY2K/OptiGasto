@@ -159,11 +159,11 @@ jobs:
         
         # Build for multiple architectures
         echo "Building APK for release..."
-        flutter build apk --release --no-track-widget-creation
-        
+        flutter build apk --release --dart-define-from-file=.env --no-track-widget-creation
+
         # Also build split APKs for smaller downloads
         echo "Building split APKs..."
-        flutter build apk --release --split-per-abi --no-track-widget-creation
+        flutter build apk --release --dart-define-from-file=.env --split-per-abi --no-track-widget-creation
       timeout-minutes: 30
       env:
         FLUTTER_SUPPRESS_ANALYTICS: true

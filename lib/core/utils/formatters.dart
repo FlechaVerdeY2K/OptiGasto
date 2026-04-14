@@ -139,6 +139,12 @@ class Formatters {
       return '${(bytes / (1024 * 1024 * 1024)).toStringAsFixed(1)} GB';
     }
   }
+
+  /// Alias para currency (compatibilidad)
+  static String formatCurrency(double amount) => currency(amount);
+
+  /// Alias para date (compatibilidad)
+  static String formatDate(DateTime date) => Formatters.date(date);
 }
 
 // Made with Bob

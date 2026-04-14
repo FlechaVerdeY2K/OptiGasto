@@ -14,9 +14,9 @@ class ApiConstants {
   static const String userAvatarsPath = 'avatars';
   static const String commerceLogosPath = 'commerces';
   
-  // Google Maps
-  static const String googleMapsApiKey = 'YOUR_GOOGLE_MAPS_API_KEY'; // TODO: Configurar
-  
+  // Google Maps: la API key se inyecta vía AndroidManifest.xml (android/local.properties)
+  // y en iOS vía AppDelegate. No usar aquí.
+
   // Endpoints (si se usa API REST adicional)
   static const String baseUrl = 'https://api.optigasto.com';
   static const String apiVersion = 'v1';
