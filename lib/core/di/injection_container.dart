@@ -1,3 +1,5 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,6 +30,17 @@ import '../../features/location/domain/usecases/get_nearby_commerce_markers.dart
 import '../../features/location/domain/usecases/get_nearby_promotion_markers.dart';
 import '../../features/location/domain/usecases/request_location_permission.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
+import '../../features/notifications/data/datasources/notification_remote_data_source.dart';
+import '../../features/notifications/data/repositories/notification_repository_impl.dart';
+import '../../features/notifications/domain/repositories/notification_repository.dart';
+import '../../features/notifications/domain/usecases/check_nearby_promotions.dart';
+import '../../features/notifications/domain/usecases/get_notification_preferences.dart';
+import '../../features/notifications/domain/usecases/get_notifications.dart';
+import '../../features/notifications/domain/usecases/mark_as_read.dart';
+import '../../features/notifications/domain/usecases/send_local_notification.dart';
+import '../../features/notifications/domain/usecases/update_notification_preferences.dart';
+import '../../features/notifications/presentation/bloc/notification_bloc.dart';
+import '../../features/notifications/data/services/fcm_service.dart';
 
 
 final sl = GetIt.instance;
@@ -38,6 +51,8 @@ Future<void> initializeDependencies() async {
   // Supabase - se inicializa en main.dart
   sl.registerLazySingleton(() => Supabase.instance.client);
   sl.registerLazySingleton(() => GoogleSignIn());
+  sl.registerLazySingleton(() => FlutterLocalNotificationsPlugin());
+  sl.registerLazySingleton(() => FirebaseMessaging.instance);
 
   // ========== Data Sources ==========
   // Auth
@@ -59,6 +74,23 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton<LocationRemoteDataSource>(
     () => LocationRemoteDataSourceImpl(
       supabase: sl(),
+    ),
+  );
+
+  // Notifications
+  sl.registerLazySingleton<NotificationRemoteDataSource>(
+    () => NotificationRemoteDataSourceImpl(
+      supabaseClient: sl(),
+      localNotifications: sl(),
+    ),
+  );
+
+  // FCM Service
+  sl.registerLazySingleton<FCMService>(
+    () => FCMService(
+      firebaseMessaging: sl(),
+      localNotifications: sl(),
+      supabaseClient: sl(),
     ),
   );
 
@@ -86,6 +118,13 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  // Notifications
+  sl.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
+
   // ========== Use Cases ==========
   // Auth
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
@@ -105,6 +144,14 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => CreatePromotion(sl()));
   sl.registerLazySingleton(() => UploadPromotionImages(sl()));
   sl.registerLazySingleton(() => ReportPromotion(sl()));
+
+  // Notifications
+  sl.registerLazySingleton(() => GetNotifications(sl()));
+  sl.registerLazySingleton(() => MarkAsRead(sl()));
+  sl.registerLazySingleton(() => GetNotificationPreferences(sl()));
+  sl.registerLazySingleton(() => UpdateNotificationPreferences(sl()));
+  sl.registerLazySingleton(() => SendLocalNotification(sl()));
+  sl.registerLazySingleton(() => CheckNearbyPromotions(sl()));
 
   // ========== BLoC ==========
   // Auth
@@ -144,6 +191,19 @@ Future<void> initializeDependencies() async {
       getNearbyCommerceMarkers: sl(),
       checkLocationPermission: sl(),
       requestLocationPermission: sl(),
+      repository: sl(),
+    ),
+  );
+
+  // Notifications
+  sl.registerFactory(
+    () => NotificationBloc(
+      getNotifications: sl(),
+      markAsRead: sl(),
+      getNotificationPreferences: sl(),
+      updateNotificationPreferences: sl(),
+      sendLocalNotification: sl(),
+      checkNearbyPromotions: sl(),
       repository: sl(),
     ),
   );

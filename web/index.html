@@ -44,6 +44,19 @@
   <!-- Google Maps JavaScript API - Se carga de forma síncrona -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqpoEiTL69S1Bv5stK2fl6ht_GxgMCoUA&loading=async"></script>
   
+  <!-- Firebase Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/firebase-messaging-sw.js')
+        .then((registration) => {
+          console.log('Firebase Service Worker registered:', registration);
+        })
+        .catch((error) => {
+          console.error('Firebase Service Worker registration failed:', error);
+        });
+    }
+  </script>
+  
   <script>
     // Esperar a que Google Maps esté completamente cargado
     function initializeApp() {

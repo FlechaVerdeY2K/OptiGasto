@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'firebase_options.dart';
 import 'core/config/supabase_config.dart';
 import 'core/theme/app_theme.dart';
 import 'core/constants/app_constants.dart';
@@ -11,9 +13,17 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/auth/presentation/bloc/auth_event.dart';
 import 'features/promotions/presentation/bloc/promotion_bloc.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
+import 'features/notifications/presentation/bloc/notification_bloc.dart';
+import 'features/notifications/presentation/bloc/notification_event.dart';
+import 'features/notifications/data/services/fcm_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Inicializar Firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   
   // Inicializar Supabase
   await Supabase.initialize(
@@ -27,6 +37,16 @@ void main() async {
   
   // Inicializar dependencias
   await di.initializeDependencies();
+  
+  // Inicializar FCM Service
+  try {
+    final fcmService = di.sl<FCMService>();
+    await fcmService.initialize();
+    print('FCM Service initialized successfully');
+  } catch (e) {
+    print('Error initializing FCM Service: $e');
+    // Continue app execution even if FCM fails
+  }
   
   // Configurar orientación de pantalla (solo móvil)
   try {
@@ -66,6 +86,10 @@ class OptiGastoApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => di.sl<LocationBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<NotificationBloc>()
+            ..add(const InitializeNotifications()),
         ),
       ],
       child: Builder(
