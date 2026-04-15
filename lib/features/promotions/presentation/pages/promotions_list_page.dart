@@ -398,7 +398,7 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 80,
             color: AppColors.error,

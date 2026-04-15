@@ -173,7 +173,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   }) async {
     try {
       // Obtener todas las promociones activas
-      var query = supabase
+      final query = supabase
           .from(SupabaseConfig.promotionsTable)
           .select()
           .eq('is_active', true);
@@ -281,7 +281,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   }) async {
     try {
       // Búsqueda usando ilike (case-insensitive LIKE)
-      var supabaseQuery = supabase
+      final supabaseQuery = supabase
           .from(SupabaseConfig.promotionsTable)
           .select()
           .eq('is_active', true)
@@ -462,7 +462,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     int? limit,
   }) async {
     try {
-      var query = supabase.from(SupabaseConfig.commercesTable).select();
+      final query = supabase.from(SupabaseConfig.commercesTable).select();
 
       // Aplicar limit después de todas las condiciones
       final limitedQuery = limit != null ? query.limit(limit * 2) : query;
@@ -510,7 +510,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     int? limit,
   }) async {
     try {
-      var supabaseQuery = supabase
+      final supabaseQuery = supabase
           .from(SupabaseConfig.commercesTable)
           .select()
           .or('name.ilike.%$query%,type.ilike.%$query%');
@@ -600,7 +600,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   }) async {
     try {
       final uploadedUrls = <String>[];
-      final uuid = const Uuid();
+      const uuid = Uuid();
       final id = promotionId ?? uuid.v4();
 
       for (int i = 0; i < images.length; i++) {

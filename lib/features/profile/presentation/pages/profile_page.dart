@@ -207,7 +207,7 @@ class _ProfilePageContent extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 10,
               offset: const Offset(0, 2),
             ),
@@ -252,7 +252,7 @@ class _ProfilePageContent extends StatelessWidget {
           TextButton(
             onPressed: () {
               Navigator.pop(dialogContext);
-              context.read<AuthBloc>().add(AuthSignOutRequested());
+              context.read<AuthBloc>().add(const AuthSignOutRequested());
             },
             child: const Text(
               'Cerrar Sesión',

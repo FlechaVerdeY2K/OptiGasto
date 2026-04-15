@@ -218,7 +218,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.info_outline,
                             color: AppColors.info,
                             size: 20,

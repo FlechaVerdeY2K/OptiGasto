@@ -33,7 +33,7 @@ class PromotionHistoryPage extends StatelessWidget {
                         vertical: 8,
                       ),
                     ),
-                    value: 'all',
+                    initialValue: 'all',
                     items: const [
                       DropdownMenuItem(value: 'all', child: Text('Todo')),
                       DropdownMenuItem(value: 'month', child: Text('Este mes')),
@@ -56,7 +56,7 @@ class PromotionHistoryPage extends StatelessWidget {
                         vertical: 8,
                       ),
                     ),
-                    value: 'all',
+                    initialValue: 'all',
                     items: const [
                       DropdownMenuItem(value: 'all', child: Text('Todas')),
                       DropdownMenuItem(value: 'food', child: Text('Comida')),

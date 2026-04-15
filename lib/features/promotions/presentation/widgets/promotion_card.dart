@@ -120,7 +120,7 @@ class PromotionCard extends StatelessWidget {
                                 symbol: '₡',
                                 decimalDigits: 0,
                               ).format(promotion.discountedPrice),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.success,
@@ -149,7 +149,7 @@ class PromotionCard extends StatelessWidget {
                       else
                         Text(
                           promotion.discount,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             color: AppColors.success,

@@ -63,11 +63,11 @@ class _LocationSettingsContentState extends State<_LocationSettingsContent> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
+                              const Row(
                                 children: [
                                   Icon(Icons.radar, color: AppColors.primary),
-                                  const SizedBox(width: 12),
-                                  const Text(
+                                  SizedBox(width: 12),
+                                  Text(
                                     'Radio de Búsqueda',
                                     style: TextStyle(
                                       fontSize: 16,
@@ -79,7 +79,7 @@ class _LocationSettingsContentState extends State<_LocationSettingsContent> {
                               const SizedBox(height: 16),
                               Text(
                                 '${_searchRadius.toStringAsFixed(0)} km',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.primary,
@@ -114,8 +114,8 @@ class _LocationSettingsContentState extends State<_LocationSettingsContent> {
                       // Ubicación automática
                       Card(
                         child: SwitchListTile(
-                          secondary:
-                              Icon(Icons.my_location, color: AppColors.primary),
+                          secondary: const Icon(Icons.my_location,
+                              color: AppColors.primary),
                           title: const Text('Ubicación Automática'),
                           subtitle: const Text(
                             'Usar tu ubicación actual automáticamente',
@@ -140,7 +140,7 @@ class _LocationSettingsContentState extends State<_LocationSettingsContent> {
                       color: Theme.of(context).cardColor,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 4,
                           offset: const Offset(0, -2),
                         ),

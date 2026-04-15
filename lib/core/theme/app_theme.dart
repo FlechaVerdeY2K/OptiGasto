@@ -275,15 +275,15 @@ class AppTheme {
       brightness: Brightness.dark,
 
       // Color Scheme
-      colorScheme: ColorScheme.dark(
+      colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
         primaryContainer: AppColors.primaryDark,
         secondary: AppColors.secondary,
         secondaryContainer: AppColors.secondaryDark,
         tertiary: AppColors.accent,
         error: AppColors.error,
-        surface: const Color(0xFF1E1E1E),
-        surfaceContainerHighest: const Color(0xFF2D2D2D),
+        surface: Color(0xFF1E1E1E),
+        surfaceContainerHighest: Color(0xFF2D2D2D),
         onPrimary: AppColors.textOnPrimary,
         onSecondary: AppColors.textOnSecondary,
         onSurface: Colors.white,

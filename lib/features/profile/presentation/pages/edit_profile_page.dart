@@ -125,7 +125,10 @@ class _EditProfilePageContentState extends State<_EditProfilePageContent> {
             );
             // Volver a la página anterior después de guardar
             Future.delayed(const Duration(seconds: 1), () {
-              if (mounted) context.pop();
+              if (mounted) {
+                // ignore: use_build_context_synchronously
+                context.pop();
+              }
             });
           } else if (state is ProfilePhotoUploaded) {
             ScaffoldMessenger.of(context).showSnackBar(

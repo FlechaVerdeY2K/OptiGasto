@@ -206,7 +206,7 @@ class _AddImageButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: isDisabled
               ? Colors.grey[300]
-              : AppColors.primary.withOpacity(0.1),
+              : AppColors.primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isDisabled ? Colors.grey : AppColors.primary,

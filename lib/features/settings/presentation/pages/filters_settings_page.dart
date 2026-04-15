@@ -52,7 +52,7 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Descuento Mínimo',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -62,7 +62,7 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                               const SizedBox(height: 8),
                               Text(
                                 '${_minDiscount.toStringAsFixed(0)}%',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.primary,
@@ -110,7 +110,7 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                       color: Theme.of(context).cardColor,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 4,
                           offset: const Offset(0, -2),
                         ),

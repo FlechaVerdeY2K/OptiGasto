@@ -138,7 +138,7 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -168,9 +168,9 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                                 final commerce = _searchResults[index];
                                 return ListTile(
                                   leading: CircleAvatar(
-                                    backgroundColor:
-                                        AppColors.primary.withOpacity(0.1),
-                                    child: Icon(
+                                    backgroundColor: AppColors.primary
+                                        .withValues(alpha: 0.1),
+                                    child: const Icon(
                                       Icons.store,
                                       color: AppColors.primary,
                                     ),
@@ -225,7 +225,7 @@ class _SelectedCommerceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primary.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: AppColors.primary,
@@ -234,9 +234,9 @@ class _SelectedCommerceCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             backgroundColor: AppColors.primary,
-            child: const Icon(
+            child: Icon(
               Icons.store,
               color: Colors.white,
             ),

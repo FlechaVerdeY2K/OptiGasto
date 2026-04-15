@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                         color: AppColors.primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.local_offer,
                         size: 50,
                         color: AppColors.primary,

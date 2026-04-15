@@ -23,7 +23,7 @@ class ProfileHeaderWidget extends StatelessWidget {
           end: Alignment.bottomRight,
           colors: [
             AppColors.primary,
-            AppColors.primary.withOpacity(0.8),
+            AppColors.primary.withValues(alpha: 0.8),
           ],
         ),
       ),
@@ -62,7 +62,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withValues(alpha: 0.2),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),
@@ -101,7 +101,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                 user.email,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withValues(alpha: 0.9),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -112,7 +112,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                   user.phone!,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.white.withOpacity(0.9),
+                    color: Colors.white.withValues(alpha: 0.9),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -168,7 +168,7 @@ class ProfileHeaderWidget extends StatelessWidget {
     return Icon(
       Icons.person,
       size: 60,
-      color: AppColors.primary.withOpacity(0.5),
+      color: AppColors.primary.withValues(alpha: 0.5),
     );
   }
 
@@ -199,7 +199,7 @@ class ProfileHeaderWidget extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.white.withOpacity(0.9),
+            color: Colors.white.withValues(alpha: 0.9),
           ),
         ),
       ],

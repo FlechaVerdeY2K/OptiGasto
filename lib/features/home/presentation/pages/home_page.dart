@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                       top: 8,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),
@@ -147,7 +147,7 @@ class PromotionsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: [
+      children: const [
         // Filtros rápidos
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -161,7 +161,7 @@ class PromotionsTab extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         // Lista de promociones de ejemplo
         _PromotionCard(
           title: '50% OFF en Pizzas',
