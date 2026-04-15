@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../auth/data/models/user_model.dart';
@@ -167,7 +165,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
       final response = await query;
 
-      return (response as List)
+      return response
           .map((json) => PromotionHistoryModel.fromJson(json))
           .toList();
     } on PostgrestException catch (e) {
