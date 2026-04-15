@@ -143,7 +143,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await query;
 
-      return (response as List)
+      return response
           .map((json) => PromotionModel.fromJson(json))
           .toList();
     } catch (e) {
@@ -186,7 +186,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
       final response = await limitedQuery;
 
       // Filtrar por distancia real usando la fórmula de Haversine
-      final promotions = (response as List)
+      final promotions = response
           .map((json) => PromotionModel.fromJson(json))
           .where((promotion) {
         final distance = _calculateDistance(
@@ -242,7 +242,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await query;
 
-      return (response as List)
+      return response
           .map((json) => PromotionModel.fromJson(json))
           .toList();
     } catch (e) {
@@ -271,7 +271,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await query;
 
-      return (response as List)
+      return response
           .map((json) => PromotionModel.fromJson(json))
           .toList();
     } catch (e) {
@@ -299,7 +299,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await limitedQuery;
 
-      return (response as List)
+      return response
           .map((json) => PromotionModel.fromJson(json))
           .toList();
     } catch (e) {
@@ -441,7 +441,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
           .select()
           .order('name');
 
-      return (response as List)
+      return response
           .map((json) => CategoryModel.fromJson(json))
           .toList();
     } catch (e) {
@@ -479,7 +479,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await limitedQuery;
 
-      final commerces = (response as List)
+      final commerces = response
           .map((json) => CommerceModel.fromJson(json))
           .where((commerce) {
         final distance = _calculateDistance(
@@ -531,7 +531,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await limitedQuery;
 
-      return (response as List)
+      return response
           .map((json) => CommerceModel.fromJson(json))
           .toList();
     } catch (e) {
