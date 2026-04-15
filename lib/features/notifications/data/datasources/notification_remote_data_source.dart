@@ -147,7 +147,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
           .order('created_at', ascending: false)
           .range(offset, offset + limit - 1);
 
-      return (response as List)
+      return response
           .map((json) => NotificationModel.fromJson(json))
           .toList();
     } catch (e) {
@@ -164,7 +164,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
           .eq('user_id', _userId)
           .eq('is_read', false);
 
-      return (response as List).length;
+      return response.length;
     } catch (e) {
       throw ServerException(message: 'Failed to get unread count: $e');
     }
