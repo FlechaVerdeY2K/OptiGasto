@@ -30,53 +30,39 @@ class ThemeSettingsPage extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               children: [
                 Card(
-                  child: Column(
-                    children: [
-                      RadioListTile<String>(
-                        secondary: const Icon(Icons.brightness_5),
-                        title: const Text('Claro'),
-                        subtitle: const Text('Tema claro siempre activo'),
-                        value: 'light',
-                        groupValue: settings.themeMode,
-                        onChanged: (value) {
-                          if (value != null) {
-                            context.read<SettingsBloc>().add(
-                                  UpdateThemeMode(value),
-                                );
-                          }
-                        },
-                      ),
-                      const Divider(height: 1),
-                      RadioListTile<String>(
-                        secondary: const Icon(Icons.brightness_2),
-                        title: const Text('Oscuro'),
-                        subtitle: const Text('Tema oscuro siempre activo'),
-                        value: 'dark',
-                        groupValue: settings.themeMode,
-                        onChanged: (value) {
-                          if (value != null) {
-                            context.read<SettingsBloc>().add(
-                                  UpdateThemeMode(value),
-                                );
-                          }
-                        },
-                      ),
-                      const Divider(height: 1),
-                      RadioListTile<String>(
-                        secondary: const Icon(Icons.brightness_auto),
-                        title: const Text('Automático'),
-                        subtitle: const Text('Según configuración del sistema'),
-                        value: 'system',
-                        groupValue: settings.themeMode,
-                        onChanged: (value) {
-                          if (value != null) {
-                            context.read<SettingsBloc>().add(
-                                  UpdateThemeMode(value),
-                                );
-                          }
-                        },
-                      ),
-                    ],
+                  child: RadioGroup<String>(
+                    groupValue: settings.themeMode,
+                    onChanged: (value) {
+                      if (value != null) {
+                        context.read<SettingsBloc>().add(
+                              UpdateThemeMode(value),
+                            );
+                      }
+                    },
+                    child: const Column(
+                      children: [
+                        RadioListTile<String>(
+                          secondary: Icon(Icons.brightness_5),
+                          title: Text('Claro'),
+                          subtitle: Text('Tema claro siempre activo'),
+                          value: 'light',
+                        ),
+                        Divider(height: 1),
+                        RadioListTile<String>(
+                          secondary: Icon(Icons.brightness_2),
+                          title: Text('Oscuro'),
+                          subtitle: Text('Tema oscuro siempre activo'),
+                          value: 'dark',
+                        ),
+                        Divider(height: 1),
+                        RadioListTile<String>(
+                          secondary: Icon(Icons.brightness_auto),
+                          title: Text('Automático'),
+                          subtitle: Text('Según configuración del sistema'),
+                          value: 'system',
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
