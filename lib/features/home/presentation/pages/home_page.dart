@@ -257,8 +257,8 @@ class ProfileTab extends StatelessWidget {
         String? photoUrl;
 
         if (state is AuthAuthenticated) {
-          userName = state.user.name ?? 'Usuario';
-          userEmail = state.user.email ?? '';
+          userName = state.user.name;
+          userEmail = state.user.email;
           photoUrl = state.user.photoUrl;
         }
 
@@ -349,7 +349,7 @@ class ProfileTab extends StatelessWidget {
               title: 'Cerrar Sesión',
               onTap: () {
                 // Mostrar diálogo de confirmación
-                showDialog(
+                showDialog<void>(
                   context: context,
                   builder: (dialogContext) => AlertDialog(
                     title: const Text('Cerrar Sesión'),

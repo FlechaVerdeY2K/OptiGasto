@@ -862,7 +862,7 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
   }
 
   void _showReportDialog() {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Reportar Problema'),

@@ -191,9 +191,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
-    // Usar radio de settings si no se especifica
-    final settings = settingsService.getSettings();
-    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+    final radiusToUse = event.radiusInKm;
 
     final result = await getNearbyPromotionMarkers(
       latitude: event.latitude,
@@ -220,9 +218,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
-    // Usar radio de settings si no se especifica
-    final settings = settingsService.getSettings();
-    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+    final radiusToUse = event.radiusInKm;
 
     final result = await getNearbyCommerceMarkers(
       latitude: event.latitude,
@@ -249,9 +245,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
-    // Usar radio de settings si no se especifica
-    final settings = settingsService.getSettings();
-    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+    final radiusToUse = event.radiusInKm;
 
     // Cargar promociones y comercios en paralelo
     final results = await Future.wait([

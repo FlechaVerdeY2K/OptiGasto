@@ -110,6 +110,7 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
             final updatedUser = authState.user.copyWith(
               savedPromotions: updatedSavedPromotions,
             );
+            // ignore: invalid_use_of_visible_for_testing_member
             authBloc.emit(AuthAuthenticated(user: updatedUser));
           }
 
@@ -139,7 +140,7 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
                 .read<PromotionBloc>()
                 .add(const PromotionRefreshRequested());
             // Esperar un momento para que se complete la recarga
-            await Future.delayed(const Duration(milliseconds: 500));
+            await Future<void>.delayed(const Duration(milliseconds: 500));
           },
           child: CustomScrollView(
             controller: _scrollController,

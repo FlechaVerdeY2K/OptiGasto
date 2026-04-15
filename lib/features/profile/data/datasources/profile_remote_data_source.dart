@@ -123,8 +123,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           'promotions_published': 0,
           'validations_given': 0,
           'reports_submitted': 0,
-          'savings_by_category': {},
-          'promotions_by_month': {},
+          'savings_by_category': <String, double>{},
+          'promotions_by_month': <String, int>{},
           'last_updated': DateTime.now().toIso8601String(),
         };
 

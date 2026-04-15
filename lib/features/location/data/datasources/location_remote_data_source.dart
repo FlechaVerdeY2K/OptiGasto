@@ -170,7 +170,7 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
   }) async {
     try {
       // Consulta promociones cercanas usando la función RPC de Supabase
-      final response = await supabaseClient.rpc(
+      final response = await supabaseClient.rpc<dynamic>(
         'nearby_promotions',
         params: {
           'lat': latitude,
@@ -211,7 +211,7 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
   }) async {
     try {
       // Consulta comercios cercanos usando la función RPC de Supabase
-      final response = await supabaseClient.rpc(
+      final response = await supabaseClient.rpc<dynamic>(
         'nearby_commerces',
         params: {
           'lat': latitude,

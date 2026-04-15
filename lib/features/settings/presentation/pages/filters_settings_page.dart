@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../bloc/settings_bloc.dart';
-import '../../domain/entities/app_settings_entity.dart';
 
 /// Página de configuración de filtros de contenido
 class FiltersSettingsPage extends StatefulWidget {

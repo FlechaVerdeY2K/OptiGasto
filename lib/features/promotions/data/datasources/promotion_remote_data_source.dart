@@ -390,7 +390,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   Future<void> incrementViews(String promotionId) async {
     try {
       // Usar RPC para incrementar atómicamente
-      await supabase.rpc('increment_promotion_views',
+      await supabase.rpc<dynamic>('increment_promotion_views',
           params: {'promotion_id': promotionId});
     } catch (e) {
       // Si el RPC no existe, usar update manual

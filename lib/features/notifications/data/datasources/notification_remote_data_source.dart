@@ -437,7 +437,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       }
 
       // Call Supabase function to get nearby promotions
-      final response = await supabaseClient.rpc(
+      final response = await supabaseClient.rpc<dynamic>(
         'nearby_promotions',
         params: {
           'lat': latitude,

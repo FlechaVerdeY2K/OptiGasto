@@ -381,7 +381,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         add(NotificationReceived(notification.id));
         // Don't emit here - use add() to trigger new event instead
       },
-      onError: (error) {
+      onError: (Object error, StackTrace stackTrace) {
         // Don't emit here - log error instead
         print('Realtime notification error: $error');
       },

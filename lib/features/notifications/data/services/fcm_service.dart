@@ -164,7 +164,6 @@ class FCMService {
   /// Handle foreground messages
   void _handleForegroundMessage(RemoteMessage message) {
     final notification = message.notification;
-    final android = message.notification?.android;
 
     if (notification != null) {
       _showLocalNotification(

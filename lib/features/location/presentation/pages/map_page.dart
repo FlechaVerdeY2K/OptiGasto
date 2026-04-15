@@ -98,7 +98,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _onMarkerTapped(MapMarkerEntity marker) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       builder: (context) => _MarkerDetailSheet(marker: marker),
     );
@@ -127,7 +127,7 @@ class _MapPageState extends State<MapPage> {
   }
 
   void _showRadiusDialog() {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (context) => _RadiusDialog(
         initialRadius: _currentRadius,
@@ -472,7 +472,7 @@ class _MarkerDetailSheet extends StatelessWidget {
 // Widget para el diálogo de ajuste de radio
 class _RadiusDialog extends StatefulWidget {
   final double initialRadius;
-  final Function(double) onApply;
+  final void Function(double) onApply;
 
   const _RadiusDialog({
     required this.initialRadius,

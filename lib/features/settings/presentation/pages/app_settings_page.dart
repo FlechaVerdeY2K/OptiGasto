@@ -201,7 +201,7 @@ class _AppSettingsPageContent extends StatelessWidget {
   }
 
   void _showResetDialog(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Restablecer Configuraciones'),

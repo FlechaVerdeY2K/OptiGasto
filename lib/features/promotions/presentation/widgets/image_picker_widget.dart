@@ -8,8 +8,8 @@ import '../../../../core/theme/app_colors.dart';
 /// Widget para seleccionar y mostrar imágenes de promociones
 class ImagePickerWidget extends StatelessWidget {
   final List<File> selectedImages;
-  final Function(List<File>) onImagesSelected;
-  final Function(int) onImageRemoved;
+  final void Function(List<File>) onImagesSelected;
+  final void Function(int) onImageRemoved;
   final int maxImages;
 
   const ImagePickerWidget({

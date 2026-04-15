@@ -350,7 +350,7 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
 
   void _showDeleteDialog(
       BuildContext context, NotificationEntity notification) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Eliminar notificación'),
@@ -376,7 +376,7 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
   }
 
   void _showDeleteAllDialog(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Eliminar todas'),
