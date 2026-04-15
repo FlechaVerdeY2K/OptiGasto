@@ -6,7 +6,8 @@ import '../../domain/entities/commerce_entity.dart';
 class CommerceSearchWidget extends StatefulWidget {
   final String? selectedCommerceId;
   final String? selectedCommerceName;
-  final void Function(String commerceId, String commerceName) onCommerceSelected;
+  final void Function(String commerceId, String commerceName)
+      onCommerceSelected;
   final Future<List<CommerceEntity>> Function(String query) onSearch;
 
   const CommerceSearchWidget({

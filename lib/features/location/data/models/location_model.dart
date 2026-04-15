@@ -41,7 +41,7 @@ class LocationModel extends LocationEntity {
           json['heading'] != null ? (json['heading'] as num).toDouble() : null,
       speed: json['speed'] != null ? (json['speed'] as num).toDouble() : null,
       timestamp: json['timestamp'] != null
-          ? DateTime.parse(json['timestamp'])
+          ? DateTime.parse(json['timestamp'] as String)
           : DateTime.now(),
     );
   }
@@ -73,9 +73,7 @@ class LocationModel extends LocationEntity {
       heading: position.heading != null
           ? (position.heading as num).toDouble()
           : null,
-      speed: position.speed != null
-          ? (position.speed as num).toDouble()
-          : null,
+      speed: position.speed != null ? (position.speed as num).toDouble() : null,
       timestamp: (position.timestamp as DateTime?) ?? DateTime.now(),
     );
   }

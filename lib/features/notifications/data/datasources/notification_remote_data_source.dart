@@ -147,9 +147,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
           .order('created_at', ascending: false)
           .range(offset, offset + limit - 1);
 
-      return response
-          .map((json) => NotificationModel.fromJson(json))
-          .toList();
+      return response.map((json) => NotificationModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(message: 'Failed to get notifications: $e');
     }

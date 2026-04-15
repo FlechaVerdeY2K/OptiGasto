@@ -3,7 +3,8 @@
     "allow": [
       "Bash(git commit -m ':*)",
       "Bash(flutter analyze *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(echo \"EXIT CODE: $?\")"
     ]
   }
 }

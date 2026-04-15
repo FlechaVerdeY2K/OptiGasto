@@ -143,9 +143,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await query;
 
-      return response
-          .map((json) => PromotionModel.fromJson(json))
-          .toList();
+      return response.map((json) => PromotionModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(message: 'Error al obtener promociones: $e');
     }
@@ -242,9 +240,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await query;
 
-      return response
-          .map((json) => PromotionModel.fromJson(json))
-          .toList();
+      return response.map((json) => PromotionModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(
           message: 'Error al obtener promociones por categoría: $e');
@@ -271,9 +267,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await query;
 
-      return response
-          .map((json) => PromotionModel.fromJson(json))
-          .toList();
+      return response.map((json) => PromotionModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(
           message: 'Error al obtener promociones del comercio: $e');
@@ -299,9 +293,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await limitedQuery;
 
-      return response
-          .map((json) => PromotionModel.fromJson(json))
-          .toList();
+      return response.map((json) => PromotionModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(message: 'Error al buscar promociones: $e');
     }
@@ -441,9 +433,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
           .select()
           .order('name');
 
-      return response
-          .map((json) => CategoryModel.fromJson(json))
-          .toList();
+      return response.map((json) => CategoryModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(message: 'Error al obtener categorías: $e');
     }
@@ -531,9 +521,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       final response = await limitedQuery;
 
-      return response
-          .map((json) => CommerceModel.fromJson(json))
-          .toList();
+      return response.map((json) => CommerceModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(message: 'Error al buscar comercios: $e');
     }

@@ -209,7 +209,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           .single();
 
       // Actualizar estadísticas del usuario
-      await _updateUserStats(userId, savingsAmount, promotion['category']);
+      await _updateUserStats(
+          userId, savingsAmount, promotion['category'] as String);
 
       return PromotionHistoryModel.fromJson(response);
     } on PostgrestException catch (e) {

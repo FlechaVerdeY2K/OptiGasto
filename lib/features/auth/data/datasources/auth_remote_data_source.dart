@@ -179,7 +179,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final userModel = UserModel(
         id: response.user!.id,
         email: response.user!.email ?? '',
-        name: (response.user!.userMetadata?['full_name'] as String?) ?? 'Usuario',
+        name:
+            (response.user!.userMetadata?['full_name'] as String?) ?? 'Usuario',
         photoUrl: response.user!.userMetadata?['avatar_url'] as String?,
         createdAt: DateTime.now(),
       );
