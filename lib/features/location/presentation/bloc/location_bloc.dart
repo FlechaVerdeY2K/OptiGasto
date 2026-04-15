@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/location_entity.dart';
 import '../../domain/usecases/get_current_location.dart';
 import '../../domain/usecases/check_location_permission.dart';
 import '../../domain/usecases/request_location_permission.dart';
@@ -20,7 +21,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final LocationRepository repository;
   final SettingsService settingsService;
 
-  StreamSubscription? _locationSubscription;
+  StreamSubscription<LocationEntity>? _locationSubscription;
 
   LocationBloc({
     required this.getCurrentLocation,
@@ -315,7 +316,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             accuracy: location.accuracy,
           ));
         },
-        onError: (error) {
+        onError: (Object error, StackTrace stackTrace) {
           emit(LocationError(message: 'Error al observar ubicación: $error'));
         },
       );
