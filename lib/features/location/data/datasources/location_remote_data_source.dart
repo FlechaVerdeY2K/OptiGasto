@@ -170,7 +170,7 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
   }) async {
     try {
       // Consulta promociones cercanas usando la función RPC de Supabase
-      final response = await supabaseClient.rpc(
+      final response = await supabaseClient.rpc<dynamic>(
         'nearby_promotions',
         params: {
           'lat': latitude,
@@ -186,7 +186,8 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
 
       final List<dynamic> data = response as List<dynamic>;
       return data
-          .map((json) => MapMarkerModel.fromPromotion(json as Map<String, dynamic>))
+          .map((json) =>
+              MapMarkerModel.fromPromotion(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(
@@ -210,7 +211,7 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
   }) async {
     try {
       // Consulta comercios cercanos usando la función RPC de Supabase
-      final response = await supabaseClient.rpc(
+      final response = await supabaseClient.rpc<dynamic>(
         'nearby_commerces',
         params: {
           'lat': latitude,
@@ -226,7 +227,8 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
 
       final List<dynamic> data = response as List<dynamic>;
       return data
-          .map((json) => MapMarkerModel.fromCommerce(json as Map<String, dynamic>))
+          .map((json) =>
+              MapMarkerModel.fromCommerce(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(

@@ -9,13 +9,13 @@ class ReportPromotion {
   ReportPromotion(this.repository);
 
   /// Ejecuta el caso de uso
-  /// 
+  ///
   /// Parámetros:
   /// - [promotionId]: ID de la promoción a reportar
   /// - [userId]: ID del usuario que reporta
   /// - [reason]: Razón del reporte
   /// - [description]: Descripción detallada del reporte (opcional)
-  /// 
+  ///
   /// Retorna:
   /// - [Right(void)]: Si el reporte fue exitoso
   /// - [Left(Failure)]: Si ocurrió un error

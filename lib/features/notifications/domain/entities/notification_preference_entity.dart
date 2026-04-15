@@ -58,8 +58,10 @@ class NotificationPreferenceEntity extends Equatable {
   }) {
     return NotificationPreferenceEntity(
       userId: userId ?? this.userId,
-      enablePromotionNearby: enablePromotionNearby ?? this.enablePromotionNearby,
-      enablePromotionExpiring: enablePromotionExpiring ?? this.enablePromotionExpiring,
+      enablePromotionNearby:
+          enablePromotionNearby ?? this.enablePromotionNearby,
+      enablePromotionExpiring:
+          enablePromotionExpiring ?? this.enablePromotionExpiring,
       enablePromotionNew: enablePromotionNew ?? this.enablePromotionNew,
       enableBadgeUnlocked: enableBadgeUnlocked ?? this.enableBadgeUnlocked,
       enableLevelUp: enableLevelUp ?? this.enableLevelUp,

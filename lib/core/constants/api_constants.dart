@@ -8,19 +8,19 @@ class ApiConstants {
   static const String commercesCollection = 'commerces';
   static const String validationsCollection = 'validations';
   static const String categoriesCollection = 'categories';
-  
+
   // Firebase Storage Paths
   static const String promotionImagesPath = 'promotions';
   static const String userAvatarsPath = 'avatars';
   static const String commerceLogosPath = 'commerces';
-  
+
   // Google Maps: la API key se inyecta vía AndroidManifest.xml (android/local.properties)
   // y en iOS vía AppDelegate. No usar aquí.
 
   // Endpoints (si se usa API REST adicional)
   static const String baseUrl = 'https://api.optigasto.com';
   static const String apiVersion = 'v1';
-  
+
   // Headers
   static const String contentType = 'application/json';
   static const String accept = 'application/json';

@@ -145,7 +145,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       if (state is SettingsLoaded) {
         final currentSettings = (state as SettingsLoaded).settings;
         await _settingsService.updateSearchRadius(event.radius);
-        final updatedSettings = currentSettings.copyWith(searchRadius: event.radius);
+        final updatedSettings =
+            currentSettings.copyWith(searchRadius: event.radius);
         emit(SettingsLoaded(updatedSettings));
       }
     } catch (e) {

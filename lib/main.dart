@@ -23,15 +23,15 @@ import 'features/profile/presentation/bloc/profile_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Inicializar formateo de fechas para español
   await initializeDateFormatting('es_ES', null);
-  
+
   // Inicializar Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
+
   // Inicializar Supabase
   await Supabase.initialize(
     url: SupabaseConfig.supabaseUrl,
@@ -41,10 +41,10 @@ void main() async {
       autoRefreshToken: SupabaseConfig.autoRefreshToken,
     ),
   );
-  
+
   // Inicializar dependencias
   await di.initializeDependencies();
-  
+
   // Inicializar FCM Service
   try {
     final fcmService = di.sl<FCMService>();
@@ -54,14 +54,14 @@ void main() async {
     print('Error initializing FCM Service: $e');
     // Continue app execution even if FCM fails
   }
-  
+
   // Configurar orientación de pantalla (solo móvil)
   try {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    
+
     // Configurar barra de estado
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
@@ -73,7 +73,7 @@ void main() async {
     // Ignorar errores de orientación en web
     debugPrint('Platform-specific configuration skipped: $e');
   }
-  
+
   runApp(const OptiGastoApp());
 }
 
@@ -85,8 +85,8 @@ class OptiGastoApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => di.sl<AuthBloc>()
-            ..add(const AuthCheckRequested()),
+          create: (context) =>
+              di.sl<AuthBloc>()..add(const AuthCheckRequested()),
         ),
         BlocProvider(
           create: (context) => di.sl<PromotionBloc>(),
@@ -95,12 +95,11 @@ class OptiGastoApp extends StatelessWidget {
           create: (context) => di.sl<LocationBloc>(),
         ),
         BlocProvider(
-          create: (context) => di.sl<NotificationBloc>()
-            ..add(const InitializeNotifications()),
+          create: (context) =>
+              di.sl<NotificationBloc>()..add(const InitializeNotifications()),
         ),
         BlocProvider(
-          create: (context) => di.sl<SettingsBloc>()
-            ..add(const LoadSettings()),
+          create: (context) => di.sl<SettingsBloc>()..add(const LoadSettings()),
         ),
         BlocProvider(
           create: (context) => di.sl<ProfileBloc>(),

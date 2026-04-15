@@ -10,11 +10,11 @@ class UploadPromotionImages {
   UploadPromotionImages(this.repository);
 
   /// Ejecuta el caso de uso
-  /// 
+  ///
   /// Parámetros:
   /// - [images]: Lista de archivos de imagen a subir
   /// - [promotionId]: ID de la promoción (opcional, se genera si no se proporciona)
-  /// 
+  ///
   /// Retorna:
   /// - [Right(List<String>)]: URLs de las imágenes subidas
   /// - [Left(Failure)]: Si ocurrió un error

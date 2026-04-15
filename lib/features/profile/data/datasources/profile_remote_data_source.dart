@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../auth/data/models/user_model.dart';
@@ -43,11 +41,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   @override
   Future<UserModel> getUserProfile(String userId) async {
     try {
-      final response = await supabase
-          .from('users')
-          .select()
-          .eq('id', userId)
-          .single();
+      final response =
+          await supabase.from('users').select().eq('id', userId).single();
 
       return UserModel.fromJson(response);
     } on PostgrestException catch (e) {
@@ -97,10 +92,11 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       // Por ahora, retornar una URL de placeholder
       // La subida de fotos requiere configuración adicional de Storage
       // y manejo especial para web vs móvil
-      
+
       // Generar un avatar placeholder basado en el userId
-      final avatarUrl = 'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userId)}&size=200&background=random';
-      
+      final avatarUrl =
+          'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userId)}&size=200&background=random';
+
       return avatarUrl;
     } catch (e) {
       throw ServerException(message: 'Error al subir foto: $e');
@@ -127,8 +123,8 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           'promotions_published': 0,
           'validations_given': 0,
           'reports_submitted': 0,
-          'savings_by_category': {},
-          'promotions_by_month': {},
+          'savings_by_category': <String, double>{},
+          'promotions_by_month': <String, int>{},
           'last_updated': DateTime.now().toIso8601String(),
         };
 
@@ -169,7 +165,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
       final response = await query;
 
-      return (response as List)
+      return response
           .map((json) => PromotionHistoryModel.fromJson(json))
           .toList();
     } on PostgrestException catch (e) {
@@ -213,23 +209,22 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           .single();
 
       // Actualizar estadísticas del usuario
-      await _updateUserStats(userId, savingsAmount, promotion['category']);
+      await _updateUserStats(
+          userId, savingsAmount, promotion['category'] as String);
 
       return PromotionHistoryModel.fromJson(response);
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
     } catch (e) {
-      throw ServerException(message: 'Error al marcar promoción como usada: $e');
+      throw ServerException(
+          message: 'Error al marcar promoción como usada: $e');
     }
   }
 
   @override
   Future<void> deleteHistoryEntry(String historyId) async {
     try {
-      await supabase
-          .from('promotion_history')
-          .delete()
-          .eq('id', historyId);
+      await supabase.from('promotion_history').delete().eq('id', historyId);
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
     } catch (e) {
@@ -252,31 +247,30 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       final newPromotionsUsed = stats.promotionsUsed + 1;
 
       // Actualizar ahorros por categoría
-      final savingsByCategory = Map<String, double>.from(stats.savingsByCategory);
-      savingsByCategory[category] = (savingsByCategory[category] ?? 0.0) + savingsAmount;
+      final savingsByCategory =
+          Map<String, double>.from(stats.savingsByCategory);
+      savingsByCategory[category] =
+          (savingsByCategory[category] ?? 0.0) + savingsAmount;
 
       // Actualizar promociones por mes
       final currentMonth = DateTime.now().toString().substring(0, 7); // YYYY-MM
       final promotionsByMonth = Map<String, int>.from(stats.promotionsByMonth);
-      promotionsByMonth[currentMonth] = (promotionsByMonth[currentMonth] ?? 0) + 1;
+      promotionsByMonth[currentMonth] =
+          (promotionsByMonth[currentMonth] ?? 0) + 1;
 
       // Actualizar en la base de datos
-      await supabase
-          .from('user_stats')
-          .update({
-            'total_savings': newTotalSavings,
-            'promotions_used': newPromotionsUsed,
-            'savings_by_category': savingsByCategory,
-            'promotions_by_month': promotionsByMonth,
-            'last_updated': DateTime.now().toIso8601String(),
-          })
-          .eq('user_id', userId);
+      await supabase.from('user_stats').update({
+        'total_savings': newTotalSavings,
+        'promotions_used': newPromotionsUsed,
+        'savings_by_category': savingsByCategory,
+        'promotions_by_month': promotionsByMonth,
+        'last_updated': DateTime.now().toIso8601String(),
+      }).eq('user_id', userId);
 
       // También actualizar el campo total_savings en la tabla users
       await supabase
           .from('users')
-          .update({'total_savings': newTotalSavings})
-          .eq('id', userId);
+          .update({'total_savings': newTotalSavings}).eq('id', userId);
     } catch (e) {
       // No lanzar excepción para no bloquear la operación principal
       print('Error al actualizar estadísticas: $e');

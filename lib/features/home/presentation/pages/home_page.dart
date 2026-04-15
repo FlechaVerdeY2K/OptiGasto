@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
                       top: 8,
                       child: Container(
                         padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.red,
                           shape: BoxShape.circle,
                         ),
@@ -147,7 +147,7 @@ class PromotionsTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: [
+      children: const [
         // Filtros rápidos
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -161,7 +161,7 @@ class PromotionsTab extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16),
         // Lista de promociones de ejemplo
         _PromotionCard(
           title: '50% OFF en Pizzas',
@@ -257,8 +257,8 @@ class ProfileTab extends StatelessWidget {
         String? photoUrl;
 
         if (state is AuthAuthenticated) {
-          userName = state.user.name ?? 'Usuario';
-          userEmail = state.user.email ?? '';
+          userName = state.user.name;
+          userEmail = state.user.email;
           photoUrl = state.user.photoUrl;
         }
 
@@ -272,7 +272,8 @@ class ProfileTab extends StatelessWidget {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: AppColors.primary,
-                    backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+                    backgroundImage:
+                        photoUrl != null ? NetworkImage(photoUrl) : null,
                     child: photoUrl == null
                         ? const Icon(
                             Icons.person,
@@ -348,11 +349,12 @@ class ProfileTab extends StatelessWidget {
               title: 'Cerrar Sesión',
               onTap: () {
                 // Mostrar diálogo de confirmación
-                showDialog(
+                showDialog<void>(
                   context: context,
                   builder: (dialogContext) => AlertDialog(
                     title: const Text('Cerrar Sesión'),
-                    content: const Text('¿Estás seguro que deseas cerrar sesión?'),
+                    content:
+                        const Text('¿Estás seguro que deseas cerrar sesión?'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(dialogContext),
@@ -361,7 +363,9 @@ class ProfileTab extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           Navigator.pop(dialogContext);
-                          context.read<AuthBloc>().add(const AuthSignOutRequested());
+                          context
+                              .read<AuthBloc>()
+                              .add(const AuthSignOutRequested());
                         },
                         child: const Text(
                           'Cerrar Sesión',

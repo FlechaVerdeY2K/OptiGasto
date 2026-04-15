@@ -24,11 +24,11 @@ class CategoryModel extends CategoryEntity {
   /// Crea un CategoryModel desde un Map de Supabase
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-      icon: json['icon'] ?? '',
-      color: json['color'] ?? '#000000',
-      promotionCount: json['promotion_count'] ?? 0,
+      id: (json['id'] as String?) ?? '',
+      name: (json['name'] as String?) ?? '',
+      icon: (json['icon'] as String?) ?? '',
+      color: (json['color'] as String?) ?? '#000000',
+      promotionCount: (json['promotion_count'] as num?)?.toInt() ?? 0,
     );
   }
 

@@ -24,7 +24,8 @@ class UpdateUserProfile {
 
   UpdateUserProfile(this.repository);
 
-  Future<Either<Failure, UserEntity>> call(UpdateUserProfileParams params) async {
+  Future<Either<Failure, UserEntity>> call(
+      UpdateUserProfileParams params) async {
     return await repository.updateUserProfile(
       userId: params.userId,
       name: params.name,

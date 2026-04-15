@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/formatters.dart';
 
 /// Página de historial completo de promociones usadas
 class PromotionHistoryPage extends StatelessWidget {
@@ -35,11 +33,12 @@ class PromotionHistoryPage extends StatelessWidget {
                         vertical: 8,
                       ),
                     ),
-                    value: 'all',
+                    initialValue: 'all',
                     items: const [
                       DropdownMenuItem(value: 'all', child: Text('Todo')),
                       DropdownMenuItem(value: 'month', child: Text('Este mes')),
-                      DropdownMenuItem(value: 'week', child: Text('Esta semana')),
+                      DropdownMenuItem(
+                          value: 'week', child: Text('Esta semana')),
                     ],
                     onChanged: (value) {
                       // TODO: Filtrar por período
@@ -57,11 +56,12 @@ class PromotionHistoryPage extends StatelessWidget {
                         vertical: 8,
                       ),
                     ),
-                    value: 'all',
+                    initialValue: 'all',
                     items: const [
                       DropdownMenuItem(value: 'all', child: Text('Todas')),
                       DropdownMenuItem(value: 'food', child: Text('Comida')),
-                      DropdownMenuItem(value: 'tech', child: Text('Tecnología')),
+                      DropdownMenuItem(
+                          value: 'tech', child: Text('Tecnología')),
                     ],
                     onChanged: (value) {
                       // TODO: Filtrar por categoría
@@ -121,115 +121,6 @@ class PromotionHistoryPage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _HistoryItem extends StatelessWidget {
-  final String title;
-  final String commerce;
-  final DateTime date;
-  final double savings;
-  final String category;
-
-  const _HistoryItem({
-    required this.title,
-    required this.commerce,
-    required this.date,
-    required this.savings,
-    required this.category,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        contentPadding: const EdgeInsets.all(12),
-        leading: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            color: AppColors.primary.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(
-            Icons.local_offer,
-            color: AppColors.primary,
-          ),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text(commerce),
-            const SizedBox(height: 4),
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_today,
-                  size: 12,
-                  color: Colors.grey[600],
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  Formatters.formatDate(date),
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    category,
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: Colors.blue[700],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              Formatters.formatCurrency(savings),
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.green,
-              ),
-            ),
-            const Text(
-              'Ahorrado',
-              style: TextStyle(
-                fontSize: 11,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

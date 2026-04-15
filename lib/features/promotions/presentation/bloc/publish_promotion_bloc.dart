@@ -10,7 +10,8 @@ import 'publish_promotion_event.dart';
 import 'publish_promotion_state.dart';
 
 /// BLoC para gestionar la publicación de promociones
-class PublishPromotionBloc extends Bloc<PublishPromotionEvent, PublishPromotionState> {
+class PublishPromotionBloc
+    extends Bloc<PublishPromotionEvent, PublishPromotionState> {
   final CreatePromotion createPromotion;
   final UploadPromotionImages uploadPromotionImages;
   final GetCurrentUser getCurrentUser;
@@ -238,7 +239,8 @@ class PublishPromotionBloc extends Bloc<PublishPromotionEvent, PublishPromotionS
       return;
     }
 
-    final location = locationResult.getOrElse(() => throw Exception('No location'));
+    final location =
+        locationResult.getOrElse(() => throw Exception('No location'));
 
     emit(const PublishPromotionLoading(
       message: 'Subiendo imágenes...',
@@ -284,7 +286,8 @@ class PublishPromotionBloc extends Bloc<PublishPromotionEvent, PublishPromotionS
       images: imageUrls,
       latitude: location.latitude,
       longitude: location.longitude,
-      address: '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}',
+      address:
+          '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}',
       validUntil: formState.validUntil!,
       createdBy: user!.id,
       createdAt: now,

@@ -37,7 +37,8 @@ class PrivacySettingsPage extends StatelessWidget {
                     subtitle: const Text('Otros usuarios pueden ver tu perfil'),
                     value: settings.profileVisibility,
                     onChanged: (value) {
-                      final updated = settings.copyWith(profileVisibility: value);
+                      final updated =
+                          settings.copyWith(profileVisibility: value);
                       context.read<SettingsBloc>().add(UpdateSettings(updated));
                     },
                   ),
@@ -54,10 +55,12 @@ class PrivacySettingsPage extends StatelessWidget {
                   const Divider(height: 1),
                   SwitchListTile(
                     title: const Text('Mostrar Mis Promociones'),
-                    subtitle: const Text('Otros pueden ver las promociones que publicas'),
+                    subtitle: const Text(
+                        'Otros pueden ver las promociones que publicas'),
                     value: settings.showMyPromotions,
                     onChanged: (value) {
-                      final updated = settings.copyWith(showMyPromotions: value);
+                      final updated =
+                          settings.copyWith(showMyPromotions: value);
                       context.read<SettingsBloc>().add(UpdateSettings(updated));
                     },
                   ),

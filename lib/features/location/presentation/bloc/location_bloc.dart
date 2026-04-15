@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/location_entity.dart';
 import '../../domain/usecases/get_current_location.dart';
 import '../../domain/usecases/check_location_permission.dart';
 import '../../domain/usecases/request_location_permission.dart';
@@ -20,7 +21,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final LocationRepository repository;
   final SettingsService settingsService;
 
-  StreamSubscription? _locationSubscription;
+  StreamSubscription<LocationEntity>? _locationSubscription;
 
   LocationBloc({
     required this.getCurrentLocation,
@@ -37,8 +38,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<LocationRequestPermissionRequested>(_onRequestPermissionRequested);
     on<LocationCheckServiceRequested>(_onCheckServiceRequested);
     on<LocationOpenSettingsRequested>(_onOpenSettingsRequested);
-    on<LocationLoadNearbyPromotionMarkersRequested>(_onLoadNearbyPromotionMarkersRequested);
-    on<LocationLoadNearbyCommerceMarkersRequested>(_onLoadNearbyCommerceMarkersRequested);
+    on<LocationLoadNearbyPromotionMarkersRequested>(
+        _onLoadNearbyPromotionMarkersRequested);
+    on<LocationLoadNearbyCommerceMarkersRequested>(
+        _onLoadNearbyCommerceMarkersRequested);
     on<LocationLoadAllNearbyMarkersRequested>(_onLoadAllNearbyMarkersRequested);
     on<LocationStartWatchingRequested>(_onStartWatchingRequested);
     on<LocationStopWatchingRequested>(_onStopWatchingRequested);
@@ -188,9 +191,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
-    // Usar radio de settings si no se especifica
-    final settings = settingsService.getSettings();
-    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+    final radiusToUse = event.radiusInKm;
 
     final result = await getNearbyPromotionMarkers(
       latitude: event.latitude,
@@ -217,9 +218,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
-    // Usar radio de settings si no se especifica
-    final settings = settingsService.getSettings();
-    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+    final radiusToUse = event.radiusInKm;
 
     final result = await getNearbyCommerceMarkers(
       latitude: event.latitude,
@@ -246,9 +245,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     emit(const LocationLoading());
 
-    // Usar radio de settings si no se especifica
-    final settings = settingsService.getSettings();
-    final radiusToUse = event.radiusInKm ?? settings.searchRadius;
+    final radiusToUse = event.radiusInKm;
 
     // Cargar promociones y comercios en paralelo
     final results = await Future.wait([
@@ -271,7 +268,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     // Combinar resultados
     final allMarkers = <dynamic>[];
-    
+
     promotionResult.fold(
       (failure) => null,
       (markers) => allMarkers.addAll(markers),
@@ -304,7 +301,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     try {
       await _locationSubscription?.cancel();
-      
+
       _locationSubscription = repository.watchLocation().listen(
         (location) {
           add(LocationUpdated(
@@ -313,7 +310,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             accuracy: location.accuracy,
           ));
         },
-        onError: (error) {
+        onError: (Object error, StackTrace stackTrace) {
           emit(LocationError(message: 'Error al observar ubicación: $error'));
         },
       );
@@ -337,7 +334,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     final currentState = state;
-    
+
     if (currentState is LocationWatching) {
       emit(currentState.copyWith(
         location: currentState.location.copyWith(
@@ -355,7 +352,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     final currentState = state;
-    
+
     if (currentState is LocationMarkersLoaded) {
       emit(currentState.copyWith(radiusInKm: event.radiusInKm));
     }
@@ -367,8 +364,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     final currentState = state;
-    
-    if (currentState is LocationMarkersLoaded && 
+
+    if (currentState is LocationMarkersLoaded &&
         currentState.currentLocation != null) {
       emit(LocationRefreshing(
         currentLocation: currentState.currentLocation,

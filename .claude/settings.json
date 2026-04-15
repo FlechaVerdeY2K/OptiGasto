@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m ':*)",
+      "Bash(flutter analyze *)",
+      "Bash(git commit *)",
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(flutter --version)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(dart fix *)",
+      "Bash(echo \"FORMAT EXIT: $?\")"
+    ]
+  }
+}

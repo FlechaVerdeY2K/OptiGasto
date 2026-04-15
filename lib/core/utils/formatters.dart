@@ -119,7 +119,7 @@ class Formatters {
   static String duration(Duration duration) {
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
-    
+
     if (hours > 0) {
       return '$hours h ${minutes > 0 ? '$minutes min' : ''}';
     } else {

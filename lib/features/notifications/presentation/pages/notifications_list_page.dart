@@ -21,8 +21,10 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
   void initState() {
     super.initState();
     // Load notifications on init
-    context.read<NotificationBloc>().add(const LoadNotifications(refresh: true));
-    
+    context
+        .read<NotificationBloc>()
+        .add(const LoadNotifications(refresh: true));
+
     // Setup infinite scroll
     _scrollController.addListener(_onScroll);
   }
@@ -58,7 +60,9 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
             icon: const Icon(Icons.done_all),
             tooltip: 'Marcar todas como leídas',
             onPressed: () {
-              context.read<NotificationBloc>().add(const MarkAllNotificationsAsRead());
+              context
+                  .read<NotificationBloc>()
+                  .add(const MarkAllNotificationsAsRead());
             },
           ),
           // Delete all button
@@ -106,13 +110,15 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
 
             return RefreshIndicator(
               onRefresh: () async {
-                context.read<NotificationBloc>().add(const LoadNotifications(refresh: true));
+                context
+                    .read<NotificationBloc>()
+                    .add(const LoadNotifications(refresh: true));
               },
               child: ListView.builder(
                 controller: _scrollController,
                 padding: const EdgeInsets.all(8),
-                itemCount: state.hasMore 
-                    ? state.notifications.length + 1 
+                itemCount: state.hasMore
+                    ? state.notifications.length + 1
                     : state.notifications.length,
                 itemBuilder: (context, index) {
                   if (index >= state.notifications.length) {
@@ -169,7 +175,8 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
     );
   }
 
-  Widget _buildNotificationCard(BuildContext context, NotificationEntity notification) {
+  Widget _buildNotificationCard(
+      BuildContext context, NotificationEntity notification) {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       elevation: notification.isRead ? 0 : 2,
@@ -194,8 +201,8 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
                       notification.title,
                       style: TextStyle(
                         fontSize: 16,
-                        fontWeight: notification.isRead 
-                            ? FontWeight.normal 
+                        fontWeight: notification.isRead
+                            ? FontWeight.normal
                             : FontWeight.bold,
                       ),
                     ),
@@ -232,7 +239,8 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
                         IconButton(
                           icon: const Icon(Icons.delete_outline, size: 20),
                           color: Colors.grey[600],
-                          onPressed: () => _showDeleteDialog(context, notification),
+                          onPressed: () =>
+                              _showDeleteDialog(context, notification),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                         ),
@@ -297,7 +305,7 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         shape: BoxShape.circle,
       ),
       child: Icon(icon, color: color, size: 24),
@@ -321,10 +329,13 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
     }
   }
 
-  void _onNotificationTap(BuildContext context, NotificationEntity notification) {
+  void _onNotificationTap(
+      BuildContext context, NotificationEntity notification) {
     // Mark as read if not already
     if (!notification.isRead) {
-      context.read<NotificationBloc>().add(MarkNotificationAsRead(notification.id));
+      context
+          .read<NotificationBloc>()
+          .add(MarkNotificationAsRead(notification.id));
     }
 
     // Handle navigation based on notification type and data
@@ -337,12 +348,14 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
     );
   }
 
-  void _showDeleteDialog(BuildContext context, NotificationEntity notification) {
-    showDialog(
+  void _showDeleteDialog(
+      BuildContext context, NotificationEntity notification) {
+    showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Eliminar notificación'),
-        content: const Text('¿Estás seguro de que quieres eliminar esta notificación?'),
+        content: const Text(
+            '¿Estás seguro de que quieres eliminar esta notificación?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
@@ -350,7 +363,9 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
           ),
           TextButton(
             onPressed: () {
-              context.read<NotificationBloc>().add(DeleteNotification(notification.id));
+              context
+                  .read<NotificationBloc>()
+                  .add(DeleteNotification(notification.id));
               Navigator.of(dialogContext).pop();
             },
             child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
@@ -361,11 +376,12 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
   }
 
   void _showDeleteAllDialog(BuildContext context) {
-    showDialog(
+    showDialog<void>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Eliminar todas'),
-        content: const Text('¿Estás seguro de que quieres eliminar todas las notificaciones?'),
+        content: const Text(
+            '¿Estás seguro de que quieres eliminar todas las notificaciones?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(dialogContext).pop(),
@@ -373,10 +389,13 @@ class _NotificationsListPageState extends State<NotificationsListPage> {
           ),
           TextButton(
             onPressed: () {
-              context.read<NotificationBloc>().add(const DeleteAllNotifications());
+              context
+                  .read<NotificationBloc>()
+                  .add(const DeleteAllNotifications());
               Navigator.of(dialogContext).pop();
             },
-            child: const Text('Eliminar todas', style: TextStyle(color: Colors.red)),
+            child: const Text('Eliminar todas',
+                style: TextStyle(color: Colors.red)),
           ),
         ],
       ),

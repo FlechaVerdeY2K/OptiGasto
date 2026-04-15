@@ -97,9 +97,8 @@ class ProfileRepositoryImpl implements ProfileRepository {
         limit: limit,
         offset: offset,
       );
-      final historyEntities = historyModels
-          .map((model) => model.toEntity())
-          .toList();
+      final historyEntities =
+          historyModels.map((model) => model.toEntity()).toList();
       return Right(historyEntities);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));

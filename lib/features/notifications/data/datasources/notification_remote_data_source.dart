@@ -83,7 +83,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   Future<void> initialize() async {
     try {
       // Android initialization settings
-      const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+      const androidSettings =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
 
       // iOS initialization settings
       const iosSettings = DarwinInitializationSettings(
@@ -128,7 +129,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
             }
           });
     } catch (e) {
-      throw ServerException(message: 'Failed to subscribe to notifications: $e');
+      throw ServerException(
+          message: 'Failed to subscribe to notifications: $e');
     }
   }
 
@@ -145,9 +147,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
           .order('created_at', ascending: false)
           .range(offset, offset + limit - 1);
 
-      return (response as List)
-          .map((json) => NotificationModel.fromJson(json))
-          .toList();
+      return response.map((json) => NotificationModel.fromJson(json)).toList();
     } catch (e) {
       throw ServerException(message: 'Failed to get notifications: $e');
     }
@@ -162,7 +162,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
           .eq('user_id', _userId)
           .eq('is_read', false);
 
-      return (response as List).length;
+      return response.length;
     } catch (e) {
       throw ServerException(message: 'Failed to get unread count: $e');
     }
@@ -196,7 +196,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
           .eq('user_id', _userId)
           .eq('is_read', false);
     } catch (e) {
-      throw ServerException(message: 'Failed to mark all notifications as read: $e');
+      throw ServerException(
+          message: 'Failed to mark all notifications as read: $e');
     }
   }
 
@@ -246,7 +247,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
       return NotificationPreferenceModel.fromJson(response);
     } catch (e) {
-      throw ServerException(message: 'Failed to get notification preferences: $e');
+      throw ServerException(
+          message: 'Failed to get notification preferences: $e');
     }
   }
 
@@ -256,11 +258,12 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
   ) async {
     try {
       await supabaseClient.from('notification_preferences').upsert(
-        preferences.toJson(),
-        onConflict: 'user_id',
-      );
+            preferences.toJson(),
+            onConflict: 'user_id',
+          );
     } catch (e) {
-      throw ServerException(message: 'Failed to update notification preferences: $e');
+      throw ServerException(
+          message: 'Failed to update notification preferences: $e');
     }
   }
 
@@ -374,7 +377,8 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
               IOSFlutterLocalNotificationsPlugin>();
 
       if (androidImplementation != null) {
-        final granted = await androidImplementation.requestNotificationsPermission();
+        final granted =
+            await androidImplementation.requestNotificationsPermission();
         return granted ?? false;
       }
 
@@ -431,7 +435,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
       }
 
       // Call Supabase function to get nearby promotions
-      final response = await supabaseClient.rpc(
+      final response = await supabaseClient.rpc<dynamic>(
         'nearby_promotions',
         params: {
           'lat': latitude,

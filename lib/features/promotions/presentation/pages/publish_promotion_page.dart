@@ -64,7 +64,7 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
   Future<void> _selectDate(BuildContext context) async {
     final now = DateTime.now();
     final initialDate = now.add(const Duration(days: 7));
-    
+
     final date = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -73,7 +73,7 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
+            colorScheme: const ColorScheme.light(
               primary: AppColors.primary,
             ),
           ),
@@ -89,7 +89,9 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
 
   void _handlePublish(BuildContext context) {
     if (_formKey.currentState?.validate() ?? false) {
-      context.read<PublishPromotionBloc>().add(const PublishPromotionSubmitEvent());
+      context
+          .read<PublishPromotionBloc>()
+          .add(const PublishPromotionSubmitEvent());
     }
   }
 
@@ -313,9 +315,8 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
 
                 // Botón de publicar
                 ElevatedButton(
-                  onPressed: formState.isValid
-                      ? () => _handlePublish(context)
-                      : null,
+                  onPressed:
+                      formState.isValid ? () => _handlePublish(context) : null,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     foregroundColor: Colors.white,

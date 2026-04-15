@@ -34,18 +34,23 @@ class DataSettingsPage extends StatelessWidget {
                 children: [
                   SwitchListTile(
                     title: const Text('Usar Datos Móviles para Imágenes'),
-                    subtitle: const Text('Descargar imágenes con datos móviles'),
+                    subtitle:
+                        const Text('Descargar imágenes con datos móviles'),
                     value: settings.useMobileDataForImages,
                     onChanged: (value) {
-                      final updated = settings.copyWith(useMobileDataForImages: value);
+                      final updated =
+                          settings.copyWith(useMobileDataForImages: value);
                       context.read<SettingsBloc>().add(UpdateSettings(updated));
                     },
                   ),
                   const Divider(height: 1),
                   ListTile(
                     title: const Text('Calidad de Imágenes'),
-                    subtitle: Text(settings.imageQuality == 'high' ? 'Alta' : 
-                                  settings.imageQuality == 'medium' ? 'Media' : 'Baja'),
+                    subtitle: Text(settings.imageQuality == 'high'
+                        ? 'Alta'
+                        : settings.imageQuality == 'medium'
+                            ? 'Media'
+                            : 'Baja'),
                     trailing: DropdownButton<String>(
                       value: settings.imageQuality,
                       items: const [
@@ -55,8 +60,11 @@ class DataSettingsPage extends StatelessWidget {
                       ],
                       onChanged: (value) {
                         if (value != null) {
-                          final updated = settings.copyWith(imageQuality: value);
-                          context.read<SettingsBloc>().add(UpdateSettings(updated));
+                          final updated =
+                              settings.copyWith(imageQuality: value);
+                          context
+                              .read<SettingsBloc>()
+                              .add(UpdateSettings(updated));
                         }
                       },
                     ),
@@ -67,7 +75,8 @@ class DataSettingsPage extends StatelessWidget {
                     subtitle: const Text('Guardar mapas para uso sin conexión'),
                     value: settings.offlineMapsCache,
                     onChanged: (value) {
-                      final updated = settings.copyWith(offlineMapsCache: value);
+                      final updated =
+                          settings.copyWith(offlineMapsCache: value);
                       context.read<SettingsBloc>().add(UpdateSettings(updated));
                     },
                   ),

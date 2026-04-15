@@ -10,7 +10,7 @@ import '../../../../core/errors/exceptions.dart';
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handle background message
   print('Handling background message: ${message.messageId}');
-  
+
   // You can process the message here if needed
   // For example, update local database, show notification, etc.
 }
@@ -48,7 +48,8 @@ class FCMService {
 
       if (settings.authorizationStatus == AuthorizationStatus.authorized) {
         print('User granted notification permissions');
-      } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
+      } else if (settings.authorizationStatus ==
+          AuthorizationStatus.provisional) {
         print('User granted provisional notification permissions');
       } else {
         print('User declined or has not accepted notification permissions');
@@ -163,7 +164,6 @@ class FCMService {
   /// Handle foreground messages
   void _handleForegroundMessage(RemoteMessage message) {
     final notification = message.notification;
-    final android = message.notification?.android;
 
     if (notification != null) {
       _showLocalNotification(

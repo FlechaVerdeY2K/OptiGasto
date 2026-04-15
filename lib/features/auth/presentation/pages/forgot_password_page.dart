@@ -192,9 +192,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           ),
                         ),
                         TextButton(
-                          onPressed: isLoading
-                              ? null
-                              : () => context.go('/login'),
+                          onPressed:
+                              isLoading ? null : () => context.go('/login'),
                           child: const Text(
                             'Iniciar sesión',
                             style: TextStyle(
@@ -219,7 +218,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.info_outline,
                             color: AppColors.info,
                             size: 20,

@@ -108,7 +108,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     ),
                   ),
                   child: Text(
-                    _currentPage == _items.length - 1 ? 'Comenzar' : 'Siguiente',
+                    _currentPage == _items.length - 1
+                        ? 'Comenzar'
+                        : 'Siguiente',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,

@@ -136,7 +136,8 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, void>> deleteAccount() async {
     // TODO: Implementar eliminación de cuenta
-    return Left(ServerFailure(message: 'Eliminación de cuenta no implementada'));
+    return const Left(
+        ServerFailure(message: 'Eliminación de cuenta no implementada'));
   }
 
   @override

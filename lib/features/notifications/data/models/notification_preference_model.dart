@@ -21,7 +21,8 @@ class NotificationPreferenceModel extends NotificationPreferenceEntity {
     return NotificationPreferenceModel(
       userId: json['user_id'] as String,
       enablePromotionNearby: json['enable_promotion_nearby'] as bool? ?? true,
-      enablePromotionExpiring: json['enable_promotion_expiring'] as bool? ?? true,
+      enablePromotionExpiring:
+          json['enable_promotion_expiring'] as bool? ?? true,
       enablePromotionNew: json['enable_promotion_new'] as bool? ?? true,
       enableBadgeUnlocked: json['enable_badge_unlocked'] as bool? ?? true,
       enableLevelUp: json['enable_level_up'] as bool? ?? true,
@@ -104,8 +105,10 @@ class NotificationPreferenceModel extends NotificationPreferenceEntity {
   }) {
     return NotificationPreferenceModel(
       userId: userId ?? this.userId,
-      enablePromotionNearby: enablePromotionNearby ?? this.enablePromotionNearby,
-      enablePromotionExpiring: enablePromotionExpiring ?? this.enablePromotionExpiring,
+      enablePromotionNearby:
+          enablePromotionNearby ?? this.enablePromotionNearby,
+      enablePromotionExpiring:
+          enablePromotionExpiring ?? this.enablePromotionExpiring,
       enablePromotionNew: enablePromotionNew ?? this.enablePromotionNew,
       enableBadgeUnlocked: enableBadgeUnlocked ?? this.enableBadgeUnlocked,
       enableLevelUp: enableLevelUp ?? this.enableLevelUp,

@@ -48,122 +48,122 @@ class AppRouter {
   static const String dataSettings = '/settings/data';
 
   static GoRouter router(BuildContext context) => GoRouter(
-    initialLocation: onboarding,
-    redirect: (context, state) {
-      final authState = context.read<AuthBloc>().state;
-      final isAuthenticated = authState is AuthAuthenticated;
-      final isAuthLoading = authState is AuthLoading;
-      
-      final isOnAuthPage = state.matchedLocation == login ||
-          state.matchedLocation == register ||
-          state.matchedLocation == forgotPassword ||
-          state.matchedLocation == onboarding;
-      
-      // Si está cargando, no redirigir
-      if (isAuthLoading) {
-        return null;
-      }
-      
-      // Si está autenticado y en página de auth, redirigir a home
-      if (isAuthenticated && isOnAuthPage) {
-        return home;
-      }
-      
-      // Si no está autenticado y no está en página de auth, redirigir a login
-      if (!isAuthenticated && !isOnAuthPage) {
-        return login;
-      }
-      
-      return null;
-    },
-    refreshListenable: GoRouterRefreshStream(
-      context.read<AuthBloc>().stream,
-    ),
-    routes: [
-      GoRoute(
-        path: onboarding,
-        builder: (context, state) => const OnboardingPage(),
-      ),
-      GoRoute(
-        path: login,
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: register,
-        builder: (context, state) => const RegisterPage(),
-      ),
-      GoRoute(
-        path: forgotPassword,
-        builder: (context, state) => const ForgotPasswordPage(),
-      ),
-      GoRoute(
-        path: home,
-        builder: (context, state) => const HomePage(),
-      ),
-      GoRoute(
-        path: promotionDetail,
-        builder: (context, state) {
-          final promotionId = state.extra as String;
-          return PromotionDetailPage(promotionId: promotionId);
+        initialLocation: onboarding,
+        redirect: (context, state) {
+          final authState = context.read<AuthBloc>().state;
+          final isAuthenticated = authState is AuthAuthenticated;
+          final isAuthLoading = authState is AuthLoading;
+
+          final isOnAuthPage = state.matchedLocation == login ||
+              state.matchedLocation == register ||
+              state.matchedLocation == forgotPassword ||
+              state.matchedLocation == onboarding;
+
+          // Si está cargando, no redirigir
+          if (isAuthLoading) {
+            return null;
+          }
+
+          // Si está autenticado y en página de auth, redirigir a home
+          if (isAuthenticated && isOnAuthPage) {
+            return home;
+          }
+
+          // Si no está autenticado y no está en página de auth, redirigir a login
+          if (!isAuthenticated && !isOnAuthPage) {
+            return login;
+          }
+
+          return null;
         },
-      ),
-      GoRoute(
-        path: publishPromotion,
-        builder: (context, state) => const PublishPromotionPage(),
-      ),
-      GoRoute(
-        path: notificationSettings,
-        builder: (context, state) => const NotificationSettingsPage(),
-      ),
-      GoRoute(
-        path: notificationsList,
-        builder: (context, state) => const NotificationsListPage(),
-      ),
-      GoRoute(
-        path: profile,
-        builder: (context, state) => const ProfilePage(),
-      ),
-      GoRoute(
-        path: editProfile,
-        builder: (context, state) {
-          final user = state.extra as UserEntity;
-          return EditProfilePage(user: user);
-        },
-      ),
-      GoRoute(
-        path: userStats,
-        builder: (context, state) => const UserStatsPage(),
-      ),
-      GoRoute(
-        path: promotionHistory,
-        builder: (context, state) => const PromotionHistoryPage(),
-      ),
-      GoRoute(
-        path: settings,
-        builder: (context, state) => const AppSettingsPage(),
-      ),
-      GoRoute(
-        path: locationSettings,
-        builder: (context, state) => const LocationSettingsPage(),
-      ),
-      GoRoute(
-        path: themeSettings,
-        builder: (context, state) => const ThemeSettingsPage(),
-      ),
-      GoRoute(
-        path: filtersSettings,
-        builder: (context, state) => const FiltersSettingsPage(),
-      ),
-      GoRoute(
-        path: privacySettings,
-        builder: (context, state) => const PrivacySettingsPage(),
-      ),
-      GoRoute(
-        path: dataSettings,
-        builder: (context, state) => const DataSettingsPage(),
-      ),
-    ],
-  );
+        refreshListenable: GoRouterRefreshStream(
+          context.read<AuthBloc>().stream,
+        ),
+        routes: [
+          GoRoute(
+            path: onboarding,
+            builder: (context, state) => const OnboardingPage(),
+          ),
+          GoRoute(
+            path: login,
+            builder: (context, state) => const LoginPage(),
+          ),
+          GoRoute(
+            path: register,
+            builder: (context, state) => const RegisterPage(),
+          ),
+          GoRoute(
+            path: forgotPassword,
+            builder: (context, state) => const ForgotPasswordPage(),
+          ),
+          GoRoute(
+            path: home,
+            builder: (context, state) => const HomePage(),
+          ),
+          GoRoute(
+            path: promotionDetail,
+            builder: (context, state) {
+              final promotionId = state.extra as String;
+              return PromotionDetailPage(promotionId: promotionId);
+            },
+          ),
+          GoRoute(
+            path: publishPromotion,
+            builder: (context, state) => const PublishPromotionPage(),
+          ),
+          GoRoute(
+            path: notificationSettings,
+            builder: (context, state) => const NotificationSettingsPage(),
+          ),
+          GoRoute(
+            path: notificationsList,
+            builder: (context, state) => const NotificationsListPage(),
+          ),
+          GoRoute(
+            path: profile,
+            builder: (context, state) => const ProfilePage(),
+          ),
+          GoRoute(
+            path: editProfile,
+            builder: (context, state) {
+              final user = state.extra as UserEntity;
+              return EditProfilePage(user: user);
+            },
+          ),
+          GoRoute(
+            path: userStats,
+            builder: (context, state) => const UserStatsPage(),
+          ),
+          GoRoute(
+            path: promotionHistory,
+            builder: (context, state) => const PromotionHistoryPage(),
+          ),
+          GoRoute(
+            path: settings,
+            builder: (context, state) => const AppSettingsPage(),
+          ),
+          GoRoute(
+            path: locationSettings,
+            builder: (context, state) => const LocationSettingsPage(),
+          ),
+          GoRoute(
+            path: themeSettings,
+            builder: (context, state) => const ThemeSettingsPage(),
+          ),
+          GoRoute(
+            path: filtersSettings,
+            builder: (context, state) => const FiltersSettingsPage(),
+          ),
+          GoRoute(
+            path: privacySettings,
+            builder: (context, state) => const PrivacySettingsPage(),
+          ),
+          GoRoute(
+            path: dataSettings,
+            builder: (context, state) => const DataSettingsPage(),
+          ),
+        ],
+      );
 }
 
 /// Stream que notifica a GoRouter cuando debe refrescar las rutas
@@ -171,8 +171,8 @@ class GoRouterRefreshStream extends ChangeNotifier {
   GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
     _subscription = stream.asBroadcastStream().listen(
-      (dynamic _) => notifyListeners(),
-    );
+          (dynamic _) => notifyListeners(),
+        );
   }
 
   late final StreamSubscription<dynamic> _subscription;

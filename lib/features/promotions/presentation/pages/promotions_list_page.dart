@@ -33,8 +33,10 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
     // Cargar promociones al iniciar
     context.read<PromotionBloc>().add(const PromotionFetchRequested(limit: 20));
     // Cargar categorías
-    context.read<PromotionBloc>().add(const PromotionCategoriesFetchRequested());
-    
+    context
+        .read<PromotionBloc>()
+        .add(const PromotionCategoriesFetchRequested());
+
     // Listener para paginación
     _scrollController.addListener(_onScroll);
   }
@@ -95,7 +97,8 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
           final authBloc = context.read<AuthBloc>();
           final authState = authBloc.state;
           if (authState is AuthAuthenticated) {
-            final updatedSavedPromotions = List<String>.from(authState.user.savedPromotions);
+            final updatedSavedPromotions =
+                List<String>.from(authState.user.savedPromotions);
             if (state.isSaved) {
               if (!updatedSavedPromotions.contains(state.promotionId)) {
                 updatedSavedPromotions.add(state.promotionId);
@@ -103,13 +106,14 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
             } else {
               updatedSavedPromotions.remove(state.promotionId);
             }
-            
+
             final updatedUser = authState.user.copyWith(
               savedPromotions: updatedSavedPromotions,
             );
+            // ignore: invalid_use_of_visible_for_testing_member
             authBloc.emit(AuthAuthenticated(user: updatedUser));
           }
-          
+
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message),
@@ -127,15 +131,16 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
         // Estado efectivo a renderizar: el actual si es PromotionLoaded,
         // o el caché si el bloc está en otro estado (ej. PromotionDetailLoaded
         // al volver del detalle, o PromotionRefreshing durante el pull-to-refresh).
-        final displayState = (state is PromotionLoaded)
-            ? state
-            : _lastLoadedState;
+        final displayState =
+            (state is PromotionLoaded) ? state : _lastLoadedState;
 
         return RefreshIndicator(
           onRefresh: () async {
-            context.read<PromotionBloc>().add(const PromotionRefreshRequested());
+            context
+                .read<PromotionBloc>()
+                .add(const PromotionRefreshRequested());
             // Esperar un momento para que se complete la recarga
-            await Future.delayed(const Duration(milliseconds: 500));
+            await Future<void>.delayed(const Duration(milliseconds: 500));
           },
           child: CustomScrollView(
             controller: _scrollController,
@@ -149,7 +154,8 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
               // Lista de promociones
               if (displayState != null)
                 _buildPromotionsList(displayState)
-              else if (state is PromotionLoading && state is! PromotionRefreshing)
+              else if (state is PromotionLoading &&
+                  state is! PromotionRefreshing)
                 const SliverFillRemaining(
                   child: Center(child: CircularProgressIndicator()),
                 )
@@ -223,7 +229,9 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
       selectedColor: AppColors.primary,
       backgroundColor: Theme.of(context).cardColor,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.white : Theme.of(context).textTheme.bodyMedium?.color,
+        color: isSelected
+            ? Colors.white
+            : Theme.of(context).textTheme.bodyMedium?.color,
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
       side: BorderSide(
@@ -243,22 +251,24 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
       builder: (context, settingsState) {
         // Filtrar promociones según settings
         var filteredPromotions = state.promotions;
-        
+
         if (settingsState is SettingsLoaded) {
           filteredPromotions = state.promotions.where((promo) {
             // Filtro de descuento mínimo
             // Extraer el porcentaje del string discount (ej: "20%" -> 20)
-            final discountStr = promo.discount.replaceAll(RegExp(r'[^0-9.]'), '');
+            final discountStr =
+                promo.discount.replaceAll(RegExp(r'[^0-9.]'), '');
             final discount = double.tryParse(discountStr) ?? 0;
             if (discount < settingsState.settings.minDiscountPercentage) {
               return false;
             }
-            
+
             // Filtro de promociones vencidas
-            if (settingsState.settings.hideExpiredPromotions && promo.isExpired) {
+            if (settingsState.settings.hideExpiredPromotions &&
+                promo.isExpired) {
               return false;
             }
-            
+
             return true;
           }).toList();
         }
@@ -309,38 +319,39 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
 
                 final promotion = filteredPromotions[index];
                 final authState = context.read<AuthBloc>().state;
-                final userId = authState is AuthAuthenticated ? authState.user.id : '';
+                final userId =
+                    authState is AuthAuthenticated ? authState.user.id : '';
                 final isFavorite = authState is AuthAuthenticated
                     ? authState.user.savedPromotions.contains(promotion.id)
                     : false;
 
                 return PromotionCard(
                   promotion: promotion,
-              isFavorite: isFavorite,
-              onTap: () {
-                // Incrementar vistas
-                context.read<PromotionBloc>().add(
-                      PromotionIncrementViewsRequested(
-                        promotionId: promotion.id,
-                      ),
+                  isFavorite: isFavorite,
+                  onTap: () {
+                    // Incrementar vistas
+                    context.read<PromotionBloc>().add(
+                          PromotionIncrementViewsRequested(
+                            promotionId: promotion.id,
+                          ),
+                        );
+                    // Navegar a detalle
+                    context.push(
+                      AppRouter.promotionDetail,
+                      extra: promotion.id,
                     );
-                // Navegar a detalle
-                context.push(
-                  AppRouter.promotionDetail,
-                  extra: promotion.id,
-                );
-              },
-              onFavorite: userId.isNotEmpty
-                  ? () {
-                      context.read<PromotionBloc>().add(
-                            PromotionToggleSaveRequested(
-                              promotionId: promotion.id,
-                              userId: userId,
-                              isSaved: !isFavorite,
-                            ),
-                          );
-                    }
-                  : null,
+                  },
+                  onFavorite: userId.isNotEmpty
+                      ? () {
+                          context.read<PromotionBloc>().add(
+                                PromotionToggleSaveRequested(
+                                  promotionId: promotion.id,
+                                  userId: userId,
+                                  isSaved: !isFavorite,
+                                ),
+                              );
+                        }
+                      : null,
                 );
               },
               childCount: filteredPromotions.length + (state.hasMore ? 1 : 0),
@@ -387,7 +398,7 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.error_outline,
             size: 80,
             color: AppColors.error,

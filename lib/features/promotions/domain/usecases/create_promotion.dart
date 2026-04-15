@@ -10,10 +10,10 @@ class CreatePromotion {
   CreatePromotion(this.repository);
 
   /// Ejecuta el caso de uso
-  /// 
+  ///
   /// Parámetros:
   /// - [promotion]: La promoción a crear
-  /// 
+  ///
   /// Retorna:
   /// - [Right(PromotionEntity)]: Si la creación fue exitosa
   /// - [Left(Failure)]: Si ocurrió un error

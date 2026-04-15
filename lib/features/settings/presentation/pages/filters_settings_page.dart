@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../bloc/settings_bloc.dart';
-import '../../domain/entities/app_settings_entity.dart';
 
 /// Página de configuración de filtros de contenido
 class FiltersSettingsPage extends StatefulWidget {
@@ -53,7 +52,7 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'Descuento Mínimo',
                                 style: TextStyle(
                                   fontSize: 16,
@@ -63,7 +62,7 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                               const SizedBox(height: 8),
                               Text(
                                 '${_minDiscount.toStringAsFixed(0)}%',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
                                   color: AppColors.primary,
@@ -111,7 +110,7 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                       color: Theme.of(context).cardColor,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
+                          color: Colors.black.withValues(alpha: 0.1),
                           blurRadius: 4,
                           offset: const Offset(0, -2),
                         ),
@@ -126,11 +125,14 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                               minDiscountPercentage: _minDiscount,
                               hideExpiredPromotions: _hideExpired,
                             );
-                            context.read<SettingsBloc>().add(UpdateSettings(updated));
+                            context
+                                .read<SettingsBloc>()
+                                .add(UpdateSettings(updated));
                             setState(() => _hasChanges = false);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Filtros guardados correctamente'),
+                                content:
+                                    Text('Filtros guardados correctamente'),
                                 backgroundColor: Colors.green,
                                 duration: Duration(seconds: 2),
                               ),

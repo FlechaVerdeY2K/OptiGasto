@@ -8,8 +8,8 @@ import '../../../../core/theme/app_colors.dart';
 /// Widget para seleccionar y mostrar imágenes de promociones
 class ImagePickerWidget extends StatelessWidget {
   final List<File> selectedImages;
-  final Function(List<File>) onImagesSelected;
-  final Function(int) onImageRemoved;
+  final void Function(List<File>) onImagesSelected;
+  final void Function(int) onImageRemoved;
   final int maxImages;
 
   const ImagePickerWidget({
@@ -32,7 +32,7 @@ class ImagePickerWidget extends StatelessWidget {
     }
 
     final ImagePicker picker = ImagePicker();
-    
+
     // Mostrar opciones: cámara o galería
     final source = await showModalBottomSheet<ImageSource>(
       context: context,
@@ -64,7 +64,7 @@ class ImagePickerWidget extends StatelessWidget {
           maxHeight: 1080,
           imageQuality: 85,
         );
-        
+
         if (images.isNotEmpty) {
           // Copiar imágenes a directorio temporal de la app
           final files = await _copyImagesToAppDirectory(images);
@@ -78,7 +78,7 @@ class ImagePickerWidget extends StatelessWidget {
           maxHeight: 1080,
           imageQuality: 85,
         );
-        
+
         if (image != null) {
           // Copiar imagen a directorio temporal de la app
           final files = await _copyImagesToAppDirectory([image]);
@@ -102,7 +102,7 @@ class ImagePickerWidget extends StatelessWidget {
   Future<List<File>> _copyImagesToAppDirectory(List<XFile> xFiles) async {
     final List<File> copiedFiles = [];
     final tempDir = await getTemporaryDirectory();
-    
+
     for (final xFile in xFiles) {
       try {
         // Generar nombre único para el archivo
@@ -110,19 +110,19 @@ class ImagePickerWidget extends StatelessWidget {
         final extension = path.extension(xFile.path);
         final fileName = 'temp_image_$timestamp${copiedFiles.length}$extension';
         final newPath = path.join(tempDir.path, fileName);
-        
+
         // Copiar archivo al directorio temporal
         final bytes = await xFile.readAsBytes();
         final newFile = File(newPath);
         await newFile.writeAsBytes(bytes);
-        
+
         copiedFiles.add(newFile);
       } catch (e) {
         debugPrint('Error al copiar imagen: $e');
         // Continuar con las demás imágenes
       }
     }
-    
+
     return copiedFiles;
   }
 
@@ -204,7 +204,9 @@ class _AddImageButton extends StatelessWidget {
         width: 120,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          color: isDisabled ? Colors.grey[300] : AppColors.primary.withOpacity(0.1),
+          color: isDisabled
+              ? Colors.grey[300]
+              : AppColors.primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isDisabled ? Colors.grey : AppColors.primary,

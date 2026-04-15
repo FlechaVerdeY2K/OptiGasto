@@ -17,12 +17,12 @@ class UserStatsModel extends UserStatsEntity {
   /// Crea un UserStatsModel desde un Map de Supabase
   factory UserStatsModel.fromJson(Map<String, dynamic> json) {
     return UserStatsModel(
-      userId: json['user_id'] ?? '',
+      userId: (json['user_id'] as String?) ?? '',
       totalSavings: (json['total_savings'] as num?)?.toDouble() ?? 0.0,
-      promotionsUsed: json['promotions_used'] ?? 0,
-      promotionsPublished: json['promotions_published'] ?? 0,
-      validationsGiven: json['validations_given'] ?? 0,
-      reportsSubmitted: json['reports_submitted'] ?? 0,
+      promotionsUsed: (json['promotions_used'] as num?)?.toInt() ?? 0,
+      promotionsPublished: (json['promotions_published'] as num?)?.toInt() ?? 0,
+      validationsGiven: (json['validations_given'] as num?)?.toInt() ?? 0,
+      reportsSubmitted: (json['reports_submitted'] as num?)?.toInt() ?? 0,
       savingsByCategory: json['savings_by_category'] != null
           ? Map<String, double>.from(
               (json['savings_by_category'] as Map).map(
@@ -38,13 +38,13 @@ class UserStatsModel extends UserStatsEntity {
               (json['promotions_by_month'] as Map).map(
                 (key, value) => MapEntry(
                   key.toString(),
-                  value as int,
+                  (value as num).toInt(),
                 ),
               ),
             )
           : {},
       lastUpdated: json['last_updated'] != null
-          ? DateTime.parse(json['last_updated'])
+          ? DateTime.parse(json['last_updated'] as String)
           : DateTime.now(),
     );
   }

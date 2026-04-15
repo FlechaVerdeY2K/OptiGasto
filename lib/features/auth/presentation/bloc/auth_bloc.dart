@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/user_entity.dart';
 import '../../domain/usecases/get_current_user.dart';
 import '../../domain/usecases/send_password_reset_email.dart';
 import '../../domain/usecases/sign_in_with_email.dart';
@@ -18,7 +19,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SendPasswordResetEmail sendPasswordResetEmail;
   final AuthRepository authRepository;
 
-  StreamSubscription? _authStateSubscription;
+  StreamSubscription<UserEntity?>? _authStateSubscription;
 
   AuthBloc({
     required this.signInWithEmail,

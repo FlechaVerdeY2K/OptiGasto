@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/theme/app_colors.dart';
 
 /// Página de estadísticas detalladas del usuario
 class UserStatsPage extends StatelessWidget {
@@ -35,21 +34,21 @@ class UserStatsPage extends StatelessWidget {
                           ),
                     ),
                     const SizedBox(height: 16),
-                    _StatRow(
+                    const _StatRow(
                       icon: Icons.savings_outlined,
                       label: 'Ahorro Total',
                       value: '₡0',
                       color: Colors.green,
                     ),
                     const Divider(),
-                    _StatRow(
+                    const _StatRow(
                       icon: Icons.local_offer_outlined,
                       label: 'Promociones Usadas',
                       value: '0',
                       color: Colors.blue,
                     ),
                     const Divider(),
-                    _StatRow(
+                    const _StatRow(
                       icon: Icons.trending_up,
                       label: 'Ahorro Promedio',
                       value: '₡0',

@@ -58,7 +58,9 @@ class PromotionLoaded extends PromotionState {
     return PromotionLoaded(
       promotions: promotions ?? this.promotions,
       categories: categories ?? this.categories,
-      selectedCategory: clearSelectedCategory ? null : (selectedCategory ?? this.selectedCategory),
+      selectedCategory: clearSelectedCategory
+          ? null
+          : (selectedCategory ?? this.selectedCategory),
       searchQuery: clearSearchQuery ? null : (searchQuery ?? this.searchQuery),
       hasMore: hasMore ?? this.hasMore,
     );

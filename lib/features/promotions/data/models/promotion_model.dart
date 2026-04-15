@@ -62,43 +62,43 @@ class PromotionModel extends PromotionEntity {
   /// Crea un PromotionModel desde un Map de Supabase
   factory PromotionModel.fromJson(Map<String, dynamic> json) {
     return PromotionModel(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      commerceId: json['commerce_id'] ?? '',
-      commerceName: json['commerce_name'] ?? '',
-      category: json['category'] ?? '',
-      discount: json['discount'] ?? '',
-      originalPrice: json['original_price'] != null 
+      id: (json['id'] as String?) ?? '',
+      title: (json['title'] as String?) ?? '',
+      description: (json['description'] as String?) ?? '',
+      commerceId: (json['commerce_id'] as String?) ?? '',
+      commerceName: (json['commerce_name'] as String?) ?? '',
+      category: (json['category'] as String?) ?? '',
+      discount: (json['discount'] as String?) ?? '',
+      originalPrice: json['original_price'] != null
           ? (json['original_price'] as num).toDouble()
           : null,
-      discountedPrice: json['discounted_price'] != null 
+      discountedPrice: json['discounted_price'] != null
           ? (json['discounted_price'] as num).toDouble()
           : null,
-      images: json['images'] != null 
-          ? List<String>.from(json['images'])
+      images: json['images'] != null
+          ? List<String>.from(json['images'] as List)
           : [],
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
-      address: json['address'] ?? '',
-      validUntil: json['valid_until'] != null 
-          ? DateTime.parse(json['valid_until'])
+      address: (json['address'] as String?) ?? '',
+      validUntil: json['valid_until'] != null
+          ? DateTime.parse(json['valid_until'] as String)
           : DateTime.now(),
-      createdBy: json['created_by'] ?? '',
-      positiveValidations: json['positive_validations'] ?? 0,
-      negativeValidations: json['negative_validations'] ?? 0,
-      validatedByUsers: json['validated_by_users'] != null 
-          ? List<String>.from(json['validated_by_users'])
+      createdBy: (json['created_by'] as String?) ?? '',
+      positiveValidations: (json['positive_validations'] as num?)?.toInt() ?? 0,
+      negativeValidations: (json['negative_validations'] as num?)?.toInt() ?? 0,
+      validatedByUsers: json['validated_by_users'] != null
+          ? List<String>.from(json['validated_by_users'] as List)
           : [],
-      views: json['views'] ?? 0,
-      saves: json['saves'] ?? 0,
-      isActive: json['is_active'] ?? true,
-      isPremium: json['is_premium'] ?? false,
-      createdAt: json['created_at'] != null 
-          ? DateTime.parse(json['created_at'])
+      views: (json['views'] as num?)?.toInt() ?? 0,
+      saves: (json['saves'] as num?)?.toInt() ?? 0,
+      isActive: (json['is_active'] as bool?) ?? true,
+      isPremium: (json['is_premium'] as bool?) ?? false,
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'] as String)
           : DateTime.now(),
-      updatedAt: json['updated_at'] != null 
-          ? DateTime.parse(json['updated_at'])
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'] as String)
           : DateTime.now(),
     );
   }
