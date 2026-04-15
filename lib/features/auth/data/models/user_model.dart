@@ -40,29 +40,31 @@ class UserModel extends UserEntity {
   /// Crea un UserModel desde un Map de Supabase
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      id: json['id'] ?? '',
-      email: json['email'] ?? '',
-      name: json['name'] ?? '',
-      photoUrl: json['photo_url'],
-      phone: json['phone'],
+      id: (json['id'] as String?) ?? '',
+      email: (json['email'] as String?) ?? '',
+      name: (json['name'] as String?) ?? '',
+      photoUrl: json['photo_url'] as String?,
+      phone: json['phone'] as String?,
       latitude: json['latitude'] != null
           ? (json['latitude'] as num).toDouble()
           : null,
       longitude: json['longitude'] != null
           ? (json['longitude'] as num).toDouble()
           : null,
-      reputation: json['reputation'] ?? 0,
-      badges: json['badges'] != null ? List<String>.from(json['badges']) : [],
+      reputation: (json['reputation'] as int?) ?? 0,
+      badges: json['badges'] != null
+          ? List<String>.from(json['badges'] as List)
+          : [],
       savedPromotions: json['saved_promotions'] != null
-          ? List<String>.from(json['saved_promotions'])
+          ? List<String>.from(json['saved_promotions'] as List)
           : [],
       totalSavings: json['total_savings'] != null
           ? (json['total_savings'] as num).toDouble()
           : 0.0,
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+          ? DateTime.parse(json['created_at'] as String)
           : DateTime.now(),
-      isCommerce: json['is_commerce'] ?? false,
+      isCommerce: (json['is_commerce'] as bool?) ?? false,
     );
   }
 
