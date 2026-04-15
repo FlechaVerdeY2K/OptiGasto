@@ -1,214 +1,140 @@
-# OptiGasto 🛒💰
+# OptiGasto
 
-Aplicación móvil para encontrar ofertas y promociones geolocalizadas en Costa Rica.
+App Flutter para encontrar ofertas y promociones geolocalizadas en Costa Rica.
 
-## 📱 Descripción
+## Estado del Proyecto
 
-OptiGasto es una plataforma colaborativa que permite a los consumidores costarricenses encontrar ofertas, promociones y descuentos disponibles en comercios cercanos. La aplicación utiliza geolocalización para mostrar las mejores oportunidades de ahorro en tiempo real.
+Fases 1–6 completadas y mergeadas a `main`.
 
-## ✨ Características Principales
+| Fase | Descripción |
+|------|-------------|
+| 1 | **Autenticación** — Login/registro con email y contraseña. Google/Apple Sign-In pendiente de configuración de providers. |
+| 2 | **Promociones Core** — CRUD de promociones, validación comunitaria (like/dislike), favoritos y paginación. |
+| 3 | **Geolocalización** — Mapa interactivo con Google Maps, clustering de marcadores y consultas PostGIS. |
+| 4 | **Publicación y Validación** — Subida de fotos a Supabase Storage, sistema de reportes y Row-Level Security. |
+| 5 | **Notificaciones FCM** — Push notifications, actualizaciones en tiempo real y geofencing básico. |
+| 6 | **Perfil de Usuario** — Estadísticas con fl_chart, configuración de cuenta y soporte de tema claro/oscuro. |
 
-- 🗺️ **Mapa interactivo** con promociones geolocalizadas
-- 📸 **Sistema colaborativo** para publicar y validar ofertas
-- 🎯 **Ruta de Ahorro Inteligente** para optimizar compras
-- 🔔 **Notificaciones** de promociones cercanas
-- 🏆 **Gamificación** con insignias y recompensas
-- 💼 **Panel B2B** para comercios
-- 📊 **Estadísticas** de ahorro personal
+## Stack Tecnológico
 
-## 🛠️ Tecnologías
+| Grupo | Dependencias clave |
+|-------|--------------------|
+| State Management | `flutter_bloc`, `equatable` |
+| Backend | `supabase_flutter` (Auth, DB con PostGIS, Storage, Edge Functions) |
+| Maps & Location | `google_maps_flutter`, `geolocator`, `geocoding`, `flutter_polyline_points` |
+| Notifications | `firebase_core`, `firebase_messaging`, `flutter_local_notifications` |
+| Navigation | `go_router` |
+| DI | `get_it`, `injectable` |
+| Functional | `dartz` (`Either<Failure, T>`) |
+| Local Storage | `hive`, `shared_preferences`, `flutter_secure_storage` |
+| Charts | `fl_chart` |
 
-- **Framework:** Flutter 3.x
-- **Lenguaje:** Dart 3.x
-- **Arquitectura:** Clean Architecture + BLoC
-- **Backend:** Firebase Suite
-- **Mapas:** Google Maps
-- **Estado:** flutter_bloc
+## Arquitectura
 
-## 📋 Requisitos Previos
+Clean Architecture con tres capas:
 
-- Flutter SDK 3.5.0 o superior
-- Dart SDK 3.5.0 o superior
-- Android Studio / Xcode
-- Cuenta de Firebase
-- Google Maps API Key
+- **Domain** — Entidades, repositorios abstractos y use cases. Los use cases retornan `Either<Failure, T>`.
+- **Data** — Implementaciones de repositorios, datasources (Supabase) y modelos con serialización.
+- **Presentation** — Widgets Flutter y BLoCs que consumen los use cases.
 
-## 🚀 Instalación
-
-1. Clonar el repositorio:
-```bash
-git clone https://github.com/tu-usuario/optigasto.git
-cd optigasto
-```
-
-2. Instalar dependencias:
-```bash
-flutter pub get
-```
-
-3. Configurar Firebase (⚠️ IMPORTANTE):
-```bash
-# Instalar FlutterFire CLI
-dart pub global activate flutterfire_cli
-
-# Configurar Firebase
-flutterfire configure
-```
-
-**Nota:** Los archivos de configuración de Firebase (`google-services.json`, `GoogleService-Info.plist`, `firebase_options.dart`) están en `.gitignore` por seguridad. Ver [FIREBASE_SETUP.md](FIREBASE_SETUP.md) para más detalles.
-
-4. Configurar Google Maps API Key:
-   - Editar `lib/core/constants/api_constants.dart`
-   - Reemplazar `YOUR_GOOGLE_MAPS_API_KEY` con tu API key
-
-5. Ejecutar la aplicación:
-```bash
-flutter run
-```
-
-## 🔐 Seguridad y Configuración
-
-### Archivos Sensibles (NO subir a GitHub)
-
-Los siguientes archivos contienen información sensible y están protegidos en `.gitignore`:
-
-- `android/app/google-services.json` - Configuración Firebase Android
-- `ios/Runner/GoogleService-Info.plist` - Configuración Firebase iOS
-- `lib/firebase_options.dart` - Opciones Firebase generadas
-- `.env` - Variables de entorno
-
-**Para configurar estos archivos en tu entorno local, consulta [FIREBASE_SETUP.md](FIREBASE_SETUP.md)**
-
-### Antes de Subir a GitHub
-
-1. Verifica que los archivos sensibles están en `.gitignore`
-2. Nunca hagas commit de claves API o credenciales
-3. Usa variables de entorno para información sensible
-4. Revisa el historial de commits antes de push
-
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 lib/
 ├── core/
+│   ├── config/         # Configuración de entorno (Supabase, etc.)
 │   ├── constants/      # Constantes de la app
-│   ├── errors/         # Manejo de errores
-│   ├── network/        # Configuración de red
-│   ├── theme/          # Tema y estilos
+│   ├── di/             # Inyección de dependencias (get_it + injectable)
+│   ├── errors/         # Failures y excepciones
+│   ├── routes/         # Rutas (go_router)
+│   ├── theme/          # Tema claro/oscuro
 │   └── utils/          # Utilidades
 ├── features/
-│   ├── auth/           # Autenticación
-│   ├── promotions/     # Promociones
-│   ├── map/            # Mapa y geolocalización
-│   ├── profile/        # Perfil de usuario
-│   └── commerce/       # Panel de comercios
+│   ├── auth/           # Autenticación (Fase 1)
+│   ├── promotions/     # Promociones core (Fases 2 y 4)
+│   ├── location/       # Geolocalización y mapas (Fase 3)
+│   ├── notifications/  # Notificaciones FCM (Fase 5)
+│   ├── profile/        # Perfil y estadísticas (Fase 6)
+│   ├── settings/       # Configuración y tema
+│   ├── home/           # Pantalla principal
+│   └── onboarding/     # Onboarding inicial
 └── main.dart
 ```
 
-## 🏗️ Arquitectura
+## Setup Local
 
-El proyecto sigue **Clean Architecture** con tres capas:
+### 1. Clonar el repositorio
 
-1. **Presentation Layer:** UI + BLoC
-2. **Domain Layer:** Entidades y casos de uso
-3. **Data Layer:** Repositorios y fuentes de datos
-
-## 🎨 Diseño
-
-### Paleta de Colores
-
-- **Primary:** #2E7D32 (Verde - ahorro)
-- **Secondary:** #FF6F00 (Naranja - promociones)
-- **Accent:** #0277BD (Azul - confianza)
-
-### Tipografía
-
-- **Font Family:** Roboto
-- **Headings:** Roboto Bold
-- **Body:** Roboto Regular
-
-## 🧪 Testing
-
-Ejecutar tests:
 ```bash
-# Unit tests
-flutter test
-
-# Integration tests
-flutter test integration_test
+git clone https://github.com/FlechaVerdeY2K/OptiGasto.git
+cd OptiGasto
 ```
 
-## 📦 Build
+### 2. Instalar dependencias
 
-### Android
 ```bash
-flutter build apk --release
+flutter pub get
 ```
 
-### iOS
+### 3. Configurar variables de entorno
+
 ```bash
-flutter build ios --release
+cp .env.example .env
+# Editar .env con tus credenciales de Supabase y Google Maps
 ```
 
-## 🤝 Contribución
+### 4. Configurar Firebase
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+```bash
+dart pub global activate flutterfire_cli
+flutterfire configure
+```
 
-## 📝 Convenciones de Código
+> Los archivos `firebase_options.dart`, `google-services.json` y `GoogleService-Info.plist` están en `.gitignore`. Debes generarlos localmente con `flutterfire configure`.
 
-- Seguir [Effective Dart](https://dart.dev/guides/language/effective-dart)
-- Usar `flutter analyze` antes de commit
-- Mantener cobertura de tests >80%
-- Documentar funciones públicas
+### 5. Correr la app
 
-## 🗺️ Roadmap
+```bash
+flutter run --dart-define-from-file=.env
+```
 
-### Fase 1: MVP (Actual)
-- [x] Setup del proyecto
-- [x] Estructura Clean Architecture
-- [x] Tema y constantes
-- [ ] Autenticación
-- [ ] Listado de promociones
-- [ ] Mapa básico
+> **IMPORTANTE:** El flag `--dart-define-from-file=.env` es obligatorio. Sin él, la app no puede leer las credenciales de Supabase y fallará al iniciar.
 
-### Fase 2: Funcionalidades Avanzadas
-- [ ] Ruta de Ahorro Inteligente
-- [ ] Notificaciones push
-- [ ] Gamificación
-- [ ] Panel de comercios
+## Scripts Útiles
 
-### Fase 3: Optimización
-- [ ] Analítica
-- [ ] Optimización de rendimiento
-- [ ] Testing exhaustivo
+```bash
+flutter run --dart-define-from-file=.env   # Correr en debug
+flutter analyze                             # Static analysis
+dart format --set-exit-if-changed .        # Verificar formato
+flutter test                                # Correr tests
+flutter test --coverage                     # Tests con coverage
+```
 
-## 📄 Licencia
+## Seguridad
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+- Todas las credenciales se inyectan vía `String.fromEnvironment()` usando `--dart-define-from-file`.
+- Row-Level Security (RLS) habilitado en todas las tablas de Supabase con `auth.uid()`.
+- Los buckets de Storage son owner-only.
+- La Edge Function `send-fcm-notification` maneja tokens FCM del lado del servidor para no exponer la Service Account al cliente.
+- **NO hardcodear API keys bajo ninguna circunstancia.**
 
-## 👥 Equipo
+## Roadmap
 
-- **Product Owner:** Edgar Herrera
-- **Tech Lead:** Edgar Herrera
-- **Developers:** Edgar Herrera
-- **UI/UX Designer:** [Nombre]
+- **Fase 7** — Ruta Inteligente (optimización de recorrido de compras)
+- **Fase 8** — Búsqueda Avanzada (filtros, etiquetas, historial)
+- **Fase 9** — Gamificación (insignias, rankings, recompensas)
+- **Fase 10** — Google/Apple Sign-In completo
+- **Fase B2B** — Panel de comercios (pospuesta)
 
-## 📞 Contacto
+## Contribución
 
-- **Email:** contacto@optigasto.com
-- **Website:** https://optigasto.com
-- **Twitter:** @optigasto
+Ver [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## 🙏 Agradecimientos
+## Licencia
 
-- Universidad Hispanoamericana de Costa Rica
-- Comunidad Flutter Costa Rica
-- Todos los contribuidores
+MIT — ver [LICENSE](LICENSE).
 
----
+## Contacto
 
-Hecho con ❤️ en Costa Rica 🇨🇷
+- **Maintainer:** Edgar Herrera
+- **Repositorio:** [FlechaVerdeY2K/OptiGasto](https://github.com/FlechaVerdeY2K/OptiGasto)
