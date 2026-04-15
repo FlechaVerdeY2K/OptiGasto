@@ -62,13 +62,21 @@ class LocationModel extends LocationEntity {
   /// Crea un LocationModel desde datos de geolocator
   factory LocationModel.fromGeolocator(dynamic position) {
     return LocationModel(
-      latitude: position.latitude,
-      longitude: position.longitude,
-      accuracy: position.accuracy,
-      altitude: position.altitude,
-      heading: position.heading,
-      speed: position.speed,
-      timestamp: position.timestamp ?? DateTime.now(),
+      latitude: (position.latitude as num).toDouble(),
+      longitude: (position.longitude as num).toDouble(),
+      accuracy: position.accuracy != null
+          ? (position.accuracy as num).toDouble()
+          : null,
+      altitude: position.altitude != null
+          ? (position.altitude as num).toDouble()
+          : null,
+      heading: position.heading != null
+          ? (position.heading as num).toDouble()
+          : null,
+      speed: position.speed != null
+          ? (position.speed as num).toDouble()
+          : null,
+      timestamp: (position.timestamp as DateTime?) ?? DateTime.now(),
     );
   }
 
