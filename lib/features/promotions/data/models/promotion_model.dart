@@ -69,35 +69,33 @@ class PromotionModel extends PromotionEntity {
       commerceName: json['commerce_name'] ?? '',
       category: json['category'] ?? '',
       discount: json['discount'] ?? '',
-      originalPrice: json['original_price'] != null 
+      originalPrice: json['original_price'] != null
           ? (json['original_price'] as num).toDouble()
           : null,
-      discountedPrice: json['discounted_price'] != null 
+      discountedPrice: json['discounted_price'] != null
           ? (json['discounted_price'] as num).toDouble()
           : null,
-      images: json['images'] != null 
-          ? List<String>.from(json['images'])
-          : [],
+      images: json['images'] != null ? List<String>.from(json['images']) : [],
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       address: json['address'] ?? '',
-      validUntil: json['valid_until'] != null 
+      validUntil: json['valid_until'] != null
           ? DateTime.parse(json['valid_until'])
           : DateTime.now(),
       createdBy: json['created_by'] ?? '',
       positiveValidations: json['positive_validations'] ?? 0,
       negativeValidations: json['negative_validations'] ?? 0,
-      validatedByUsers: json['validated_by_users'] != null 
+      validatedByUsers: json['validated_by_users'] != null
           ? List<String>.from(json['validated_by_users'])
           : [],
       views: json['views'] ?? 0,
       saves: json['saves'] ?? 0,
       isActive: json['is_active'] ?? true,
       isPremium: json['is_premium'] ?? false,
-      createdAt: json['created_at'] != null 
+      createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
-      updatedAt: json['updated_at'] != null 
+      updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : DateTime.now(),
     );

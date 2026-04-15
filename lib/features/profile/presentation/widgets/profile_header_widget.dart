@@ -80,9 +80,9 @@ class ProfileHeaderWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Nombre
               Text(
                 user.name,
@@ -93,9 +93,9 @@ class ProfileHeaderWidget extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               const SizedBox(height: 4),
-              
+
               // Email
               Text(
                 user.email,
@@ -105,7 +105,7 @@ class ProfileHeaderWidget extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              
+
               if (user.phone != null) ...[
                 const SizedBox(height: 4),
                 Text(
@@ -117,9 +117,9 @@ class ProfileHeaderWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ],
-              
+
               const SizedBox(height: 16),
-              
+
               // Botón de editar perfil
               OutlinedButton.icon(
                 onPressed: onEditPressed,
@@ -137,9 +137,9 @@ class ProfileHeaderWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              
+
               const SizedBox(height: 16),
-              
+
               // Badges y reputación
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,

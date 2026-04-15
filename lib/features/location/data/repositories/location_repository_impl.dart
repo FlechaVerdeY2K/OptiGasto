@@ -133,9 +133,8 @@ class LocationRepositoryImpl implements LocationRepository {
     final double deltaLon = (lon2 - lon1) * (pi / 180);
 
     final double a = sin(deltaLat / 2) * sin(deltaLat / 2) +
-        cos(lat1Rad) * cos(lat2Rad) *
-        sin(deltaLon / 2) * sin(deltaLon / 2);
-    
+        cos(lat1Rad) * cos(lat2Rad) * sin(deltaLon / 2) * sin(deltaLon / 2);
+
     final double c = 2 * asin(sqrt(a));
 
     return earthRadius * c;
@@ -163,7 +162,8 @@ class LocationRepositoryImpl implements LocationRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Error al obtener última ubicación: $e'));
+      return Left(
+          ServerFailure(message: 'Error al obtener última ubicación: $e'));
     }
   }
 
@@ -175,7 +175,8 @@ class LocationRepositoryImpl implements LocationRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Error al geocodificar dirección: $e'));
+      return Left(
+          ServerFailure(message: 'Error al geocodificar dirección: $e'));
     }
   }
 
@@ -193,7 +194,8 @@ class LocationRepositoryImpl implements LocationRepository {
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'Error al geocodificar coordenadas: $e'));
+      return Left(
+          ServerFailure(message: 'Error al geocodificar coordenadas: $e'));
     }
   }
 }

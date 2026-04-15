@@ -192,9 +192,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           ),
                         ),
                         TextButton(
-                          onPressed: isLoading
-                              ? null
-                              : () => context.go('/login'),
+                          onPressed:
+                              isLoading ? null : () => context.go('/login'),
                           child: const Text(
                             'Iniciar sesión',
                             style: TextStyle(

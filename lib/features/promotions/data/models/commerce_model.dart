@@ -53,16 +53,12 @@ class CommerceModel extends CommerceEntity {
       phone: json['phone'],
       email: json['email'],
       logo: json['logo'],
-      photos: json['photos'] != null 
-          ? List<String>.from(json['photos'])
-          : [],
-      rating: json['rating'] != null 
-          ? (json['rating'] as num).toDouble()
-          : 0.0,
+      photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
+      rating: json['rating'] != null ? (json['rating'] as num).toDouble() : 0.0,
       totalPromotions: json['total_promotions'] ?? 0,
       isPremium: json['is_premium'] ?? false,
       ownerId: json['owner_id'],
-      createdAt: json['created_at'] != null 
+      createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
     );

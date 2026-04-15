@@ -45,23 +45,21 @@ class UserModel extends UserEntity {
       name: json['name'] ?? '',
       photoUrl: json['photo_url'],
       phone: json['phone'],
-      latitude: json['latitude'] != null 
+      latitude: json['latitude'] != null
           ? (json['latitude'] as num).toDouble()
           : null,
-      longitude: json['longitude'] != null 
+      longitude: json['longitude'] != null
           ? (json['longitude'] as num).toDouble()
           : null,
       reputation: json['reputation'] ?? 0,
-      badges: json['badges'] != null 
-          ? List<String>.from(json['badges'])
-          : [],
-      savedPromotions: json['saved_promotions'] != null 
+      badges: json['badges'] != null ? List<String>.from(json['badges']) : [],
+      savedPromotions: json['saved_promotions'] != null
           ? List<String>.from(json['saved_promotions'])
           : [],
-      totalSavings: json['total_savings'] != null 
+      totalSavings: json['total_savings'] != null
           ? (json['total_savings'] as num).toDouble()
           : 0.0,
-      createdAt: json['created_at'] != null 
+      createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
       isCommerce: json['is_commerce'] ?? false,

@@ -39,7 +39,8 @@ class PromotionHistoryPage extends StatelessWidget {
                     items: const [
                       DropdownMenuItem(value: 'all', child: Text('Todo')),
                       DropdownMenuItem(value: 'month', child: Text('Este mes')),
-                      DropdownMenuItem(value: 'week', child: Text('Esta semana')),
+                      DropdownMenuItem(
+                          value: 'week', child: Text('Esta semana')),
                     ],
                     onChanged: (value) {
                       // TODO: Filtrar por período
@@ -61,7 +62,8 @@ class PromotionHistoryPage extends StatelessWidget {
                     items: const [
                       DropdownMenuItem(value: 'all', child: Text('Todas')),
                       DropdownMenuItem(value: 'food', child: Text('Comida')),
-                      DropdownMenuItem(value: 'tech', child: Text('Tecnología')),
+                      DropdownMenuItem(
+                          value: 'tech', child: Text('Tecnología')),
                     ],
                     onChanged: (value) {
                       // TODO: Filtrar por categoría

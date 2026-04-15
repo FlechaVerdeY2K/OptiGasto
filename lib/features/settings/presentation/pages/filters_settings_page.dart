@@ -126,11 +126,14 @@ class _FiltersSettingsPageState extends State<FiltersSettingsPage> {
                               minDiscountPercentage: _minDiscount,
                               hideExpiredPromotions: _hideExpired,
                             );
-                            context.read<SettingsBloc>().add(UpdateSettings(updated));
+                            context
+                                .read<SettingsBloc>()
+                                .add(UpdateSettings(updated));
                             setState(() => _hasChanges = false);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Filtros guardados correctamente'),
+                                content:
+                                    Text('Filtros guardados correctamente'),
                                 backgroundColor: Colors.green,
                                 duration: Duration(seconds: 2),
                               ),

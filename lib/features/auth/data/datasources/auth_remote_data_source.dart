@@ -128,9 +128,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         createdAt: DateTime.now(),
       );
 
-      await supabase
-          .from(SupabaseConfig.usersTable)
-          .insert(userModel.toJson());
+      await supabase.from(SupabaseConfig.usersTable).insert(userModel.toJson());
 
       return userModel;
     } on AuthException catch (e) {
@@ -145,10 +143,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       // Intentar inicio de sesión silencioso primero (recomendado para web)
       GoogleSignInAccount? googleUser = await googleSignIn.signInSilently();
-      
+
       // Si falla el inicio silencioso, usar el flujo interactivo
       googleUser ??= await googleSignIn.signIn();
-      
+
       if (googleUser == null) {
         throw ServerException(message: 'Inicio de sesión cancelado');
       }
@@ -186,9 +184,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         createdAt: DateTime.now(),
       );
 
-      await supabase
-          .from(SupabaseConfig.usersTable)
-          .insert(userModel.toJson());
+      await supabase.from(SupabaseConfig.usersTable).insert(userModel.toJson());
 
       return userModel;
     } catch (e) {
@@ -245,9 +241,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         createdAt: DateTime.now(),
       );
 
-      await supabase
-          .from(SupabaseConfig.usersTable)
-          .insert(userModel.toJson());
+      await supabase.from(SupabaseConfig.usersTable).insert(userModel.toJson());
 
       return userModel;
     } catch (e) {
@@ -329,7 +323,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
             .select()
             .eq('id', user.id)
             .single();
-        
+
         return UserModel.fromJson(userData);
       } catch (e) {
         return null;

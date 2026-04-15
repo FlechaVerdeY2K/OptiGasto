@@ -27,12 +27,12 @@ class StatsCardWidget extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          
+
           // Card principal de ahorro total
           _buildMainSavingsCard(),
-          
+
           const SizedBox(height: 12),
-          
+
           // Grid de estadísticas
           GridView.count(
             crossAxisCount: 2,

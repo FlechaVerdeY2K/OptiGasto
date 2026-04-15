@@ -21,7 +21,8 @@ class PromotionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final daysUntilExpiry = promotion.validUntil.difference(DateTime.now()).inDays;
+    final daysUntilExpiry =
+        promotion.validUntil.difference(DateTime.now()).inDays;
     final isExpiringSoon = daysUntilExpiry <= 2;
     final isExpired = promotion.isExpired;
 
@@ -58,7 +59,8 @@ class PromotionCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).brightness == Brightness.dark
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
                                     ? Colors.white
                                     : Colors.black87,
                               ),
@@ -130,10 +132,17 @@ class PromotionCard extends StatelessWidget {
                                 symbol: '₡',
                                 decimalDigits: 0,
                               ).format(promotion.originalPrice),
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                decoration: TextDecoration.lineThrough,
-                                color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-                              ),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    decoration: TextDecoration.lineThrough,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.color
+                                        ?.withValues(alpha: 0.5),
+                                  ),
                             ),
                           ],
                         )
@@ -157,7 +166,11 @@ class PromotionCard extends StatelessWidget {
                           Icon(
                             Icons.visibility,
                             size: 14,
-                            color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                            color: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.color
+                                ?.withValues(alpha: 0.7),
                           ),
                           const SizedBox(width: 4),
                           Text(
@@ -166,7 +179,8 @@ class PromotionCard extends StatelessWidget {
                           ),
                           const Spacer(),
                           // Fecha de expiración
-                          _buildExpiryBadge(daysUntilExpiry, isExpiringSoon, isExpired),
+                          _buildExpiryBadge(
+                              daysUntilExpiry, isExpiringSoon, isExpired),
                         ],
                       ),
                     ],
@@ -176,7 +190,12 @@ class PromotionCard extends StatelessWidget {
                 IconButton(
                   icon: Icon(
                     isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? AppColors.error : Theme.of(context).iconTheme.color?.withValues(alpha: 0.5),
+                    color: isFavorite
+                        ? AppColors.error
+                        : Theme.of(context)
+                            .iconTheme
+                            .color
+                            ?.withValues(alpha: 0.5),
                   ),
                   onPressed: onFavorite,
                   padding: EdgeInsets.zero,

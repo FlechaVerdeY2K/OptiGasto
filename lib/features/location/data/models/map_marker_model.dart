@@ -109,8 +109,8 @@ class MapMarkerModel extends MapMarkerEntity {
       subtitle: promotion['commerce_name'],
       location: location,
       type: MarkerType.promotion,
-      iconUrl: promotion['images'] != null && 
-               (promotion['images'] as List).isNotEmpty
+      iconUrl: promotion['images'] != null &&
+              (promotion['images'] as List).isNotEmpty
           ? (promotion['images'] as List).first
           : null,
       metadata: {

@@ -15,47 +15,28 @@ OptiGasto es una aplicación móvil que permite a los consumidores costarricense
 
 ---
 
-## 🚨 Correcciones de Seguridad Prioritarias
+## 🔐 Correcciones de Seguridad — Todas Resueltas ✅
 
-> Estas correcciones deben completarse **antes de iniciar la Fase 7**. Son cambios menores pero críticos.
+> Todas las vulnerabilidades identificadas fueron corregidas antes de continuar con Fase 7.
 
-### SEC-1: `.env.example` expone el Project ID real de Supabase ❌ PENDIENTE
-El archivo `.env.example` commiteado en `main` contiene la URL real del proyecto Supabase. Esto permite a cualquier persona intentar ataques de enumeración de usuarios o fuerza bruta contra el endpoint de Auth.
+| ID | Descripción | Resolución | Fecha |
+|----|------------|-----------|-------|
+| SEC-1 | `.env.example` exponía la URL real del proyecto Supabase | Reemplazada con `https://tu-proyecto.supabase.co` | 14 abr 2026 |
+| SEC-2 | `LOCAL_SUPABASE_ANON_KEY` tenía el JWT demo de Supabase CLI hardcodeado | Reemplazado con `your-local-anon-key-here` | 14 abr 2026 |
+| SEC-3 | `api_constants.dart` tenía `googleMapsApiKey` en código fuente | Constante eliminada; key se lee desde `.env` vía `--dart-define-from-file` | Phase 6 |
+| SEC-4 | 5 buckets de Storage con listing irrestricto y RLS permisivo en `users` | Políticas RLS reemplazadas por `auth.uid() = id`; buckets configurados owner-only (migración `000014`) | Phase 6 |
 
-**Acción:** Reemplazar la URL real con `https://tu-proyecto.supabase.co` y hacer commit a `main`.
+**Pendientes de acción manual en Supabase Dashboard** (no bloquean desarrollo):
 
-### SEC-2: JWT de Supabase CLI hardcodeado en `.env.example` ❌ PENDIENTE
-El `LOCAL_SUPABASE_ANON_KEY` tiene el JWT demo hardcodeado. Aunque es un token público conocido, establece un patrón inseguro.
-
-**Acción:** Reemplazar con el placeholder `your-local-anon-key-here`.
-
-### SEC-3: Google Maps API Key en texto plano en código ❌ PENDIENTE
-El README indica editar `lib/core/constants/api_constants.dart` directamente con la API key, lo cual la expone en el repositorio.
-
-**Acción:**
-- Mover la key a `.env` y leerla con `flutter_dotenv`.
-- Configurar restricciones de App en Google Cloud Console (SHA-1 para Android, Bundle ID para iOS) para limitar el abuso aunque la key sea visible.
-
-### SEC-4: Políticas RLS en Supabase Storage ⚠️ VERIFICAR
-Confirmar que los buckets de imágenes de promociones no tienen escritura pública irrestricta.
-
-**Política requerida en Storage:**
-```sql
--- Solo el owner puede insertar sus propios archivos
-CREATE POLICY "Users can upload own images"
-ON storage.objects FOR INSERT
-WITH CHECK (auth.uid()::text = (storage.foldername(name))[1]);
-
--- Solo el owner puede eliminar sus propios archivos
-CREATE POLICY "Users can delete own images"
-ON storage.objects FOR DELETE
-USING (auth.uid()::text = (storage.foldername(name))[1]);
-
--- Lectura pública (para mostrar imágenes de promociones)
-CREATE POLICY "Public can read promotion images"
-ON storage.objects FOR SELECT
-USING (bucket_id = 'promotion-images');
-```
+- `spatial_ref_sys` sin RLS — requiere permisos de superusuario, no funciona vía `db push`. Ejecutar manualmente en SQL Editor:
+  ```sql
+  ALTER TABLE public.spatial_ref_sys ENABLE ROW LEVEL SECURITY;
+  CREATE POLICY "Public read spatial_ref_sys"
+      ON public.spatial_ref_sys FOR SELECT
+      TO anon, authenticated USING (true);
+  ```
+- PostGIS en schema `public` — limitación conocida de PostgreSQL, inofensiva. No intentar resolver sin DROP/recreate planificado.
+- Leaked Password Protection — activar en Dashboard → Authentication → Providers → Email.
 
 ---
 

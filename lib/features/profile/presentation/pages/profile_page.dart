@@ -90,29 +90,30 @@ class _ProfilePageContent extends StatelessWidget {
                         context.push('/edit-profile', extra: state.user);
                       },
                     ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Estadísticas
                     if (state.stats != null)
                       StatsCardWidget(stats: state.stats!),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Historial reciente
                     if (state.history != null && state.history!.isNotEmpty)
                       RecentHistoryWidget(
                         history: state.history!,
                         onViewAll: () {
-                          context.push('/promotion-history', extra: state.user.id);
+                          context.push('/promotion-history',
+                              extra: state.user.id);
                         },
                       ),
-                    
+
                     const SizedBox(height: 16),
-                    
+
                     // Botones de acción
                     _buildActionButtons(context, state.user.id),
-                    
+
                     const SizedBox(height: 32),
                   ],
                 ),
@@ -138,9 +139,8 @@ class _ProfilePageContent extends StatelessWidget {
                 ElevatedButton(
                   onPressed: () {
                     final authState = context.read<AuthBloc>().state;
-                    final userId = authState is AuthAuthenticated 
-                        ? authState.user.id 
-                        : '';
+                    final userId =
+                        authState is AuthAuthenticated ? authState.user.id : '';
                     context.read<ProfileBloc>().add(RefreshProfile(userId));
                   },
                   child: const Text('Reintentar'),

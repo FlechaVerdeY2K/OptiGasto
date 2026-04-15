@@ -31,7 +31,8 @@ class SettingsService {
       searchRadius: _prefs.getDouble(_searchRadiusKey) ?? 5.0,
       autoLocation: _prefs.getBool(_autoLocationKey) ?? true,
       distanceUnit: _prefs.getString(_distanceUnitKey) ?? 'km',
-      interestedCategories: _prefs.getStringList(_interestedCategoriesKey) ?? [],
+      interestedCategories:
+          _prefs.getStringList(_interestedCategoriesKey) ?? [],
       minDiscountPercentage: _prefs.getDouble(_minDiscountKey) ?? 0.0,
       hideExpiredPromotions: _prefs.getBool(_hideExpiredKey) ?? true,
       themeMode: _prefs.getString(_themeModeKey) ?? 'system',
@@ -53,7 +54,8 @@ class SettingsService {
       _prefs.setDouble(_searchRadiusKey, settings.searchRadius),
       _prefs.setBool(_autoLocationKey, settings.autoLocation),
       _prefs.setString(_distanceUnitKey, settings.distanceUnit),
-      _prefs.setStringList(_interestedCategoriesKey, settings.interestedCategories),
+      _prefs.setStringList(
+          _interestedCategoriesKey, settings.interestedCategories),
       _prefs.setDouble(_minDiscountKey, settings.minDiscountPercentage),
       _prefs.setBool(_hideExpiredKey, settings.hideExpiredPromotions),
       _prefs.setString(_themeModeKey, settings.themeMode),

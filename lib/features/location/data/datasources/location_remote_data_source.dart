@@ -186,7 +186,8 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
 
       final List<dynamic> data = response as List<dynamic>;
       return data
-          .map((json) => MapMarkerModel.fromPromotion(json as Map<String, dynamic>))
+          .map((json) =>
+              MapMarkerModel.fromPromotion(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(
@@ -226,7 +227,8 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource {
 
       final List<dynamic> data = response as List<dynamic>;
       return data
-          .map((json) => MapMarkerModel.fromCommerce(json as Map<String, dynamic>))
+          .map((json) =>
+              MapMarkerModel.fromCommerce(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(

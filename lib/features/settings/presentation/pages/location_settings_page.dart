@@ -19,7 +19,8 @@ class _LocationSettingsContent extends StatefulWidget {
   const _LocationSettingsContent();
 
   @override
-  State<_LocationSettingsContent> createState() => _LocationSettingsContentState();
+  State<_LocationSettingsContent> createState() =>
+      _LocationSettingsContentState();
 }
 
 class _LocationSettingsContentState extends State<_LocationSettingsContent> {
@@ -114,7 +115,8 @@ class _LocationSettingsContentState extends State<_LocationSettingsContent> {
                       // Ubicación automática
                       Card(
                         child: SwitchListTile(
-                          secondary: Icon(Icons.my_location, color: AppColors.primary),
+                          secondary:
+                              Icon(Icons.my_location, color: AppColors.primary),
                           title: const Text('Ubicación Automática'),
                           subtitle: const Text(
                             'Usar tu ubicación actual automáticamente',
@@ -154,11 +156,14 @@ class _LocationSettingsContentState extends State<_LocationSettingsContent> {
                               searchRadius: _searchRadius,
                               autoLocation: _autoLocation,
                             );
-                            context.read<SettingsBloc>().add(UpdateSettings(updated));
+                            context
+                                .read<SettingsBloc>()
+                                .add(UpdateSettings(updated));
                             setState(() => _hasChanges = false);
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Configuración guardada correctamente'),
+                                content: Text(
+                                    'Configuración guardada correctamente'),
                                 backgroundColor: Colors.green,
                                 duration: Duration(seconds: 2),
                               ),

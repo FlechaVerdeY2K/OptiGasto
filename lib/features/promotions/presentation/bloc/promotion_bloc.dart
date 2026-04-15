@@ -35,7 +35,7 @@ class PromotionBloc extends Bloc<PromotionEvent, PromotionState> {
         : currentState is PromotionCategoriesLoaded
             ? currentState.categories
             : <CategoryEntity>[];
-    
+
     emit(const PromotionLoading());
 
     final result = await repository.getPromotions(
@@ -86,7 +86,7 @@ class PromotionBloc extends Bloc<PromotionEvent, PromotionState> {
     final previousCategories = currentState is PromotionLoaded
         ? currentState.categories
         : <CategoryEntity>[];
-    
+
     emit(const PromotionLoading());
 
     final result = await repository.getPromotionsByCategory(
@@ -197,7 +197,7 @@ class PromotionBloc extends Bloc<PromotionEvent, PromotionState> {
     Emitter<PromotionState> emit,
   ) async {
     final currentState = state;
-    
+
     final result = await repository.toggleSavePromotion(
       promotionId: event.promotionId,
       userId: event.userId,
@@ -217,7 +217,7 @@ class PromotionBloc extends Bloc<PromotionEvent, PromotionState> {
           isSaved: event.isSaved,
           message: message,
         ));
-        
+
         // Restaurar el estado anterior inmediatamente
         if (currentState is PromotionLoaded) {
           emit(currentState);
@@ -262,7 +262,7 @@ class PromotionBloc extends Bloc<PromotionEvent, PromotionState> {
     final previousCategories = currentState is PromotionLoaded
         ? currentState.categories
         : <CategoryEntity>[];
-    
+
     emit(const PromotionRefreshing());
 
     final result = await repository.getPromotions(limit: 20);
@@ -287,7 +287,7 @@ class PromotionBloc extends Bloc<PromotionEvent, PromotionState> {
     final previousCategories = currentState is PromotionLoaded
         ? currentState.categories
         : <CategoryEntity>[];
-    
+
     emit(const PromotionLoading());
 
     final result = await repository.getPromotions(limit: 20);

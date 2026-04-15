@@ -8,7 +8,8 @@ void main() {
 
     // Verify that splash screen is shown
     expect(find.text('OptiGasto'), findsOneWidget);
-    expect(find.text('Encuentra ofertas y promociones cerca de ti'), findsOneWidget);
+    expect(find.text('Encuentra ofertas y promociones cerca de ti'),
+        findsOneWidget);
   });
 }
 

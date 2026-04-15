@@ -57,7 +57,7 @@ class _MapPageState extends State<MapPage> {
   void _updateMarkers(List<MapMarkerEntity> markerEntities) {
     setState(() {
       _markers.clear();
-      
+
       for (final markerEntity in markerEntities) {
         // Filtrar según preferencias del usuario
         if (markerEntity.type == MarkerType.promotion && !_showPromotions) {
@@ -107,7 +107,8 @@ class _MapPageState extends State<MapPage> {
   void _centerOnUserLocation() {
     if (_currentLocation != null && _mapController != null) {
       _mapController!.animateCamera(
-        CameraUpdate.newLatLngZoom(_currentLocation!, _getZoomLevel(_currentRadius)),
+        CameraUpdate.newLatLngZoom(
+            _currentLocation!, _getZoomLevel(_currentRadius)),
       );
     }
   }
@@ -134,14 +135,14 @@ class _MapPageState extends State<MapPage> {
           setState(() {
             _currentRadius = newRadius;
           });
-          
+
           final location = _currentLocation ?? _defaultLocation;
           final zoomLevel = _getZoomLevel(newRadius);
-          
+
           print('Aplicando nuevo radio: $newRadius km');
           print('Ubicación: ${location.latitude}, ${location.longitude}');
           print('Nivel de zoom: $zoomLevel');
-          
+
           // Ajustar zoom del mapa según el nuevo radio
           _mapController?.animateCamera(
             CameraUpdate.newLatLngZoom(
@@ -149,7 +150,7 @@ class _MapPageState extends State<MapPage> {
               zoomLevel,
             ),
           );
-          
+
           // Recargar marcadores con el nuevo radio
           _loadNearbyMarkers(
             location.latitude,

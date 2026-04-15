@@ -76,9 +76,9 @@ class RecentHistoryWidget extends StatelessWidget {
               size: 24,
             ),
           ),
-          
+
           const SizedBox(width: 16),
-          
+
           // Información de la promoción
           Expanded(
             child: Column(
@@ -114,9 +114,9 @@ class RecentHistoryWidget extends StatelessWidget {
               ],
             ),
           ),
-          
+
           const SizedBox(width: 12),
-          
+
           // Ahorro
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,

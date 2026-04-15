@@ -39,28 +39,28 @@ class AppSettingsEntity extends Equatable {
     this.searchRadius = 5.0,
     this.autoLocation = true,
     this.distanceUnit = 'km',
-    
+
     // Filtros
     this.interestedCategories = const [],
     this.minDiscountPercentage = 0.0,
     this.hideExpiredPromotions = true,
-    
+
     // Apariencia
     this.themeMode = 'system',
     this.fontSize = 'medium',
     this.listDensity = 'comfortable',
-    
+
     // Privacidad
     this.profileVisibility = true,
     this.shareStatistics = true,
     this.showMyPromotions = true,
-    
+
     // Datos
     this.useMobileDataForImages = true,
     this.imageQuality = 'medium',
     this.offlineMapsCache = false,
     this.autoSync = true,
-    
+
     // Notificaciones
     this.notificationsEnabled = true,
     this.nearbyPromotionsNotif = true,
@@ -95,20 +95,24 @@ class AppSettingsEntity extends Equatable {
       autoLocation: autoLocation ?? this.autoLocation,
       distanceUnit: distanceUnit ?? this.distanceUnit,
       interestedCategories: interestedCategories ?? this.interestedCategories,
-      minDiscountPercentage: minDiscountPercentage ?? this.minDiscountPercentage,
-      hideExpiredPromotions: hideExpiredPromotions ?? this.hideExpiredPromotions,
+      minDiscountPercentage:
+          minDiscountPercentage ?? this.minDiscountPercentage,
+      hideExpiredPromotions:
+          hideExpiredPromotions ?? this.hideExpiredPromotions,
       themeMode: themeMode ?? this.themeMode,
       fontSize: fontSize ?? this.fontSize,
       listDensity: listDensity ?? this.listDensity,
       profileVisibility: profileVisibility ?? this.profileVisibility,
       shareStatistics: shareStatistics ?? this.shareStatistics,
       showMyPromotions: showMyPromotions ?? this.showMyPromotions,
-      useMobileDataForImages: useMobileDataForImages ?? this.useMobileDataForImages,
+      useMobileDataForImages:
+          useMobileDataForImages ?? this.useMobileDataForImages,
       imageQuality: imageQuality ?? this.imageQuality,
       offlineMapsCache: offlineMapsCache ?? this.offlineMapsCache,
       autoSync: autoSync ?? this.autoSync,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
-      nearbyPromotionsNotif: nearbyPromotionsNotif ?? this.nearbyPromotionsNotif,
+      nearbyPromotionsNotif:
+          nearbyPromotionsNotif ?? this.nearbyPromotionsNotif,
       favoritesNotif: favoritesNotif ?? this.favoritesNotif,
       newPromotionsNotif: newPromotionsNotif ?? this.newPromotionsNotif,
     );

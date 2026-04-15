@@ -50,7 +50,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     on<CheckNearbyPromotionsEvent>(_onCheckNearbyPromotions);
     on<NotificationReceived>(_onNotificationReceived);
     on<SubscribeToRealtimeNotifications>(_onSubscribeToRealtimeNotifications);
-    on<UnsubscribeFromRealtimeNotifications>(_onUnsubscribeFromRealtimeNotifications);
+    on<UnsubscribeFromRealtimeNotifications>(
+        _onUnsubscribeFromRealtimeNotifications);
   }
 
   Future<void> _onInitializeNotifications(
@@ -100,8 +101,9 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
     result.fold(
       (failure) => emit(NotificationError(failure.message)),
       (notifications) {
-        _notifications = event.refresh ? notifications : _notifications + notifications;
-        
+        _notifications =
+            event.refresh ? notifications : _notifications + notifications;
+
         unreadCountResult.fold(
           (failure) => emit(NotificationError(failure.message)),
           (unreadCount) {
@@ -122,7 +124,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   ) async {
     if (state is NotificationsLoaded) {
       final currentState = state as NotificationsLoaded;
-      
+
       if (!currentState.hasMore || currentState.isLoadingMore) {
         return;
       }
@@ -143,7 +145,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
         },
         (notifications) {
           _notifications.addAll(notifications);
-          
+
           emit(currentState.copyWith(
             notifications: _notifications,
             hasMore: notifications.length == _pageSize,
@@ -312,7 +314,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
     result.fold(
       (failure) => emit(NotificationError(failure.message)),
-      (granted) => emit(NotificationServiceInitialized(permissionsGranted: granted)),
+      (granted) =>
+          emit(NotificationServiceInitialized(permissionsGranted: granted)),
     );
   }
 

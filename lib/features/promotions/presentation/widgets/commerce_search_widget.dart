@@ -90,7 +90,7 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
               ),
         ),
         const SizedBox(height: 12),
-        
+
         // Comercio seleccionado o campo de búsqueda
         if (widget.selectedCommerceName != null)
           _SelectedCommerceCard(
@@ -127,7 +127,7 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                   _performSearch(value);
                 },
               ),
-              
+
               // Resultados de búsqueda
               if (_showResults)
                 Container(
@@ -167,7 +167,8 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                                 final commerce = _searchResults[index];
                                 return ListTile(
                                   leading: CircleAvatar(
-                                    backgroundColor: AppColors.primary.withOpacity(0.1),
+                                    backgroundColor:
+                                        AppColors.primary.withOpacity(0.1),
                                     child: Icon(
                                       Icons.store,
                                       color: AppColors.primary,
@@ -192,7 +193,7 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                 ),
             ],
           ),
-        
+
         if (widget.selectedCommerceName == null)
           Padding(
             padding: const EdgeInsets.only(top: 8),

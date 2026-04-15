@@ -31,18 +31,15 @@ class LocationModel extends LocationEntity {
     return LocationModel(
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
-      accuracy: json['accuracy'] != null 
+      accuracy: json['accuracy'] != null
           ? (json['accuracy'] as num).toDouble()
           : null,
-      altitude: json['altitude'] != null 
+      altitude: json['altitude'] != null
           ? (json['altitude'] as num).toDouble()
           : null,
-      heading: json['heading'] != null 
-          ? (json['heading'] as num).toDouble()
-          : null,
-      speed: json['speed'] != null 
-          ? (json['speed'] as num).toDouble()
-          : null,
+      heading:
+          json['heading'] != null ? (json['heading'] as num).toDouble() : null,
+      speed: json['speed'] != null ? (json['speed'] as num).toDouble() : null,
       timestamp: json['timestamp'] != null
           ? DateTime.parse(json['timestamp'])
           : DateTime.now(),

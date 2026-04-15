@@ -37,8 +37,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<LocationRequestPermissionRequested>(_onRequestPermissionRequested);
     on<LocationCheckServiceRequested>(_onCheckServiceRequested);
     on<LocationOpenSettingsRequested>(_onOpenSettingsRequested);
-    on<LocationLoadNearbyPromotionMarkersRequested>(_onLoadNearbyPromotionMarkersRequested);
-    on<LocationLoadNearbyCommerceMarkersRequested>(_onLoadNearbyCommerceMarkersRequested);
+    on<LocationLoadNearbyPromotionMarkersRequested>(
+        _onLoadNearbyPromotionMarkersRequested);
+    on<LocationLoadNearbyCommerceMarkersRequested>(
+        _onLoadNearbyCommerceMarkersRequested);
     on<LocationLoadAllNearbyMarkersRequested>(_onLoadAllNearbyMarkersRequested);
     on<LocationStartWatchingRequested>(_onStartWatchingRequested);
     on<LocationStopWatchingRequested>(_onStopWatchingRequested);
@@ -271,7 +273,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     // Combinar resultados
     final allMarkers = <dynamic>[];
-    
+
     promotionResult.fold(
       (failure) => null,
       (markers) => allMarkers.addAll(markers),
@@ -304,7 +306,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   ) async {
     try {
       await _locationSubscription?.cancel();
-      
+
       _locationSubscription = repository.watchLocation().listen(
         (location) {
           add(LocationUpdated(
@@ -337,7 +339,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     final currentState = state;
-    
+
     if (currentState is LocationWatching) {
       emit(currentState.copyWith(
         location: currentState.location.copyWith(
@@ -355,7 +357,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     final currentState = state;
-    
+
     if (currentState is LocationMarkersLoaded) {
       emit(currentState.copyWith(radiusInKm: event.radiusInKm));
     }
@@ -367,8 +369,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     Emitter<LocationState> emit,
   ) async {
     final currentState = state;
-    
-    if (currentState is LocationMarkersLoaded && 
+
+    if (currentState is LocationMarkersLoaded &&
         currentState.currentLocation != null) {
       emit(LocationRefreshing(
         currentLocation: currentState.currentLocation,

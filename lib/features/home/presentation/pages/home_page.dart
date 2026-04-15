@@ -272,7 +272,8 @@ class ProfileTab extends StatelessWidget {
                   CircleAvatar(
                     radius: 50,
                     backgroundColor: AppColors.primary,
-                    backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
+                    backgroundImage:
+                        photoUrl != null ? NetworkImage(photoUrl) : null,
                     child: photoUrl == null
                         ? const Icon(
                             Icons.person,
@@ -352,7 +353,8 @@ class ProfileTab extends StatelessWidget {
                   context: context,
                   builder: (dialogContext) => AlertDialog(
                     title: const Text('Cerrar Sesión'),
-                    content: const Text('¿Estás seguro que deseas cerrar sesión?'),
+                    content:
+                        const Text('¿Estás seguro que deseas cerrar sesión?'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(dialogContext),
@@ -361,7 +363,9 @@ class ProfileTab extends StatelessWidget {
                       TextButton(
                         onPressed: () {
                           Navigator.pop(dialogContext);
-                          context.read<AuthBloc>().add(const AuthSignOutRequested());
+                          context
+                              .read<AuthBloc>()
+                              .add(const AuthSignOutRequested());
                         },
                         child: const Text(
                           'Cerrar Sesión',

@@ -5,14 +5,16 @@ class AppColors {
   AppColors._();
 
   // Colores principales
-  static const Color primary = Color(0xFF2E7D32); // Verde - ahorro, sostenibilidad
+  static const Color primary =
+      Color(0xFF2E7D32); // Verde - ahorro, sostenibilidad
   static const Color primaryLight = Color(0xFF60AD5E);
   static const Color primaryDark = Color(0xFF005005);
-  
-  static const Color secondary = Color(0xFFFF6F00); // Naranja - promociones, urgencia
+
+  static const Color secondary =
+      Color(0xFFFF6F00); // Naranja - promociones, urgencia
   static const Color secondaryLight = Color(0xFFFFA040);
   static const Color secondaryDark = Color(0xFFC43E00);
-  
+
   static const Color accent = Color(0xFF0277BD); // Azul - confianza
   static const Color accentLight = Color(0xFF58A5F0);
   static const Color accentDark = Color(0xFF004C8C);
@@ -27,7 +29,7 @@ class AppColors {
   static const Color background = Color(0xFFFAFAFA);
   static const Color surface = Color(0xFFFFFFFF);
   static const Color surfaceVariant = Color(0xFFF5F5F5);
-  
+
   // Texto
   static const Color textPrimary = Color(0xFF212121);
   static const Color textSecondary = Color(0xFF757575);
@@ -66,7 +68,7 @@ class AppColors {
   static const Color mapMarker = primary;
   static const Color validationPositive = success;
   static const Color validationNegative = error;
-  
+
   // Badges y gamificación
   static const Color badgeBronze = Color(0xFFCD7F32);
   static const Color badgeSilver = Color(0xFFC0C0C0);

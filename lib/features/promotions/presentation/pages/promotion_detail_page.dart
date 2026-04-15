@@ -99,7 +99,7 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
       slivers: [
         // App Bar con imagen
         _buildSliverAppBar(promotion, isFavorite, userId),
-        
+
         // Contenido
         SliverToBoxAdapter(
           child: Column(
@@ -107,33 +107,33 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
             children: [
               // Título y descuento
               _buildHeader(promotion),
-              
+
               const Divider(height: 32),
-              
+
               // Información del comercio
               _buildCommerceInfo(promotion),
-              
+
               const Divider(height: 32),
-              
+
               // Descripción
               _buildDescription(promotion),
-              
+
               const Divider(height: 32),
-              
+
               // Validación comunitaria
               if (userId.isNotEmpty)
                 _buildValidationSection(promotion, userId, hasValidated),
-              
+
               const Divider(height: 32),
-              
+
               // Información adicional
               _buildAdditionalInfo(promotion),
-              
+
               const SizedBox(height: 32),
-              
+
               // Botones de acción
               _buildActionButtons(promotion),
-              
+
               const SizedBox(height: 32),
             ],
           ),
@@ -142,7 +142,8 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
     );
   }
 
-  Widget _buildSliverAppBar(PromotionEntity promotion, bool isFavorite, String userId) {
+  Widget _buildSliverAppBar(
+      PromotionEntity promotion, bool isFavorite, String userId) {
     final images = promotion.images.isNotEmpty
         ? promotion.images
         : ['https://via.placeholder.com/400x300?text=Sin+Imagen'];
@@ -178,7 +179,7 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                 );
               },
             ),
-            
+
             // Gradiente inferior
             Positioned(
               bottom: 0,
@@ -198,7 +199,7 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                 ),
               ),
             ),
-            
+
             // Indicador de páginas
             if (images.length > 1)
               Positioned(
@@ -223,7 +224,7 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                   ),
                 ),
               ),
-            
+
             // Badge premium
             if (promotion.isPremium)
               Positioned(
@@ -305,9 +306,10 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
             ),
           ),
           const SizedBox(height: 12),
-          
+
           // Descuento y precios
-          if (promotion.originalPrice != null && promotion.discountedPrice != null)
+          if (promotion.originalPrice != null &&
+              promotion.discountedPrice != null)
             Row(
               children: [
                 Text(
@@ -353,9 +355,9 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
               promotion.discount,
               style: AppTextStyles.promotionDiscount.copyWith(fontSize: 28),
             ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Categoría y fecha de expiración
           Wrap(
             spacing: 12,
@@ -368,10 +370,12 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
               ),
               _buildInfoChip(
                 icon: Icons.access_time,
-                label: 'Válido hasta ${DateFormat('dd/MM/yyyy').format(promotion.validUntil)}',
+                label:
+                    'Válido hasta ${DateFormat('dd/MM/yyyy').format(promotion.validUntil)}',
                 color: promotion.isExpired
                     ? AppColors.error
-                    : promotion.validUntil.difference(DateTime.now()).inDays <= 2
+                    : promotion.validUntil.difference(DateTime.now()).inDays <=
+                            2
                         ? AppColors.warning
                         : AppColors.success,
               ),
@@ -517,7 +521,7 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
             ),
           ),
           const SizedBox(height: 12),
-          
+
           // Estadísticas
           if (total > 0)
             Container(
@@ -554,9 +558,9 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                 ],
               ),
             ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Botones de validación
           if (!hasValidated && !promotion.isExpired)
             Row(
@@ -576,7 +580,8 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                     label: const Text('Válida'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.validationPositive,
-                      side: const BorderSide(color: AppColors.validationPositive),
+                      side:
+                          const BorderSide(color: AppColors.validationPositive),
                     ),
                   ),
                 ),
@@ -596,7 +601,8 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                     label: const Text('No válida'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppColors.validationNegative,
-                      side: const BorderSide(color: AppColors.validationNegative),
+                      side:
+                          const BorderSide(color: AppColors.validationNegative),
                     ),
                   ),
                 ),
@@ -681,9 +687,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
                       );
                     },
               icon: const Icon(Icons.check_circle),
-              label: Text(promotion.isExpired ? 'Promoción Vencida' : 'Usar Promoción'),
+              label: Text(
+                  promotion.isExpired ? 'Promoción Vencida' : 'Usar Promoción'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: promotion.isExpired ? Colors.grey : AppColors.primary,
+                backgroundColor:
+                    promotion.isExpired ? Colors.grey : AppColors.primary,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),

@@ -135,7 +135,6 @@ Future<void> initializeDependencies() async {
     ),
   );
 
-
   // Location
   sl.registerLazySingleton<LocationRepository>(
     () => LocationRepositoryImpl(

@@ -38,12 +38,13 @@ class LocationEntity extends Equatable {
 
     final double lat1Rad = latitude * (3.141592653589793 / 180);
     final double lat2Rad = other.latitude * (3.141592653589793 / 180);
-    final double deltaLat = (other.latitude - latitude) * (3.141592653589793 / 180);
-    final double deltaLon = (other.longitude - longitude) * (3.141592653589793 / 180);
+    final double deltaLat =
+        (other.latitude - latitude) * (3.141592653589793 / 180);
+    final double deltaLon =
+        (other.longitude - longitude) * (3.141592653589793 / 180);
 
     final double a = sin(deltaLat / 2) * sin(deltaLat / 2) +
-        cos(lat1Rad) * cos(lat2Rad) *
-        sin(deltaLon / 2) * sin(deltaLon / 2);
+        cos(lat1Rad) * cos(lat2Rad) * sin(deltaLon / 2) * sin(deltaLon / 2);
 
     final double c = 2 * asin(sqrt(a));
 

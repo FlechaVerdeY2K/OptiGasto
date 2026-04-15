@@ -142,7 +142,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (failure) => emit(ProfileError(failure.message)),
       (history) {
         final hasMore = event.limit != null && history.length >= event.limit!;
-        
+
         if (state is ProfileLoaded) {
           emit((state as ProfileLoaded).copyWith(history: history));
         } else {
@@ -171,9 +171,10 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (historyEntry) {
         emit(PromotionMarkedAsUsed(
           historyEntry: historyEntry,
-          message: 'Promoción marcada como usada. ¡Ahorraste ₡${event.savingsAmount.toStringAsFixed(0)}!',
+          message:
+              'Promoción marcada como usada. ¡Ahorraste ₡${event.savingsAmount.toStringAsFixed(0)}!',
         ));
-        
+
         // Recargar estadísticas y historial
         add(LoadUserStats(event.userId));
         add(LoadPromotionHistory(userId: event.userId, limit: 20));
@@ -190,13 +191,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     // Cargar perfil
     final profileResult = await getUserProfile(event.userId);
-    
+
     await profileResult.fold(
       (failure) async => emit(ProfileError(failure.message)),
       (user) async {
         // Cargar estadísticas
         final statsResult = await getUserStats(event.userId);
-        
+
         // Cargar historial
         final historyParams = GetPromotionHistoryParams(
           userId: event.userId,

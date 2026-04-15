@@ -142,7 +142,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
       }
 
       final response = await query;
-      
+
       return (response as List)
           .map((json) => PromotionModel.fromJson(json))
           .toList();
@@ -241,7 +241,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
       }
 
       final response = await query;
-      
+
       return (response as List)
           .map((json) => PromotionModel.fromJson(json))
           .toList();
@@ -270,7 +270,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
       }
 
       final response = await query;
-      
+
       return (response as List)
           .map((json) => PromotionModel.fromJson(json))
           .toList();
@@ -294,10 +294,11 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
           .or('title.ilike.%$query%,description.ilike.%$query%');
 
       // Aplicar limit después de todas las condiciones
-      final limitedQuery = limit != null ? supabaseQuery.limit(limit) : supabaseQuery;
+      final limitedQuery =
+          limit != null ? supabaseQuery.limit(limit) : supabaseQuery;
 
       final response = await limitedQuery;
-      
+
       return (response as List)
           .map((json) => PromotionModel.fromJson(json))
           .toList();
@@ -347,10 +348,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   @override
   Future<void> deletePromotion(String id) async {
     try {
-      await supabase
-          .from(SupabaseConfig.promotionsTable)
-          .delete()
-          .eq('id', id);
+      await supabase.from(SupabaseConfig.promotionsTable).delete().eq('id', id);
     } catch (e) {
       throw ServerException(message: 'Error al eliminar promoción: $e');
     }
@@ -368,8 +366,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       // Verificar si el usuario ya validó
       if (promotion.validatedByUsers.contains(userId)) {
-        throw ServerException(
-            message: 'Ya has validado esta promoción');
+        throw ServerException(message: 'Ya has validado esta promoción');
       }
 
       // Actualizar validaciones
@@ -393,9 +390,8 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   Future<void> incrementViews(String promotionId) async {
     try {
       // Usar RPC para incrementar atómicamente
-      await supabase.rpc('increment_promotion_views', 
-        params: {'promotion_id': promotionId}
-      );
+      await supabase.rpc('increment_promotion_views',
+          params: {'promotion_id': promotionId});
     } catch (e) {
       // Si el RPC no existe, usar update manual
       try {
@@ -405,8 +401,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
           updates: {'views': promotion.views + 1},
         );
       } catch (e2) {
-        throw ServerException(
-            message: 'Error al incrementar vistas: $e2');
+        throw ServerException(message: 'Error al incrementar vistas: $e2');
       }
     }
   }
@@ -420,9 +415,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     try {
       if (isSaved) {
         // Guardar promoción usando upsert para evitar duplicados
-        await supabase
-            .from(SupabaseConfig.savedPromotionsTable)
-            .upsert({
+        await supabase.from(SupabaseConfig.savedPromotionsTable).upsert({
           'user_id': userId,
           'promotion_id': promotionId,
           'saved_at': DateTime.now().toIso8601String(),
@@ -436,8 +429,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
             .eq('promotion_id', promotionId);
       }
     } catch (e) {
-      throw ServerException(
-          message: 'Error al guardar/quitar promoción: $e');
+      throw ServerException(message: 'Error al guardar/quitar promoción: $e');
     }
   }
 
@@ -480,9 +472,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
     int? limit,
   }) async {
     try {
-      var query = supabase
-          .from(SupabaseConfig.commercesTable)
-          .select();
+      var query = supabase.from(SupabaseConfig.commercesTable).select();
 
       // Aplicar limit después de todas las condiciones
       final limitedQuery = limit != null ? query.limit(limit * 2) : query;
@@ -520,8 +510,7 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       return limit != null ? commerces.take(limit).toList() : commerces;
     } catch (e) {
-      throw ServerException(
-          message: 'Error al obtener comercios cercanos: $e');
+      throw ServerException(message: 'Error al obtener comercios cercanos: $e');
     }
   }
 
@@ -537,10 +526,11 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
           .or('name.ilike.%$query%,type.ilike.%$query%');
 
       // Aplicar limit después de todas las condiciones
-      final limitedQuery = limit != null ? supabaseQuery.limit(limit) : supabaseQuery;
+      final limitedQuery =
+          limit != null ? supabaseQuery.limit(limit) : supabaseQuery;
 
       final response = await limitedQuery;
-      
+
       return (response as List)
           .map((json) => CommerceModel.fromJson(json))
           .toList();
@@ -563,13 +553,10 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
       }
 
       return query.map((data) {
-        return data
-            .map((json) => PromotionModel.fromJson(json))
-            .toList();
+        return data.map((json) => PromotionModel.fromJson(json)).toList();
       });
     } catch (e) {
-      throw ServerException(
-          message: 'Error al observar promociones: $e');
+      throw ServerException(message: 'Error al observar promociones: $e');
     }
   }
 
@@ -581,11 +568,11 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
           .stream(primaryKey: ['id'])
           .eq('id', id)
           .map((data) {
-        if (data.isEmpty) {
-          throw ServerException(message: 'Promoción no encontrada');
-        }
-        return PromotionModel.fromJson(data.first);
-      });
+            if (data.isEmpty) {
+              throw ServerException(message: 'Promoción no encontrada');
+            }
+            return PromotionModel.fromJson(data.first);
+          });
     } catch (e) {
       throw ServerException(message: 'Error al observar promoción: $e');
     }
@@ -630,18 +617,17 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
 
       for (int i = 0; i < images.length; i++) {
         final file = images[i];
-        
+
         // Comprimir imagen
         final compressedFile = await _compressImage(file);
-        
+
         // Generar nombre único para el archivo
-        final fileName = '${id}_${i}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        final fileName =
+            '${id}_${i}_${DateTime.now().millisecondsSinceEpoch}.jpg';
         final filePath = 'promotions/$id/$fileName';
 
         // Subir a Supabase Storage
-        await supabase.storage
-            .from(SupabaseConfig.promotionsBucket)
-            .upload(
+        await supabase.storage.from(SupabaseConfig.promotionsBucket).upload(
               filePath,
               compressedFile,
               fileOptions: const FileOptions(
