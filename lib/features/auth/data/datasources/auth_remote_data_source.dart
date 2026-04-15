@@ -179,8 +179,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final userModel = UserModel(
         id: response.user!.id,
         email: response.user!.email ?? '',
-        name: response.user!.userMetadata?['full_name'] ?? 'Usuario',
-        photoUrl: response.user!.userMetadata?['avatar_url'],
+        name: (response.user!.userMetadata?['full_name'] as String?) ?? 'Usuario',
+        photoUrl: response.user!.userMetadata?['avatar_url'] as String?,
         createdAt: DateTime.now(),
       );
 
@@ -231,7 +231,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         displayName =
             '${appleCredential.givenName} ${appleCredential.familyName}';
       } else if (response.user!.userMetadata?['full_name'] != null) {
-        displayName = response.user!.userMetadata!['full_name'];
+        displayName = response.user!.userMetadata!['full_name'] as String;
       }
 
       final userModel = UserModel(
