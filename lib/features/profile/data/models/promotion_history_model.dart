@@ -17,17 +17,17 @@ class PromotionHistoryModel extends PromotionHistoryEntity {
   /// Crea un PromotionHistoryModel desde un Map de Supabase
   factory PromotionHistoryModel.fromJson(Map<String, dynamic> json) {
     return PromotionHistoryModel(
-      id: json['id'] ?? '',
-      userId: json['user_id'] ?? '',
-      promotionId: json['promotion_id'] ?? '',
-      promotionTitle: json['promotion_title'] ?? '',
-      commerceName: json['commerce_name'] ?? '',
-      category: json['category'] ?? '',
+      id: (json['id'] as String?) ?? '',
+      userId: (json['user_id'] as String?) ?? '',
+      promotionId: (json['promotion_id'] as String?) ?? '',
+      promotionTitle: (json['promotion_title'] as String?) ?? '',
+      commerceName: (json['commerce_name'] as String?) ?? '',
+      category: (json['category'] as String?) ?? '',
       savingsAmount: (json['savings_amount'] as num?)?.toDouble() ?? 0.0,
       usedAt: json['used_at'] != null
-          ? DateTime.parse(json['used_at'])
+          ? DateTime.parse(json['used_at'] as String)
           : DateTime.now(),
-      notes: json['notes'],
+      notes: json['notes'] as String?,
     );
   }
 

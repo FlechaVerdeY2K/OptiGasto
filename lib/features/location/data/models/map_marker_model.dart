@@ -50,19 +50,19 @@ class MapMarkerModel extends MapMarkerEntity {
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       timestamp: json['timestamp'] != null
-          ? DateTime.parse(json['timestamp'])
+          ? DateTime.parse(json['timestamp'] as String)
           : DateTime.now(),
     );
 
     return MapMarkerModel(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      subtitle: json['subtitle'],
+      id: (json['id'] as String?) ?? '',
+      title: (json['title'] as String?) ?? '',
+      subtitle: json['subtitle'] as String?,
       location: location,
       type: type,
-      iconUrl: json['icon_url'],
+      iconUrl: json['icon_url'] as String?,
       metadata: json['metadata'] != null
-          ? Map<String, dynamic>.from(json['metadata'])
+          ? Map<String, dynamic>.from(json['metadata'] as Map)
           : null,
     );
   }
@@ -104,14 +104,14 @@ class MapMarkerModel extends MapMarkerEntity {
     );
 
     return MapMarkerModel(
-      id: promotion['id'] ?? '',
-      title: promotion['title'] ?? '',
-      subtitle: promotion['commerce_name'],
+      id: (promotion['id'] as String?) ?? '',
+      title: (promotion['title'] as String?) ?? '',
+      subtitle: promotion['commerce_name'] as String?,
       location: location,
       type: MarkerType.promotion,
       iconUrl: promotion['images'] != null &&
               (promotion['images'] as List).isNotEmpty
-          ? (promotion['images'] as List).first
+          ? (promotion['images'] as List).first as String?
           : null,
       metadata: {
         'promotion_id': promotion['id'],
@@ -132,12 +132,12 @@ class MapMarkerModel extends MapMarkerEntity {
     );
 
     return MapMarkerModel(
-      id: commerce['id'] ?? '',
-      title: commerce['name'] ?? '',
-      subtitle: commerce['type'],
+      id: (commerce['id'] as String?) ?? '',
+      title: (commerce['name'] as String?) ?? '',
+      subtitle: commerce['type'] as String?,
       location: location,
       type: MarkerType.commerce,
-      iconUrl: commerce['logo'],
+      iconUrl: commerce['logo'] as String?,
       metadata: {
         'commerce_id': commerce['id'],
         'type': commerce['type'],

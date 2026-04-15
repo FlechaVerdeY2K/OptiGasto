@@ -44,22 +44,24 @@ class CommerceModel extends CommerceEntity {
   /// Crea un CommerceModel desde un Map de Supabase
   factory CommerceModel.fromJson(Map<String, dynamic> json) {
     return CommerceModel(
-      id: json['id'] ?? '',
-      name: json['name'] ?? '',
-      type: json['type'] ?? '',
+      id: (json['id'] as String?) ?? '',
+      name: (json['name'] as String?) ?? '',
+      type: (json['type'] as String?) ?? '',
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
-      address: json['address'] ?? '',
-      phone: json['phone'],
-      email: json['email'],
-      logo: json['logo'],
-      photos: json['photos'] != null ? List<String>.from(json['photos']) : [],
+      address: (json['address'] as String?) ?? '',
+      phone: json['phone'] as String?,
+      email: json['email'] as String?,
+      logo: json['logo'] as String?,
+      photos: json['photos'] != null
+          ? List<String>.from(json['photos'] as List)
+          : [],
       rating: json['rating'] != null ? (json['rating'] as num).toDouble() : 0.0,
-      totalPromotions: json['total_promotions'] ?? 0,
-      isPremium: json['is_premium'] ?? false,
-      ownerId: json['owner_id'],
+      totalPromotions: (json['total_promotions'] as num?)?.toInt() ?? 0,
+      isPremium: (json['is_premium'] as bool?) ?? false,
+      ownerId: json['owner_id'] as String?,
       createdAt: json['created_at'] != null
-          ? DateTime.parse(json['created_at'])
+          ? DateTime.parse(json['created_at'] as String)
           : DateTime.now(),
     );
   }
