@@ -225,11 +225,11 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
                 padding: const EdgeInsets.only(right: 8),
                 child: _buildFilterChip(
                   label: category.name,
-                  isSelected: state.selectedCategory == category.id,
+                  isSelected: state.selectedCategory == category.name,
                   onTap: () {
                     context.read<PromotionBloc>().add(
                           PromotionFilterByCategoryRequested(
-                            category: category.id,
+                            category: category.name,
                             limit: 20,
                           ),
                         );
