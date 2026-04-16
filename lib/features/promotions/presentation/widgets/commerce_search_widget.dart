@@ -121,8 +121,6 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[100],
                 ),
                 onChanged: (value) {
                   _performSearch(value);
@@ -134,7 +132,7 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                 Container(
                   margin: const EdgeInsets.only(top: 8),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
@@ -153,12 +151,16 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                           ),
                         )
                       : _searchResults.isEmpty
-                          ? const Padding(
-                              padding: EdgeInsets.all(16.0),
+                          ? Padding(
+                              padding: const EdgeInsets.all(16.0),
                               child: Text(
                                 'No se encontraron comercios',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.grey),
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
                               ),
                             )
                           : ListView.builder(
@@ -182,9 +184,11 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
                                   ),
                                   trailing: Text(
                                     commerce.address,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 11,
-                                      color: Colors.grey,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
                                     ),
                                   ),
                                   onTap: () => _selectCommerce(commerce),
