@@ -180,7 +180,8 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
               child: FloatingActionButton.extended(
                 heroTag: 'publish-from-promotions',
                 onPressed: () async {
-                  final result = await context.push<bool>(AppRouter.publishPromotion);
+                  final result =
+                      await context.push<bool>(AppRouter.publishPromotion);
                   if (result == true && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
