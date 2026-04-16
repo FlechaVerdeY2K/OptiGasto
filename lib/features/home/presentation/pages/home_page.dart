@@ -29,8 +29,17 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onItemTapped(int index) {
+    if (index == 3) {
+      // Route planner is a full page, not a tab — push without changing _selectedIndex
+      context.push(AppRouter.routePlanner);
+      return;
+    }
     setState(() {
-      _selectedIndex = index;
+      // Nav bar has 5 items; index 3 is a push-only virtual tab.
+      // Tabs 0,1,2 → pages 0,1,2; tab 4 (Perfil) → page 3.
+      final pageIndex = index < 3 ? index : index - 1;
+      assert(pageIndex < _pages.length);
+      _selectedIndex = pageIndex;
     });
   }
 
@@ -95,46 +104,42 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
+        currentIndex: _selectedIndex >= 3 ? _selectedIndex + 1 : _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: Colors.grey,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.local_offer),
-            label: 'Ofertas',
-          ),
+              icon: Icon(Icons.local_offer), label: 'Ofertas'),
+          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Mapa',
-          ),
+              icon: Icon(Icons.favorite_border), label: 'Favoritos'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite_border),
-            label: 'Favoritos',
-          ),
+              icon: Icon(Icons.route), label: 'Ruta'), // NEW
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Perfil',
-          ),
+              icon: Icon(Icons.person_outline), label: 'Perfil'),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async {
-          final result = await context.push(AppRouter.publishPromotion);
-          if (result == true && context.mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('¡Promoción publicada exitosamente!'),
-                backgroundColor: Colors.green,
-              ),
-            );
-          }
-        },
-        backgroundColor: AppColors.secondary,
-        icon: const Icon(Icons.add),
-        label: const Text('Publicar'),
-      ),
+      floatingActionButton: _selectedIndex == 0
+          ? null
+          : FloatingActionButton.extended(
+              heroTag: 'publish',
+              onPressed: () async {
+                final result = await context.push(AppRouter.publishPromotion);
+                if (result == true && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('¡Promoción publicada exitosamente!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+              backgroundColor: AppColors.secondary,
+              icon: const Icon(Icons.add),
+              label: const Text('Publicar'),
+            ),
     );
   }
 }
