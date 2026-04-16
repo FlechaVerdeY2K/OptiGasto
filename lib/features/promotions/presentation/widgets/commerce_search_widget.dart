@@ -205,7 +205,7 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
             child: Text(
               'Busca y selecciona el comercio donde está la promoción',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
             ),
           ),
@@ -250,11 +250,11 @@ class _SelectedCommerceCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Comercio seleccionado',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -271,7 +271,7 @@ class _SelectedCommerceCard extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: onClear,
-            color: Colors.grey,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ],
       ),
