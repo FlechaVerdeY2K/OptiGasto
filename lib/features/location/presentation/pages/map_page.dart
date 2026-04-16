@@ -272,10 +272,9 @@ class _MapPageState extends State<MapPage> {
                   child: LinearProgressIndicator(),
                 ),
 
-              // Controles superiores
+              // Controles superiores — filtros (right side only)
               Positioned(
                 top: 16,
-                left: 16,
                 right: 16,
                 child: Card(
                   child: Padding(
@@ -284,15 +283,8 @@ class _MapPageState extends State<MapPage> {
                       vertical: 8,
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: Text(
-                            '${_markers.length} marcadores',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
                         IconButton(
                           icon: Icon(
                             Icons.local_offer,
@@ -329,6 +321,38 @@ class _MapPageState extends State<MapPage> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+              ),
+
+              // Routes toolbar — top left
+              Positioned(
+                top: 16,
+                left: 16,
+                child: Card(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TextButton.icon(
+                        onPressed: () => context.push(AppRouter.routePlanner),
+                        icon: const Icon(Icons.route, size: 18),
+                        label: const Text('Nueva ruta'),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                        ),
+                      ),
+                      const Divider(height: 1),
+                      TextButton.icon(
+                        onPressed: () => context.push(AppRouter.savedRoutes),
+                        icon: const Icon(Icons.bookmark_outline, size: 18),
+                        label: const Text('Mis rutas'),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -375,19 +399,6 @@ class _MapPageState extends State<MapPage> {
                       backgroundColor: Colors.white,
                       child: const Icon(
                         Icons.refresh,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    FloatingActionButton(
-                      heroTag: 'route',
-                      mini: true,
-                      onPressed: () {
-                        context.push(AppRouter.routePlanner);
-                      },
-                      backgroundColor: Colors.white,
-                      child: const Icon(
-                        Icons.route,
                         color: AppColors.primary,
                       ),
                     ),
