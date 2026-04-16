@@ -5,7 +5,6 @@ import '../../domain/entities/promotion_entity.dart';
 import '../../domain/usecases/create_promotion.dart';
 import '../../domain/usecases/upload_promotion_images.dart';
 import '../../../auth/domain/usecases/get_current_user.dart';
-import '../../../location/domain/usecases/get_current_location.dart';
 import 'publish_promotion_event.dart';
 import 'publish_promotion_state.dart';
 
@@ -15,13 +14,11 @@ class PublishPromotionBloc
   final CreatePromotion createPromotion;
   final UploadPromotionImages uploadPromotionImages;
   final GetCurrentUser getCurrentUser;
-  final GetCurrentLocation getCurrentLocation;
 
   PublishPromotionBloc({
     required this.createPromotion,
     required this.uploadPromotionImages,
     required this.getCurrentUser,
-    required this.getCurrentLocation,
   }) : super(const PublishPromotionInitial()) {
     on<SelectImagesEvent>(_onSelectImages);
     on<RemoveImageEvent>(_onRemoveImage);
@@ -37,7 +34,6 @@ class PublishPromotionBloc
     on<ResetFormEvent>(_onResetForm);
   }
 
-  /// Obtiene el estado actual del formulario o crea uno nuevo
   PublishPromotionFormState _getCurrentFormState() {
     if (state is PublishPromotionFormState) {
       return state as PublishPromotionFormState;
@@ -45,10 +41,11 @@ class PublishPromotionBloc
     return const PublishPromotionFormState();
   }
 
-  /// Valida si el formulario está completo
   bool _validateForm(PublishPromotionFormState formState) {
     return formState.selectedImages.isNotEmpty &&
         formState.commerceId != null &&
+        formState.commerceLatitude != null &&
+        formState.commerceLongitude != null &&
         formState.category != null &&
         formState.title.trim().isNotEmpty &&
         formState.description.trim().isNotEmpty &&
@@ -64,7 +61,6 @@ class PublishPromotionBloc
     final updatedImages = List<File>.from(currentState.selectedImages)
       ..addAll(event.images);
 
-    // Limitar a máximo 5 imágenes
     if (updatedImages.length > 5) {
       emit(currentState.copyWith(
         errorMessage: 'Máximo 5 imágenes permitidas',
@@ -76,7 +72,6 @@ class PublishPromotionBloc
       selectedImages: updatedImages,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -92,7 +87,6 @@ class PublishPromotionBloc
       selectedImages: updatedImages,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -104,9 +98,11 @@ class PublishPromotionBloc
     final newState = currentState.copyWith(
       commerceId: event.commerceId,
       commerceName: event.commerceName,
+      commerceLatitude: event.latitude,
+      commerceLongitude: event.longitude,
+      commerceAddress: event.address,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -119,7 +115,6 @@ class PublishPromotionBloc
       category: event.category,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -132,7 +127,6 @@ class PublishPromotionBloc
       title: event.title,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -145,7 +139,6 @@ class PublishPromotionBloc
       description: event.description,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -158,7 +151,6 @@ class PublishPromotionBloc
       discount: event.discount,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -171,7 +163,6 @@ class PublishPromotionBloc
       originalPrice: event.price,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -184,7 +175,6 @@ class PublishPromotionBloc
       discountedPrice: event.price,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -197,7 +187,6 @@ class PublishPromotionBloc
       validUntil: event.validUntil,
       errorMessage: null,
     );
-
     emit(newState.copyWith(isValid: _validateForm(newState)));
   }
 
@@ -215,9 +204,8 @@ class PublishPromotionBloc
       return;
     }
 
-    emit(const PublishPromotionLoading(message: 'Obteniendo ubicación...'));
+    emit(const PublishPromotionLoading(message: 'Obteniendo usuario...'));
 
-    // Obtener usuario actual
     final userResult = await getCurrentUser();
     if (userResult.isLeft()) {
       emit(PublishPromotionError(
@@ -229,28 +217,13 @@ class PublishPromotionBloc
 
     final user = userResult.getOrElse(() => throw Exception('No user'));
 
-    // Obtener ubicación actual
-    final locationResult = await getCurrentLocation();
-    if (locationResult.isLeft()) {
-      emit(PublishPromotionError(
-        message: 'Error al obtener ubicación. Verifica los permisos.',
-        previousFormState: formState,
-      ));
-      return;
-    }
-
-    final location =
-        locationResult.getOrElse(() => throw Exception('No location'));
-
     emit(const PublishPromotionLoading(
       message: 'Subiendo imágenes...',
       progress: 0.3,
     ));
 
-    // Generar ID único para la promoción
     final promotionId = const Uuid().v4();
 
-    // Subir imágenes
     final uploadResult = await uploadPromotionImages(
       images: formState.selectedImages,
       promotionId: promotionId,
@@ -271,7 +244,6 @@ class PublishPromotionBloc
       progress: 0.7,
     ));
 
-    // Crear promoción
     final now = DateTime.now();
     final promotion = PromotionEntity(
       id: promotionId,
@@ -284,10 +256,9 @@ class PublishPromotionBloc
       originalPrice: formState.originalPrice,
       discountedPrice: formState.discountedPrice,
       images: imageUrls,
-      latitude: location.latitude,
-      longitude: location.longitude,
-      address:
-          '${location.latitude.toStringAsFixed(6)}, ${location.longitude.toStringAsFixed(6)}',
+      latitude: formState.commerceLatitude!,
+      longitude: formState.commerceLongitude!,
+      address: formState.commerceAddress!,
       validUntil: formState.validUntil!,
       createdBy: user!.id,
       createdAt: now,

@@ -2,6 +2,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:optigasto/features/location/domain/entities/location_entity.dart';
 import 'package:optigasto/features/promotions/domain/entities/promotion_entity.dart';
 import 'package:optigasto/features/promotions/domain/repositories/promotion_repository.dart';
+import 'package:optigasto/features/promotions/domain/usecases/create_promotion.dart';
+import 'package:optigasto/features/promotions/domain/usecases/upload_promotion_images.dart';
+import 'package:optigasto/features/auth/domain/usecases/get_current_user.dart';
 import 'package:optigasto/features/route/domain/entities/route_origin_entity.dart';
 import 'package:optigasto/features/route/domain/entities/route_stop_entity.dart';
 import 'package:optigasto/features/route/domain/repositories/route_repository.dart';
@@ -9,6 +12,12 @@ import 'package:optigasto/features/route/domain/repositories/route_repository.da
 class MockPromotionRepository extends Mock implements PromotionRepository {}
 
 class MockRouteRepository extends Mock implements RouteRepository {}
+
+class MockCreatePromotion extends Mock implements CreatePromotion {}
+
+class MockUploadPromotionImages extends Mock implements UploadPromotionImages {}
+
+class MockGetCurrentUser extends Mock implements GetCurrentUser {}
 
 void registerFallbackValues() {
   registerFallbackValue(

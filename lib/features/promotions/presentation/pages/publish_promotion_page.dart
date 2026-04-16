@@ -170,11 +170,14 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
                 CommerceSearchWidget(
                   selectedCommerceId: formState.commerceId,
                   selectedCommerceName: formState.commerceName,
-                  onCommerceSelected: (id, name) {
+                  onCommerceSelected: (id, name, lat, lng, address) {
                     context.read<PublishPromotionBloc>().add(
                           SelectCommerceEvent(
                             commerceId: id,
                             commerceName: name,
+                            latitude: lat,
+                            longitude: lng,
+                            address: address,
                           ),
                         );
                   },

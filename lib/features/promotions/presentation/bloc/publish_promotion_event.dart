@@ -33,14 +33,20 @@ class RemoveImageEvent extends PublishPromotionEvent {
 class SelectCommerceEvent extends PublishPromotionEvent {
   final String commerceId;
   final String commerceName;
+  final double latitude;
+  final double longitude;
+  final String address;
 
   const SelectCommerceEvent({
     required this.commerceId,
     required this.commerceName,
+    required this.latitude,
+    required this.longitude,
+    required this.address,
   });
 
   @override
-  List<Object?> get props => [commerceId, commerceName];
+  List<Object?> get props => [commerceId, commerceName, latitude, longitude, address];
 }
 
 /// Evento para seleccionar categoría
