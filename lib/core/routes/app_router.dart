@@ -26,9 +26,11 @@ import '../../features/auth/presentation/bloc/auth_state.dart';
 import '../../features/auth/domain/entities/user_entity.dart';
 import '../../features/route/presentation/pages/route_planner_page.dart';
 import '../../features/route/presentation/pages/route_result_page.dart';
+import '../../features/route/presentation/pages/map_picker_page.dart';
 import '../../features/route/domain/entities/optimized_route_entity.dart';
 import '../../features/route/presentation/bloc/route_planner_bloc.dart';
 import '../../features/route/presentation/bloc/route_planner_event.dart';
+import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../di/injection_container.dart';
 
 class AppRouter {
@@ -54,6 +56,7 @@ class AppRouter {
   static const String dataSettings = '/settings/data';
   static const String routePlanner = '/route/planner';
   static const String routeResult = '/route/result';
+  static const String routeMapPicker = '/route/map-picker';
 
   static GoRouter router(BuildContext context) => GoRouter(
         initialLocation: onboarding,
@@ -172,11 +175,26 @@ class AppRouter {
           ),
           GoRoute(
             path: routePlanner,
-            builder: (context, state) => BlocProvider(
-              create: (_) =>
-                  sl<RoutePlannerBloc>()..add(const RoutePlannerInitialized()),
-              child: const RoutePlannerPage(),
-            ),
+            builder: (context, state) {
+              final extra = state.extra as Map<String, dynamic>?;
+              final methodStr = extra?['method'] as String?;
+              final initialMethod = switch (methodStr) {
+                'favorites' => StopSelectionMethod.favorites,
+                'nearby' => StopSelectionMethod.nearby,
+                _ => StopSelectionMethod.map,
+              };
+              return BlocProvider(
+                create: (_) {
+                  final bloc = sl<RoutePlannerBloc>()
+                    ..add(const RoutePlannerInitialized());
+                  if (initialMethod != StopSelectionMethod.map) {
+                    bloc.add(StopSelectionMethodChanged(method: initialMethod));
+                  }
+                  return bloc;
+                },
+                child: const RoutePlannerPage(),
+              );
+            },
           ),
           GoRoute(
             path: routeResult,
@@ -184,6 +202,13 @@ class AppRouter {
               final route = state.extra as OptimizedRouteEntity;
               return RouteResultPage(route: route);
             },
+          ),
+          GoRoute(
+            path: routeMapPicker,
+            builder: (context, state) => BlocProvider.value(
+              value: context.read<LocationBloc>(),
+              child: const MapPickerPage(),
+            ),
           ),
         ],
       );
