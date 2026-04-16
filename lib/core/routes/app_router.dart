@@ -24,6 +24,12 @@ import '../../features/settings/presentation/pages/data_settings_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
 import '../../features/auth/domain/entities/user_entity.dart';
+import '../../features/route/presentation/pages/route_planner_page.dart';
+import '../../features/route/presentation/pages/route_result_page.dart';
+import '../../features/route/domain/entities/optimized_route_entity.dart';
+import '../../features/route/presentation/bloc/route_planner_bloc.dart';
+import '../../features/route/presentation/bloc/route_planner_event.dart';
+import '../di/injection_container.dart';
 
 class AppRouter {
   static const String splash = '/';
@@ -46,6 +52,8 @@ class AppRouter {
   static const String filtersSettings = '/settings/filters';
   static const String privacySettings = '/settings/privacy';
   static const String dataSettings = '/settings/data';
+  static const String routePlanner = '/route/planner';
+  static const String routeResult = '/route/result';
 
   static GoRouter router(BuildContext context) => GoRouter(
         initialLocation: onboarding,
@@ -161,6 +169,21 @@ class AppRouter {
           GoRoute(
             path: dataSettings,
             builder: (context, state) => const DataSettingsPage(),
+          ),
+          GoRoute(
+            path: routePlanner,
+            builder: (context, state) => BlocProvider(
+              create: (_) =>
+                  sl<RoutePlannerBloc>()..add(const RoutePlannerInitialized()),
+              child: const RoutePlannerPage(),
+            ),
+          ),
+          GoRoute(
+            path: routeResult,
+            builder: (context, state) {
+              final route = state.extra as OptimizedRouteEntity;
+              return RouteResultPage(route: route);
+            },
           ),
         ],
       );

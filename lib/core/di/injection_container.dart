@@ -54,6 +54,14 @@ import '../../features/profile/domain/usecases/upload_profile_photo.dart';
 import '../../features/profile/presentation/bloc/profile_bloc.dart';
 import '../../features/settings/data/settings_service.dart';
 import '../../features/settings/presentation/bloc/settings_bloc.dart';
+import 'package:dio/dio.dart';
+import '../../core/config/directions_config.dart';
+import '../../features/route/data/datasources/directions_remote_data_source.dart';
+import '../../features/route/data/repositories/route_repository_impl.dart';
+import '../../features/route/domain/repositories/route_repository.dart';
+import '../../features/route/domain/usecases/calculate_optimal_route.dart';
+import '../../features/route/domain/usecases/build_navigation_url.dart';
+import '../../features/route/presentation/bloc/route_planner_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -262,6 +270,36 @@ Future<void> initializeDependencies() async {
   // Settings
   sl.registerFactory(
     () => SettingsBloc(sl()),
+  );
+
+  // ========== Route Feature ==========
+  // External
+  sl.registerLazySingleton(() => Dio());
+
+  // Data Sources
+  sl.registerLazySingleton<DirectionsRemoteDataSource>(
+    () => DirectionsRemoteDataSourceImpl(
+      dio: sl(),
+      apiKey: DirectionsConfig.apiKey,
+    ),
+  );
+
+  // Repositories
+  sl.registerLazySingleton<RouteRepository>(
+    () => RouteRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // Use Cases
+  sl.registerLazySingleton(() => CalculateOptimalRoute(sl()));
+  sl.registerLazySingleton(() => BuildNavigationUrl());
+
+  // BLoC
+  sl.registerFactory(
+    () => RoutePlannerBloc(
+      calculateOptimalRoute: sl(),
+      buildNavigationUrl: sl(),
+      getCurrentLocation: sl(),
+    ),
   );
 }
 
