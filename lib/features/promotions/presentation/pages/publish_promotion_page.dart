@@ -71,11 +71,12 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
       firstDate: now,
       lastDate: now.add(const Duration(days: 365)),
       builder: (context, child) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: AppColors.primary,
-            ),
+            colorScheme: isDark
+                ? const ColorScheme.dark(primary: AppColors.primary)
+                : const ColorScheme.light(primary: AppColors.primary),
           ),
           child: child!,
         );
@@ -373,7 +374,9 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
               },
               selectedColor: AppColors.primary,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.black,
+                color: isSelected
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.onSurface,
               ),
             );
           }).toList(),
@@ -401,7 +404,7 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
+              border: Border.all(color: Theme.of(context).colorScheme.outline),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
@@ -414,8 +417,8 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
                       : 'Seleccionar fecha',
                   style: TextStyle(
                     color: formState.validUntil != null
-                        ? Colors.black
-                        : Colors.grey,
+                        ? Theme.of(context).colorScheme.onSurface
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ],
