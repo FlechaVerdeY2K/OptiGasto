@@ -247,6 +247,13 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     final radiusToUse = event.radiusInKm;
 
+    // Crear la ubicación actual
+    final currentLocation = LocationEntity(
+      latitude: event.latitude,
+      longitude: event.longitude,
+      timestamp: DateTime.now(),
+    );
+
     // Cargar promociones y comercios en paralelo
     final results = await Future.wait([
       getNearbyPromotionMarkers(
@@ -268,25 +275,41 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
     // Combinar resultados
     final allMarkers = <dynamic>[];
+    String? errorMessage;
 
     promotionResult.fold(
-      (failure) => null,
-      (markers) => allMarkers.addAll(markers),
+      (failure) {
+        errorMessage = failure.message;
+        print('Error cargando promociones: ${failure.message}');
+      },
+      (markers) {
+        print('Promociones encontradas: ${markers.length}');
+        allMarkers.addAll(markers);
+      },
     );
 
     commerceResult.fold(
-      (failure) => null,
-      (markers) => allMarkers.addAll(markers),
+      (failure) {
+        errorMessage ??= failure.message;
+        print('Error cargando comercios: ${failure.message}');
+      },
+      (markers) {
+        print('Comercios encontrados: ${markers.length}');
+        allMarkers.addAll(markers);
+      },
     );
 
-    if (allMarkers.isEmpty) {
-      emit(const LocationError(
-        message: 'No se encontraron marcadores cercanos',
-      ));
+    // Si hubo errores en ambas llamadas, mostrar error
+    if (allMarkers.isEmpty && errorMessage != null) {
+      emit(LocationError(message: errorMessage!));
       return;
     }
 
+    // Siempre emitir LocationMarkersLoaded, incluso si está vacío
+    // Esto permite que el mapa se muestre
+    print('Total de marcadores cargados: ${allMarkers.length}');
     emit(LocationMarkersLoaded(
+      currentLocation: currentLocation,
       markers: allMarkers.cast(),
       radiusInKm: radiusToUse,
       showPromotions: true,

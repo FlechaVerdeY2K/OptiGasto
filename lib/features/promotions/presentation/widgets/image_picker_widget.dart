@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 import '../../../../core/theme/app_colors.dart';
 
 /// Widget para seleccionar y mostrar imágenes de promociones
@@ -66,8 +64,8 @@ class ImagePickerWidget extends StatelessWidget {
         );
 
         if (images.isNotEmpty) {
-          // Copiar imágenes a directorio temporal de la app
-          final files = await _copyImagesToAppDirectory(images);
+          // Convertir XFile a File directamente
+          final files = images.map((xFile) => File(xFile.path)).toList();
           onImagesSelected(files);
         }
       } else {
@@ -80,9 +78,9 @@ class ImagePickerWidget extends StatelessWidget {
         );
 
         if (image != null) {
-          // Copiar imagen a directorio temporal de la app
-          final files = await _copyImagesToAppDirectory([image]);
-          onImagesSelected(files);
+          // Convertir XFile a File directamente
+          final file = File(image.path);
+          onImagesSelected([file]);
         }
       }
     } catch (e) {
@@ -95,35 +93,6 @@ class ImagePickerWidget extends StatelessWidget {
         );
       }
     }
-  }
-
-  /// Copia las imágenes seleccionadas al directorio temporal de la app
-  /// Esto asegura que tengamos acceso completo a los archivos
-  Future<List<File>> _copyImagesToAppDirectory(List<XFile> xFiles) async {
-    final List<File> copiedFiles = [];
-    final tempDir = await getTemporaryDirectory();
-
-    for (final xFile in xFiles) {
-      try {
-        // Generar nombre único para el archivo
-        final timestamp = DateTime.now().millisecondsSinceEpoch;
-        final extension = path.extension(xFile.path);
-        final fileName = 'temp_image_$timestamp${copiedFiles.length}$extension';
-        final newPath = path.join(tempDir.path, fileName);
-
-        // Copiar archivo al directorio temporal
-        final bytes = await xFile.readAsBytes();
-        final newFile = File(newPath);
-        await newFile.writeAsBytes(bytes);
-
-        copiedFiles.add(newFile);
-      } catch (e) {
-        debugPrint('Error al copiar imagen: $e');
-        // Continuar con las demás imágenes
-      }
-    }
-
-    return copiedFiles;
   }
 
   @override
