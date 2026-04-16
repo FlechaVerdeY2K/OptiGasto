@@ -44,6 +44,7 @@ class PublishPromotionBloc
   bool _validateForm(PublishPromotionFormState formState) {
     return formState.selectedImages.isNotEmpty &&
         formState.commerceId != null &&
+        formState.commerceId!.isNotEmpty &&
         formState.commerceLatitude != null &&
         formState.commerceLongitude != null &&
         formState.category != null &&
@@ -191,7 +192,7 @@ class PublishPromotionBloc
   }
 
   Future<void> _onPublishPromotion(
-    PublishPromotionEvent event,
+    PublishPromotionSubmitEvent event,
     Emitter<PublishPromotionState> emit,
   ) async {
     final formState = _getCurrentFormState();

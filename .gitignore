@@ -116,3 +116,7 @@ supabase/.temp
 supabase/config.toml
 .supabase/
 
+# Superpowers - AI Agent Skills Framework
+skills/
+docs/
+AGENTS.md

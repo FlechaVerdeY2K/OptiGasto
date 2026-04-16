@@ -8,7 +8,23 @@
       "Bash(flutter --version)",
       "Bash(echo \"EXIT: $?\")",
       "Bash(dart fix *)",
-      "Bash(echo \"FORMAT EXIT: $?\")"
+      "Bash(echo \"FORMAT EXIT: $?\")",
+      "Bash(ls /Users/edgarherrera/MyApps/OptiGasto/.env*)",
+      "Read(//Users/edgarherrera/.claude/plugins/cache/superpowers-dev/superpowers/5.0.7/skills/subagent-driven-development/**)",
+      "Read(//Users/edgarherrera/.claude/plugins/cache/superpowers-dev/superpowers/5.0.7/skills/requesting-code-review/**)",
+      "Bash(git checkout *)",
+      "Bash(git pull *)",
+      "Bash(dart pub *)",
+      "Read(//Users/edgarherrera/.pub-cache/hosted/pub.dev/google_maps_flutter_platform_interface-2.15.0/lib/src/types/**)",
+      "Read(//Users/edgarherrera/.pub-cache/hosted/pub.dev/**)",
+      "Read(//Users/edgarherrera/.pub-cache/**)",
+      "Bash(grep -n \"import 'package:flutter\" lib/features/route/domain/repositories/route_repository.dart lib/features/route/domain/usecases/calculate_optimal_route.dart lib/features/route/domain/usecases/build_navigation_url.dart lib/features/route/domain/entities/*.dart)",
+      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto add lib/features/route/domain/usecases/build_navigation_url.dart test/features/route/domain/usecases/build_navigation_url_test.dart)",
+      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto commit --amend --no-edit)",
+      "Bash(sed -n '95,115p' /Users/edgarherrera/MyApps/OptiGasto/lib/core/theme/app_theme.dart)",
+      "Bash(sed -n '355,375p' /Users/edgarherrera/MyApps/OptiGasto/lib/core/theme/app_theme.dart)",
+      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto log de5dcb5..cefa58b --oneline)",
+      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto show cefa58b --stat --format=\"%H %s\")"
     ]
   }
 }
