@@ -127,4 +127,42 @@ void main() {
       expect(error.message, 'Network unavailable');
     },
   );
+
+  // -------------------------------------------------------------------------
+  // 4) Filter: PromotionFilterByCategoryRequested uses category name
+  // -------------------------------------------------------------------------
+  test(
+    'PromotionFilterByCategoryRequested calls repository with category name '
+    'and emits PromotionLoaded with selectedCategory set',
+    () async {
+      // Arrange
+      when(
+        () => mockRepository.getPromotionsByCategory(
+          category: 'Technology',
+          limit: any(named: 'limit'),
+          lastDocumentId: any(named: 'lastDocumentId'),
+        ),
+      ).thenAnswer((_) async => Right([tPromotion]));
+
+      final states = <Object>[];
+      final sub = bloc.stream.listen(states.add);
+
+      // Act
+      bloc.add(const PromotionFilterByCategoryRequested(category: 'Technology'));
+      await Future<void>.delayed(Duration.zero);
+      await sub.cancel();
+
+      // Assert
+      verify(
+        () => mockRepository.getPromotionsByCategory(
+          category: 'Technology',
+          limit: any(named: 'limit'),
+          lastDocumentId: any(named: 'lastDocumentId'),
+        ),
+      ).called(1);
+      expect(states.last, isA<PromotionLoaded>());
+      final loaded = states.last as PromotionLoaded;
+      expect(loaded.selectedCategory, 'Technology');
+    },
+  );
 }
