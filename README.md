@@ -4,7 +4,7 @@ App Flutter para encontrar ofertas y promociones geolocalizadas en Costa Rica.
 
 ## Estado del Proyecto
 
-Fases 1–6 completadas y mergeadas a `main`.
+Fases 1–6 completadas y mergeadas a `main`. Fase 7 en revisión (branch `feature/phase-7-smart-route`).
 
 | Fase | Descripción |
 |------|-------------|
@@ -14,6 +14,7 @@ Fases 1–6 completadas y mergeadas a `main`.
 | 4 | **Publicación y Validación** — Subida de fotos a Supabase Storage, sistema de reportes y Row-Level Security. |
 | 5 | **Notificaciones FCM** — Push notifications, actualizaciones en tiempo real y geofencing básico. |
 | 6 | **Perfil de Usuario** — Estadísticas con fl_chart, configuración de cuenta y soporte de tema claro/oscuro. |
+| 7 | **Ruta Inteligente** — TSP greedy con Directions API, exportación a Google Maps/Waze, hasta 10 paradas. |
 
 ## Stack Tecnológico
 
