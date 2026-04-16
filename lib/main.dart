@@ -20,6 +20,8 @@ import 'features/notifications/presentation/bloc/notification_event.dart';
 import 'features/notifications/data/services/fcm_service.dart';
 import 'features/settings/presentation/bloc/settings_bloc.dart';
 import 'features/profile/presentation/bloc/profile_bloc.dart';
+import 'features/route/presentation/bloc/saved_routes_bloc.dart';
+import 'features/route/presentation/bloc/saved_routes_event.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,6 +105,10 @@ class OptiGastoApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => di.sl<ProfileBloc>(),
+        ),
+        BlocProvider(
+          create: (context) => di.sl<SavedRoutesBloc>()
+            ..add(const SavedRoutesLoadRequested()),
         ),
       ],
       child: const _AppView(),

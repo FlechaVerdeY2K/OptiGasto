@@ -61,7 +61,12 @@ import '../../features/route/data/repositories/route_repository_impl.dart';
 import '../../features/route/domain/repositories/route_repository.dart';
 import '../../features/route/domain/usecases/calculate_optimal_route.dart';
 import '../../features/route/domain/usecases/build_navigation_url.dart';
+import '../../features/route/domain/usecases/calculate_ordered_route.dart';
+import '../../features/route/data/datasources/saved_routes_remote_data_source.dart';
+import '../../features/route/data/repositories/saved_routes_repository_impl.dart';
+import '../../features/route/domain/repositories/saved_routes_repository.dart';
 import '../../features/route/presentation/bloc/route_planner_bloc.dart';
+import '../../features/route/presentation/bloc/saved_routes_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -299,6 +304,18 @@ Future<void> initializeDependencies() async {
       buildNavigationUrl: sl(),
       getCurrentLocation: sl(),
     ),
+  );
+
+  // Saved Routes
+  sl.registerLazySingleton<SavedRoutesRemoteDataSource>(
+    () => SavedRoutesRemoteDataSourceImpl(supabase: sl()),
+  );
+  sl.registerLazySingleton<SavedRoutesRepository>(
+    () => SavedRoutesRepositoryImpl(remoteDataSource: sl()),
+  );
+  sl.registerLazySingleton(() => CalculateOrderedRoute(sl()));
+  sl.registerFactory(
+    () => SavedRoutesBloc(repository: sl()),
   );
 }
 
