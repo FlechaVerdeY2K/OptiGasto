@@ -148,7 +148,8 @@ void main() {
       final sub = bloc.stream.listen(states.add);
 
       // Act
-      bloc.add(const PromotionFilterByCategoryRequested(category: 'Technology'));
+      bloc.add(
+          const PromotionFilterByCategoryRequested(category: 'Technology'));
       await Future<void>.delayed(Duration.zero);
       await sub.cancel();
 

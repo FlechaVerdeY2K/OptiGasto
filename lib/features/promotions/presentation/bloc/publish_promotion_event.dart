@@ -46,7 +46,8 @@ class SelectCommerceEvent extends PublishPromotionEvent {
   });
 
   @override
-  List<Object?> get props => [commerceId, commerceName, latitude, longitude, address];
+  List<Object?> get props =>
+      [commerceId, commerceName, latitude, longitude, address];
 }
 
 /// Evento para seleccionar categoría

@@ -185,7 +185,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         Text(
                           '¿Recordaste tu contraseña?',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 14,
                           ),
                         ),
@@ -227,7 +228,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               'Si no recibes el correo en unos minutos, revisa tu carpeta de spam o correo no deseado.',
                               style: TextStyle(
                                 fontSize: 13,
-                                color: Theme.of(context).textTheme.bodySmall?.color,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.color,
                                 height: 1.4,
                               ),
                             ),
