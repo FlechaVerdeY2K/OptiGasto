@@ -46,9 +46,6 @@ class _PublishPromotionViewState extends State<_PublishPromotionView> {
     'Salud',
     'Deportes',
     'Otros',
-    'Salud',
-    'Deportes',
-    'Otros',
   ];
 
   @override
