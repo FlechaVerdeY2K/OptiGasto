@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../core/routes/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/optimized_route_entity.dart';
+import '../bloc/saved_routes_bloc.dart';
+import '../bloc/saved_routes_event.dart';
+import '../bloc/saved_routes_state.dart';
 import '../widgets/export_route_buttons.dart';
 import '../widgets/route_stop_list.dart';
 import '../widgets/route_summary_card.dart';
@@ -99,6 +103,66 @@ class _RouteResultPageState extends State<RouteResultPage> {
     );
   }
 
+  void _showSaveDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    showDialog<void>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Guardar ruta'),
+        content: TextField(
+          controller: nameController,
+          autofocus: true,
+          decoration: const InputDecoration(
+            labelText: 'Nombre de la ruta',
+            hintText: 'Ej: Ruta del domingo',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Cancelar'),
+          ),
+          BlocConsumer<SavedRoutesBloc, SavedRoutesState>(
+            listener: (context, state) {
+              if (state is SavedRoutesLoaded || state is SavedRoutesError) {
+                Navigator.of(ctx).pop();
+                final msg = state is SavedRoutesLoaded
+                    ? 'Ruta guardada como "${nameController.text}"'
+                    : (state as SavedRoutesError).message;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(msg)),
+                );
+              }
+            },
+            builder: (context, state) {
+              return TextButton(
+                onPressed: state is SavedRouteOperationInProgress
+                    ? null
+                    : () {
+                        final name = nameController.text.trim();
+                        if (name.isEmpty) return;
+                        context.read<SavedRoutesBloc>().add(
+                              SavedRouteCreateRequested(
+                                route: widget.route,
+                                name: name,
+                              ),
+                            );
+                      },
+                child: state is SavedRouteOperationInProgress
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Guardar'),
+              );
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final origin = widget.route.origin.location;
@@ -154,6 +218,12 @@ class _RouteResultPageState extends State<RouteResultPage> {
                   RouteStopList(route: widget.route),
                   const SizedBox(height: 16),
                   ExportRouteButtons(route: widget.route),
+                  const SizedBox(height: 12),
+                  OutlinedButton.icon(
+                    onPressed: () => _showSaveDialog(context),
+                    icon: const Icon(Icons.bookmark_add_outlined),
+                    label: const Text('Guardar ruta'),
+                  ),
                 ],
               ),
             ),
