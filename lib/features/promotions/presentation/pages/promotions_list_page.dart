@@ -178,16 +178,20 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
               bottom: 16,
               right: 16,
               child: FloatingActionButton.extended(
-                heroTag: 'route-from-promotions',
-                onPressed: () {
-                  context.push(
-                    AppRouter.routePlanner,
-                    extra: {'method': 'favorites'},
-                  );
+                heroTag: 'publish-from-promotions',
+                onPressed: () async {
+                  final result = await context.push<bool>(AppRouter.publishPromotion);
+                  if (result == true && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('¡Promoción publicada exitosamente!'),
+                      ),
+                    );
+                  }
                 },
-                backgroundColor: AppColors.primary,
-                icon: const Icon(Icons.route),
-                label: const Text('Crear ruta'),
+                backgroundColor: AppColors.secondary,
+                icon: const Icon(Icons.add),
+                label: const Text('Publicar'),
               ),
             ),
           ],
