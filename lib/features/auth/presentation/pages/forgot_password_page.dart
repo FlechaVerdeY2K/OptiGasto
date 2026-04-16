@@ -185,7 +185,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         Text(
                           '¿Recordaste tu contraseña?',
                           style: TextStyle(
-                            color: Colors.grey[600],
+                            color: Theme.of(context).colorScheme.onSurfaceVariant,
                             fontSize: 14,
                           ),
                         ),
