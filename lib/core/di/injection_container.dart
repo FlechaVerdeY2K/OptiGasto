@@ -226,7 +226,6 @@ Future<void> initializeDependencies() async {
       createPromotion: sl(),
       uploadPromotionImages: sl(),
       getCurrentUser: sl(),
-      getCurrentLocation: sl(),
     ),
   );
 

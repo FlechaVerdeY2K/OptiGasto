@@ -6,8 +6,13 @@ import '../../domain/entities/commerce_entity.dart';
 class CommerceSearchWidget extends StatefulWidget {
   final String? selectedCommerceId;
   final String? selectedCommerceName;
-  final void Function(String commerceId, String commerceName)
-      onCommerceSelected;
+  final void Function(
+    String commerceId,
+    String commerceName,
+    double latitude,
+    double longitude,
+    String address,
+  ) onCommerceSelected;
   final Future<List<CommerceEntity>> Function(String query) onSearch;
 
   const CommerceSearchWidget({
@@ -71,7 +76,13 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
   }
 
   void _selectCommerce(CommerceEntity commerce) {
-    widget.onCommerceSelected(commerce.id, commerce.name);
+    widget.onCommerceSelected(
+      commerce.id,
+      commerce.name,
+      commerce.latitude,
+      commerce.longitude,
+      commerce.address,
+    );
     _searchController.clear();
     setState(() {
       _showResults = false;
@@ -97,7 +108,7 @@ class _CommerceSearchWidgetState extends State<CommerceSearchWidget> {
           _SelectedCommerceCard(
             commerceName: widget.selectedCommerceName!,
             onClear: () {
-              widget.onCommerceSelected('', '');
+              widget.onCommerceSelected('', '', 0, 0, '');
             },
           )
         else

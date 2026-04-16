@@ -20,6 +20,9 @@ class PublishPromotionFormState extends PublishPromotionState {
   final List<File> selectedImages;
   final String? commerceId;
   final String? commerceName;
+  final double? commerceLatitude;
+  final double? commerceLongitude;
+  final String? commerceAddress;
   final String? category;
   final String title;
   final String description;
@@ -34,6 +37,9 @@ class PublishPromotionFormState extends PublishPromotionState {
     this.selectedImages = const [],
     this.commerceId,
     this.commerceName,
+    this.commerceLatitude,
+    this.commerceLongitude,
+    this.commerceAddress,
     this.category,
     this.title = '',
     this.description = '',
@@ -50,6 +56,9 @@ class PublishPromotionFormState extends PublishPromotionState {
     List<File>? selectedImages,
     String? commerceId,
     String? commerceName,
+    double? commerceLatitude,
+    double? commerceLongitude,
+    String? commerceAddress,
     String? category,
     String? title,
     String? description,
@@ -64,6 +73,9 @@ class PublishPromotionFormState extends PublishPromotionState {
       selectedImages: selectedImages ?? this.selectedImages,
       commerceId: commerceId ?? this.commerceId,
       commerceName: commerceName ?? this.commerceName,
+      commerceLatitude: commerceLatitude ?? this.commerceLatitude,
+      commerceLongitude: commerceLongitude ?? this.commerceLongitude,
+      commerceAddress: commerceAddress ?? this.commerceAddress,
       category: category ?? this.category,
       title: title ?? this.title,
       description: description ?? this.description,
@@ -81,6 +93,9 @@ class PublishPromotionFormState extends PublishPromotionState {
         selectedImages,
         commerceId,
         commerceName,
+        commerceLatitude,
+        commerceLongitude,
+        commerceAddress,
         category,
         title,
         description,
