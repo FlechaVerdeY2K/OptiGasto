@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../../../core/routes/app_router.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../domain/entities/map_marker_entity.dart';
 import '../bloc/location_bloc.dart';
@@ -373,6 +375,19 @@ class _MapPageState extends State<MapPage> {
                       backgroundColor: Colors.white,
                       child: const Icon(
                         Icons.refresh,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    FloatingActionButton(
+                      heroTag: 'route',
+                      mini: true,
+                      onPressed: () {
+                        context.push(AppRouter.routePlanner);
+                      },
+                      backgroundColor: Colors.white,
+                      child: const Icon(
+                        Icons.route,
                         color: AppColors.primary,
                       ),
                     ),

@@ -134,41 +134,63 @@ class _PromotionsListPageState extends State<PromotionsListPage> {
         final displayState =
             (state is PromotionLoaded) ? state : _lastLoadedState;
 
-        return RefreshIndicator(
-          onRefresh: () async {
-            context
-                .read<PromotionBloc>()
-                .add(const PromotionRefreshRequested());
-            // Esperar un momento para que se complete la recarga
-            await Future<void>.delayed(const Duration(milliseconds: 500));
-          },
-          child: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              // Filtros de categorías (usa el estado efectivo)
-              if (displayState != null && displayState.categories.isNotEmpty)
-                SliverToBoxAdapter(
-                  child: _buildCategoryFilters(displayState),
-                ),
+        return Stack(
+          children: [
+            RefreshIndicator(
+              onRefresh: () async {
+                context
+                    .read<PromotionBloc>()
+                    .add(const PromotionRefreshRequested());
+                // Esperar un momento para que se complete la recarga
+                await Future<void>.delayed(const Duration(milliseconds: 500));
+              },
+              child: CustomScrollView(
+                controller: _scrollController,
+                slivers: [
+                  // Filtros de categorías (usa el estado efectivo)
+                  if (displayState != null &&
+                      displayState.categories.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: _buildCategoryFilters(displayState),
+                    ),
 
-              // Lista de promociones
-              if (displayState != null)
-                _buildPromotionsList(displayState)
-              else if (state is PromotionLoading &&
-                  state is! PromotionRefreshing)
-                const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
-                )
-              else if (state is PromotionError)
-                SliverFillRemaining(
-                  child: _buildErrorState(state.message),
-                )
-              else
-                const SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
-                ),
-            ],
-          ),
+                  // Lista de promociones
+                  if (displayState != null)
+                    _buildPromotionsList(displayState)
+                  else if (state is PromotionLoading &&
+                      state is! PromotionRefreshing)
+                    const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  else if (state is PromotionError)
+                    SliverFillRemaining(
+                      child: _buildErrorState(state.message),
+                    )
+                  else
+                    const SliverFillRemaining(
+                      child: Center(child: CircularProgressIndicator()),
+                    ),
+                  const SliverPadding(padding: EdgeInsets.only(bottom: 88)),
+                ],
+              ),
+            ),
+            Positioned(
+              bottom: 16,
+              right: 16,
+              child: FloatingActionButton.extended(
+                heroTag: 'route-from-promotions',
+                onPressed: () {
+                  context.push(
+                    AppRouter.routePlanner,
+                    extra: {'method': 'favorites'},
+                  );
+                },
+                backgroundColor: AppColors.primary,
+                icon: const Icon(Icons.route),
+                label: const Text('Crear ruta'),
+              ),
+            ),
+          ],
         );
       },
     );
