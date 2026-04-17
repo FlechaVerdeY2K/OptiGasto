@@ -323,22 +323,24 @@ COMMENT ON FUNCTION trigger_award_use_points IS 'Trigger function to award point
 -- ============================================================================
 -- 6. TRIGGER: Award points on validation
 -- ============================================================================
+-- NOTE: Commented out until promotion_validations table is created
+-- This will be enabled in a future migration when validation feature is implemented
 
-CREATE OR REPLACE FUNCTION trigger_award_validation_points()
-RETURNS TRIGGER AS $$
-BEGIN
-  PERFORM award_points(NEW.user_id, 'validate', NEW.id);
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+-- CREATE OR REPLACE FUNCTION trigger_award_validation_points()
+-- RETURNS TRIGGER AS $$
+-- BEGIN
+--   PERFORM award_points(NEW.user_id, 'validate', NEW.id);
+--   RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS award_validation_points ON promotion_validations;
-CREATE TRIGGER award_validation_points
-AFTER INSERT ON promotion_validations
-FOR EACH ROW
-EXECUTE FUNCTION trigger_award_validation_points();
+-- DROP TRIGGER IF EXISTS award_validation_points ON promotion_validations;
+-- CREATE TRIGGER award_validation_points
+-- AFTER INSERT ON promotion_validations
+-- FOR EACH ROW
+-- EXECUTE FUNCTION trigger_award_validation_points();
 
-COMMENT ON FUNCTION trigger_award_validation_points IS 'Trigger function to award points when user validates a promotion';
+-- COMMENT ON FUNCTION trigger_award_validation_points IS 'Trigger function to award points when user validates a promotion';
 
 -- ============================================================================
 -- 7. CRON JOB: Refresh leaderboard materialized views
