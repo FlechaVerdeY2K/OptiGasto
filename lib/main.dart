@@ -107,8 +107,8 @@ class OptiGastoApp extends StatelessWidget {
           create: (context) => di.sl<ProfileBloc>(),
         ),
         BlocProvider(
-          create: (context) => di.sl<SavedRoutesBloc>()
-            ..add(const SavedRoutesLoadRequested()),
+          create: (context) =>
+              di.sl<SavedRoutesBloc>()..add(const SavedRoutesLoadRequested()),
         ),
       ],
       child: const _AppView(),

@@ -65,7 +65,8 @@ class _RouteEditorPageState extends State<RouteEditorPage> {
       (failure) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(failure.message)),
       ),
-      (optimizedRoute) => context.push(AppRouter.routeResult, extra: optimizedRoute),
+      (optimizedRoute) =>
+          context.push(AppRouter.routeResult, extra: optimizedRoute),
     );
   }
 

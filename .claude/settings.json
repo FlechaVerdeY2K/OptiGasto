@@ -24,7 +24,13 @@
       "Bash(sed -n '95,115p' /Users/edgarherrera/MyApps/OptiGasto/lib/core/theme/app_theme.dart)",
       "Bash(sed -n '355,375p' /Users/edgarherrera/MyApps/OptiGasto/lib/core/theme/app_theme.dart)",
       "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto log de5dcb5..cefa58b --oneline)",
-      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto show cefa58b --stat --format=\"%H %s\")"
+      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto show cefa58b --stat --format=\"%H %s\")",
+      "Skill(statusline)",
+      "Skill(statusline:*)",
+      "Read(//Users/edgarherrera/**)",
+      "Read(//Users/edgarherrera/.claude/**)",
+      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto add lib/features/route/domain/entities/saved_route_entity.dart lib/features/route/domain/repositories/saved_routes_repository.dart)",
+      "Bash(git -C /Users/edgarherrera/MyApps/OptiGasto commit -m ' *)"
     ]
   }
 }

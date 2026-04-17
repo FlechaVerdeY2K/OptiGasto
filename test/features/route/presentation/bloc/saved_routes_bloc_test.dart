@@ -12,8 +12,7 @@ import 'package:optigasto/features/route/presentation/bloc/saved_routes_bloc.dar
 import 'package:optigasto/features/route/presentation/bloc/saved_routes_event.dart';
 import 'package:optigasto/features/route/presentation/bloc/saved_routes_state.dart';
 
-class MockSavedRoutesRepository extends Mock
-    implements SavedRoutesRepository {}
+class MockSavedRoutesRepository extends Mock implements SavedRoutesRepository {}
 
 class FakeSavedRouteEntity extends Fake implements SavedRouteEntity {}
 
@@ -99,7 +98,9 @@ void main() {
     });
 
     group('SavedRoutesLoadRequested', () {
-      test('emits [SavedRoutesLoading, SavedRoutesLoaded] when load is successful', () async {
+      test(
+          'emits [SavedRoutesLoading, SavedRoutesLoaded] when load is successful',
+          () async {
         // arrange
         when(() => mockRepository.getSavedRoutes())
             .thenAnswer((_) async => Right(tSavedRoutes));
@@ -115,10 +116,12 @@ void main() {
         bloc.add(const SavedRoutesLoadRequested());
       });
 
-      test('emits [SavedRoutesLoading, SavedRoutesError] when load fails', () async {
+      test('emits [SavedRoutesLoading, SavedRoutesError] when load fails',
+          () async {
         // arrange
         when(() => mockRepository.getSavedRoutes()).thenAnswer(
-          (_) async => const Left(StorageFailure(message: 'Failed to load routes')),
+          (_) async =>
+              const Left(StorageFailure(message: 'Failed to load routes')),
         );
 
         // assert later
@@ -157,10 +160,13 @@ void main() {
         );
       });
 
-      test('emits [SavedRouteOperationInProgress, SavedRoutesError] when create fails', () async {
+      test(
+          'emits [SavedRouteOperationInProgress, SavedRoutesError] when create fails',
+          () async {
         // arrange
         when(() => mockRepository.createSavedRoute(any())).thenAnswer(
-          (_) async => const Left(StorageFailure(message: 'Failed to create route')),
+          (_) async =>
+              const Left(StorageFailure(message: 'Failed to create route')),
         );
 
         // assert later
@@ -199,10 +205,13 @@ void main() {
         bloc.add(SavedRouteUpdateRequested(route: tSavedRoute));
       });
 
-      test('emits [SavedRouteOperationInProgress, SavedRoutesError] when update fails', () async {
+      test(
+          'emits [SavedRouteOperationInProgress, SavedRoutesError] when update fails',
+          () async {
         // arrange
         when(() => mockRepository.updateSavedRoute(any())).thenAnswer(
-          (_) async => const Left(StorageFailure(message: 'Failed to update route')),
+          (_) async =>
+              const Left(StorageFailure(message: 'Failed to update route')),
         );
 
         // assert later
@@ -236,10 +245,13 @@ void main() {
         bloc.add(const SavedRouteDeleteRequested(routeId: 'route1'));
       });
 
-      test('emits [SavedRouteOperationInProgress, SavedRoutesError] when delete fails', () async {
+      test(
+          'emits [SavedRouteOperationInProgress, SavedRoutesError] when delete fails',
+          () async {
         // arrange
         when(() => mockRepository.deleteSavedRoute(any())).thenAnswer(
-          (_) async => const Left(StorageFailure(message: 'Failed to delete route')),
+          (_) async =>
+              const Left(StorageFailure(message: 'Failed to delete route')),
         );
 
         // assert later

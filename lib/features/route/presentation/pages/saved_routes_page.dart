@@ -122,8 +122,8 @@ class _SavedRouteCard extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(true),
-                child: const Text('Eliminar',
-                    style: TextStyle(color: Colors.red)),
+                child:
+                    const Text('Eliminar', style: TextStyle(color: Colors.red)),
               ),
             ],
           ),

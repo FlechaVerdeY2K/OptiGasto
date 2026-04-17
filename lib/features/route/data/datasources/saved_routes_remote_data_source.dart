@@ -38,11 +38,8 @@ class SavedRoutesRemoteDataSourceImpl implements SavedRoutesRemoteDataSource {
         ...route.toSupabaseInsert(),
         'user_id': supabase.auth.currentUser!.id,
       };
-      final response = await supabase
-          .from('saved_routes')
-          .insert(data)
-          .select()
-          .single();
+      final response =
+          await supabase.from('saved_routes').insert(data).select().single();
       return SavedRouteModel.fromSupabase(response);
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);

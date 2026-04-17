@@ -94,7 +94,8 @@ void main() {
   final tSavedRoutes = [tSavedRouteModel];
 
   group('getSavedRoutes', () {
-    test('should return list of routes when remote data source call is successful',
+    test(
+        'should return list of routes when remote data source call is successful',
         () async {
       // arrange
       when(() => mockRemoteDataSource.getSavedRoutes())
@@ -109,7 +110,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws ServerException',
+    test(
+        'should return StorageFailure when remote data source throws ServerException',
         () async {
       // arrange
       when(() => mockRemoteDataSource.getSavedRoutes())
@@ -127,7 +129,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws unexpected exception',
+    test(
+        'should return StorageFailure when remote data source throws unexpected exception',
         () async {
       // arrange
       when(() => mockRemoteDataSource.getSavedRoutes())
@@ -151,7 +154,8 @@ void main() {
   });
 
   group('createSavedRoute', () {
-    test('should return created route when remote data source call is successful',
+    test(
+        'should return created route when remote data source call is successful',
         () async {
       // arrange
       when(() => mockRemoteDataSource.createSavedRoute(any()))
@@ -166,7 +170,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws ServerException',
+    test(
+        'should return StorageFailure when remote data source throws ServerException',
         () async {
       // arrange
       when(() => mockRemoteDataSource.createSavedRoute(any()))
@@ -184,7 +189,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws unexpected exception',
+    test(
+        'should return StorageFailure when remote data source throws unexpected exception',
         () async {
       // arrange
       when(() => mockRemoteDataSource.createSavedRoute(any()))
@@ -208,7 +214,8 @@ void main() {
   });
 
   group('updateSavedRoute', () {
-    test('should return updated route when remote data source call is successful',
+    test(
+        'should return updated route when remote data source call is successful',
         () async {
       // arrange
       when(() => mockRemoteDataSource.updateSavedRoute(any()))
@@ -223,7 +230,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws ServerException',
+    test(
+        'should return StorageFailure when remote data source throws ServerException',
         () async {
       // arrange
       when(() => mockRemoteDataSource.updateSavedRoute(any()))
@@ -241,7 +249,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws unexpected exception',
+    test(
+        'should return StorageFailure when remote data source throws unexpected exception',
         () async {
       // arrange
       when(() => mockRemoteDataSource.updateSavedRoute(any()))
@@ -282,7 +291,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws ServerException',
+    test(
+        'should return StorageFailure when remote data source throws ServerException',
         () async {
       // arrange
       when(() => mockRemoteDataSource.deleteSavedRoute(any()))
@@ -300,7 +310,8 @@ void main() {
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
-    test('should return StorageFailure when remote data source throws unexpected exception',
+    test(
+        'should return StorageFailure when remote data source throws unexpected exception',
         () async {
       // arrange
       when(() => mockRemoteDataSource.deleteSavedRoute(any()))
