@@ -82,7 +82,8 @@ class GamificationRepositoryImpl implements GamificationRepository {
   Future<Either<Failure, List<BadgeEntity>>> getAllBadges() async {
     try {
       final badgeModels = await remoteDataSource.getAllBadges();
-      final badgeEntities = badgeModels.map((model) => model.toEntity()).toList();
+      final badgeEntities =
+          badgeModels.map((model) => model.toEntity()).toList();
       return Right(badgeEntities);
     } on ServerException catch (e) {
       return Left(ServerFailure(message: e.message));

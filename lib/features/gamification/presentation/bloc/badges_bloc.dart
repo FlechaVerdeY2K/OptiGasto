@@ -100,9 +100,8 @@ class BadgesBloc extends Bloc<BadgesEvent, BadgesState> {
 
     // Check if user has this badge
     final userBadges = userBadgesResult.getOrElse(() => []);
-    final userBadge = userBadges
-        .where((ub) => ub.badgeId == event.badgeId)
-        .firstOrNull;
+    final userBadge =
+        userBadges.where((ub) => ub.badgeId == event.badgeId).firstOrNull;
 
     emit(BadgeDetailsLoaded(
       badge: badge,

@@ -21,7 +21,8 @@ class BadgeModel extends BadgeEntity {
       description: json['description'] as String,
       iconUrl: json['icon_url'] as String,
       category: json['category'] as String,
-      unlockConditions: Map<String, dynamic>.from(json['unlock_conditions'] as Map),
+      unlockConditions:
+          Map<String, dynamic>.from(json['unlock_conditions'] as Map),
       displayOrder: (json['display_order'] as num).toInt(),
       createdAt: DateTime.parse(json['created_at'] as String),
     );

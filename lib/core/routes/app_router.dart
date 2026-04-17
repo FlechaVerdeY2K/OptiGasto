@@ -248,9 +248,8 @@ class AppRouter {
             path: badges,
             builder: (context, state) {
               final authState = context.read<AuthBloc>().state;
-              final userId = authState is AuthAuthenticated
-                  ? authState.user.id
-                  : '';
+              final userId =
+                  authState is AuthAuthenticated ? authState.user.id : '';
               return BadgesPage(userId: userId);
             },
           ),
@@ -258,9 +257,8 @@ class AppRouter {
             path: leaderboard,
             builder: (context, state) {
               final authState = context.read<AuthBloc>().state;
-              final userId = authState is AuthAuthenticated
-                  ? authState.user.id
-                  : null;
+              final userId =
+                  authState is AuthAuthenticated ? authState.user.id : null;
               return LeaderboardPage(userId: userId);
             },
           ),

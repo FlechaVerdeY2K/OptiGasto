@@ -25,7 +25,9 @@ class BadgeGridWidget extends StatelessWidget {
 
     // Filter badges by rarity if specified
     final filteredBadges = filterRarity != null
-        ? allBadges.where((b) => b.rarity.toLowerCase() == filterRarity!.toLowerCase()).toList()
+        ? allBadges
+            .where((b) => b.rarity.toLowerCase() == filterRarity!.toLowerCase())
+            .toList()
         : allBadges;
 
     // Sort badges: unlocked first, then by rarity
@@ -87,9 +89,8 @@ class BadgeGridWidget extends StatelessWidget {
           badge: badge,
           userBadge: userBadge,
           isUnlocked: isUnlocked,
-          onTap: onBadgeTap != null
-              ? () => onBadgeTap!(badge, isUnlocked)
-              : null,
+          onTap:
+              onBadgeTap != null ? () => onBadgeTap!(badge, isUnlocked) : null,
         );
       },
     );

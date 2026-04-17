@@ -35,8 +35,8 @@ class ProfilePage extends StatelessWidget {
           create: (_) => sl<ProfileBloc>()..add(RefreshProfile(userId)),
         ),
         BlocProvider(
-          create: (_) => sl<GamificationBloc>()
-            ..add(LoadUserGamificationStats(userId)),
+          create: (_) =>
+              sl<GamificationBloc>()..add(LoadUserGamificationStats(userId)),
         ),
         BlocProvider(
           create: (_) => sl<BadgesBloc>()

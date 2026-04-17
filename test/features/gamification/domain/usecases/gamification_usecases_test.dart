@@ -209,8 +209,7 @@ void main() {
     setUp(() => useCase = GetAllBadges(repo));
 
     test('returns badge list on success', () async {
-      when(() => repo.getAllBadges())
-          .thenAnswer((_) async => Right([tBadge]));
+      when(() => repo.getAllBadges()).thenAnswer((_) async => Right([tBadge]));
 
       final result = await useCase();
 
@@ -219,8 +218,7 @@ void main() {
     });
 
     test('returns empty list when no badges', () async {
-      when(() => repo.getAllBadges())
-          .thenAnswer((_) async => const Right([]));
+      when(() => repo.getAllBadges()).thenAnswer((_) async => const Right([]));
 
       final result = await useCase();
 
@@ -415,8 +413,12 @@ void main() {
     test('tierInt maps string tiers correctly', () {
       expect(
         CommerceLoyaltyEntity(
-          id: 'x', userId: 'u', commerceId: 'c', commerceName: 'Shop',
-          purchaseCount: 5, tier: 'customer',
+          id: 'x',
+          userId: 'u',
+          commerceId: 'c',
+          commerceName: 'Shop',
+          purchaseCount: 5,
+          tier: 'customer',
           createdAt: DateTime.fromMillisecondsSinceEpoch(0),
           updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
         ).tierInt,
@@ -424,8 +426,12 @@ void main() {
       );
       expect(
         CommerceLoyaltyEntity(
-          id: 'x', userId: 'u', commerceId: 'c', commerceName: 'Shop',
-          purchaseCount: 50, tier: 'vip',
+          id: 'x',
+          userId: 'u',
+          commerceId: 'c',
+          commerceName: 'Shop',
+          purchaseCount: 50,
+          tier: 'vip',
           createdAt: DateTime.fromMillisecondsSinceEpoch(0),
           updatedAt: DateTime.fromMillisecondsSinceEpoch(0),
         ).tierInt,

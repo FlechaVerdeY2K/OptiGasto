@@ -62,8 +62,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<LeaderboardBloc>()
-        ..add(LoadLeaderboard(period: _currentPeriod)),
+      create: (context) =>
+          sl<LeaderboardBloc>()..add(LoadLeaderboard(period: _currentPeriod)),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Ranking'),
@@ -151,9 +151,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
                               final entry = state.remainingEntries[index];
-                              final isCurrentUser =
-                                  widget.userId != null &&
-                                      entry.userId == widget.userId;
+                              final isCurrentUser = widget.userId != null &&
+                                  entry.userId == widget.userId;
                               return _buildLeaderboardItem(
                                 context,
                                 entry,
@@ -204,7 +203,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>
     );
   }
 
-  Widget _buildPodium(BuildContext context, List<LeaderboardEntryEntity> topThree) {
+  Widget _buildPodium(
+      BuildContext context, List<LeaderboardEntryEntity> topThree) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
@@ -319,7 +319,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>
     );
   }
 
-  Widget _buildUserRankCard(BuildContext context, LeaderboardEntryEntity entry) {
+  Widget _buildUserRankCard(
+      BuildContext context, LeaderboardEntryEntity entry) {
     return Container(
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
@@ -438,7 +439,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>
               '${entry.points}',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: isCurrentUser ? Theme.of(context).primaryColor : null,
+                    color:
+                        isCurrentUser ? Theme.of(context).primaryColor : null,
                   ),
             ),
             Text(

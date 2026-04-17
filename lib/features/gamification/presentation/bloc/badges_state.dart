@@ -45,8 +45,7 @@ class UserBadgesLoaded extends BadgesState {
       userBadges.map((ub) => ub.badgeId).toList();
 
   /// Check if a badge is unlocked
-  bool isBadgeUnlocked(String badgeId) =>
-      unlockedBadgeIds.contains(badgeId);
+  bool isBadgeUnlocked(String badgeId) => unlockedBadgeIds.contains(badgeId);
 
   /// Get badge details by ID
   BadgeEntity? getBadgeById(String badgeId) {

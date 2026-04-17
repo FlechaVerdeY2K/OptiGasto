@@ -52,8 +52,7 @@ abstract class GamificationRemoteDataSource {
 }
 
 /// Implementation of gamification remote data source using Supabase
-class GamificationRemoteDataSourceImpl
-    implements GamificationRemoteDataSource {
+class GamificationRemoteDataSourceImpl implements GamificationRemoteDataSource {
   final SupabaseClient supabase;
 
   GamificationRemoteDataSourceImpl({required this.supabase});
@@ -103,7 +102,8 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => PointsTransactionModel.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              PointsTransactionModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -229,7 +229,8 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -255,7 +256,8 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -281,7 +283,8 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -331,7 +334,8 @@ class GamificationRemoteDataSourceImpl
           .order('purchase_count', ascending: false);
 
       return (response as List)
-          .map((json) => CommerceLoyaltyModel.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              CommerceLoyaltyModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -384,7 +388,8 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => CommerceLoyaltyModel.fromJson(json as Map<String, dynamic>))
+          .map((json) =>
+              CommerceLoyaltyModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);

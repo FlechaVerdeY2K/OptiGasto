@@ -55,9 +55,8 @@ class LeaderboardBloc extends Bloc<LeaderboardEvent, LeaderboardState> {
       (failure) => emit(LeaderboardError(failure.message)),
       (entries) {
         // Find user entry
-        final userEntry = entries
-            .where((entry) => entry.userId == event.userId)
-            .firstOrNull;
+        final userEntry =
+            entries.where((entry) => entry.userId == event.userId).firstOrNull;
 
         if (userEntry != null) {
           emit(UserRankLoaded(

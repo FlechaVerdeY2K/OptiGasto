@@ -192,7 +192,7 @@ class BadgeDetailDialog extends StatelessWidget {
   String _getUnlockRequirements(BadgeEntity badge) {
     // Parse unlock conditions from JSONB
     final conditions = badge.unlockConditions;
-    
+
     if (conditions.containsKey('promotions_published')) {
       return 'Publica ${conditions['promotions_published']} promociones';
     }
@@ -208,7 +208,7 @@ class BadgeDetailDialog extends StatelessWidget {
     if (conditions.containsKey('validations_count')) {
       return 'Valida ${conditions['validations_count']} promociones';
     }
-    
+
     return 'Completa acciones específicas para desbloquear';
   }
 

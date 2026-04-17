@@ -48,15 +48,17 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                       children: [
                         Text(
                           'Lealtad del Comercio',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
                         ),
                         Text(
                           loyalty.commerceName,
-                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -139,15 +141,17 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                       children: [
                         Text(
                           'Progreso al siguiente nivel',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Colors.grey[600],
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    color: Colors.grey[600],
+                                  ),
                         ),
                         Text(
                           '${_getProgressPercentage(loyalty).toStringAsFixed(0)}%',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                       ],
                     ),
@@ -187,10 +191,11 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                       Expanded(
                         child: Text(
                           '¡Has alcanzado el nivel máximo!',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: color,
-                                fontWeight: FontWeight.w600,
-                              ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: color,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                         ),
                       ),
                     ],

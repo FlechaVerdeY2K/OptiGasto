@@ -121,7 +121,8 @@ class BadgesShowcaseWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBadgeItem(BuildContext context, BadgeEntity badge, bool unlocked) {
+  Widget _buildBadgeItem(
+      BuildContext context, BadgeEntity badge, bool unlocked) {
     return Column(
       children: [
         Container(

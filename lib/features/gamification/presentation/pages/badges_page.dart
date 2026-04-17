@@ -26,8 +26,7 @@ class _BadgesPageState extends State<BadgesPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => sl<BadgesBloc>()
-        ..add(LoadUserBadges(widget.userId)),
+      create: (context) => sl<BadgesBloc>()..add(LoadUserBadges(widget.userId)),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Insignias'),
@@ -116,7 +115,8 @@ class _BadgesPageState extends State<BadgesPage> {
                   // Stats header
                   Container(
                     padding: const EdgeInsets.all(16),
-                    color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                    color:
+                        Theme.of(context).primaryColor.withValues(alpha: 0.1),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [

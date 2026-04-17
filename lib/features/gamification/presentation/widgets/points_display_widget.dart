@@ -56,10 +56,11 @@ class PointsDisplayWidget extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       '${stats.points}',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                   ],
                 ),
@@ -123,7 +124,8 @@ class PointsDisplayWidget extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: stats.progressPercentage / 100,
                     backgroundColor: Colors.white.withValues(alpha: 0.3),
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.white),
                     minHeight: 8,
                   ),
                 ),

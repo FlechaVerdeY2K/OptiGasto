@@ -75,21 +75,20 @@ class UserGamificationStatsEntity extends Equatable {
   /// Calculate progress percentage to next level
   double get progressPercentage {
     if (pointsToNextLevel == 0) return 1.0;
-    
+
     // Calculate points in current level
     final levelThresholds = [0, 100, 500, 1500, 3000];
-    final currentLevelPoints = level <= levelThresholds.length 
-        ? levelThresholds[level - 1] 
-        : 0;
-    final nextLevelPoints = level < levelThresholds.length 
-        ? levelThresholds[level] 
+    final currentLevelPoints =
+        level <= levelThresholds.length ? levelThresholds[level - 1] : 0;
+    final nextLevelPoints = level < levelThresholds.length
+        ? levelThresholds[level]
         : currentLevelPoints + 5000;
-    
+
     final pointsInLevel = points - currentLevelPoints;
     final pointsNeededForLevel = nextLevelPoints - currentLevelPoints;
-    
-    return pointsNeededForLevel > 0 
-        ? pointsInLevel / pointsNeededForLevel 
+
+    return pointsNeededForLevel > 0
+        ? pointsInLevel / pointsNeededForLevel
         : 1.0;
   }
 }
