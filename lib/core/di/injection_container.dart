@@ -70,6 +70,7 @@ import '../../features/search/domain/usecases/clear_search_history.dart';
 import '../../features/search/domain/usecases/get_search_history.dart';
 import '../../features/search/domain/usecases/get_search_suggestions.dart';
 import '../../features/search/domain/usecases/search_promotions.dart';
+import '../../features/search/presentation/bloc/search_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -229,6 +230,16 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => GetSearchSuggestions(sl()));
   sl.registerLazySingleton(() => GetSearchHistory(sl()));
   sl.registerLazySingleton(() => ClearSearchHistory(sl()));
+
+  // Search BLoC
+  sl.registerFactory(
+    () => SearchBloc(
+      searchPromotions: sl(),
+      getSearchSuggestions: sl(),
+      getSearchHistory: sl(),
+      clearSearchHistory: sl(),
+    ),
+  );
 
   // ========== BLoC ==========
   // Auth
