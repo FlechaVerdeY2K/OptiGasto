@@ -27,7 +27,11 @@ import '../../features/auth/domain/entities/user_entity.dart';
 import '../../features/route/presentation/pages/route_planner_page.dart';
 import '../../features/route/presentation/pages/route_result_page.dart';
 import '../../features/route/presentation/pages/map_picker_page.dart';
+import '../../features/route/presentation/pages/saved_routes_page.dart';
+import '../../features/route/presentation/pages/route_editor_page.dart';
 import '../../features/route/domain/entities/optimized_route_entity.dart';
+import '../../features/route/domain/entities/saved_route_entity.dart';
+import '../../features/route/domain/usecases/calculate_ordered_route.dart';
 import '../../features/route/presentation/bloc/route_planner_bloc.dart';
 import '../../features/route/presentation/bloc/route_planner_event.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
@@ -57,6 +61,8 @@ class AppRouter {
   static const String routePlanner = '/route/planner';
   static const String routeResult = '/route/result';
   static const String routeMapPicker = '/route/map-picker';
+  static const String savedRoutes = '/route/saved';
+  static const String routeEditor = '/route/editor';
 
   static GoRouter router(BuildContext context) => GoRouter(
         initialLocation: onboarding,
@@ -209,6 +215,20 @@ class AppRouter {
               value: context.read<LocationBloc>(),
               child: const MapPickerPage(),
             ),
+          ),
+          GoRoute(
+            path: savedRoutes,
+            builder: (context, state) => const SavedRoutesPage(),
+          ),
+          GoRoute(
+            path: routeEditor,
+            builder: (context, state) {
+              final route = state.extra as SavedRouteEntity;
+              return RouteEditorPage(
+                route: route,
+                calculateOrderedRoute: sl<CalculateOrderedRoute>(),
+              );
+            },
           ),
         ],
       );

@@ -166,6 +166,57 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: AppColors.primary,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Icon(
+                    Icons.route,
+                    size: 48,
+                    color: Colors.white,
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Rutas',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.add_road),
+              title: const Text('Nueva ruta'),
+              subtitle: const Text('Planificar una nueva ruta'),
+              onTap: () {
+                Navigator.pop(context);
+                context.push(AppRouter.routePlanner);
+              },
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.bookmark),
+              title: const Text('Mis rutas guardadas'),
+              subtitle: const Text('Ver y editar rutas'),
+              onTap: () {
+                Navigator.pop(context);
+                context.push(AppRouter.savedRoutes);
+              },
+            ),
+          ],
+        ),
+      ),
       body: BlocConsumer<LocationBloc, LocationState>(
         listener: (context, state) {
           if (state is LocationPermissionDenied) {
@@ -272,10 +323,9 @@ class _MapPageState extends State<MapPage> {
                   child: LinearProgressIndicator(),
                 ),
 
-              // Controles superiores
+              // Controles superiores — filtros (right side only)
               Positioned(
                 top: 16,
-                left: 16,
                 right: 16,
                 child: Card(
                   child: Padding(
@@ -284,15 +334,8 @@ class _MapPageState extends State<MapPage> {
                       vertical: 8,
                     ),
                     child: Row(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Expanded(
-                          child: Text(
-                            '${_markers.length} marcadores',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
                         IconButton(
                           icon: Icon(
                             Icons.local_offer,
@@ -329,6 +372,24 @@ class _MapPageState extends State<MapPage> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+              ),
+
+              // Menu button — top left
+              Positioned(
+                top: 16,
+                left: 16,
+                child: FloatingActionButton(
+                  heroTag: 'menu',
+                  mini: true,
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
+                  },
+                  backgroundColor: Colors.white,
+                  child: const Icon(
+                    Icons.menu,
+                    color: AppColors.primary,
                   ),
                 ),
               ),
@@ -375,19 +436,6 @@ class _MapPageState extends State<MapPage> {
                       backgroundColor: Colors.white,
                       child: const Icon(
                         Icons.refresh,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    FloatingActionButton(
-                      heroTag: 'route',
-                      mini: true,
-                      onPressed: () {
-                        context.push(AppRouter.routePlanner);
-                      },
-                      backgroundColor: Colors.white,
-                      child: const Icon(
-                        Icons.route,
                         color: AppColors.primary,
                       ),
                     ),
