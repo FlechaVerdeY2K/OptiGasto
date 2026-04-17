@@ -220,6 +220,14 @@ class AppRouter {
               child: const SearchPage(),
             ),
           ),
+          // Deep link handler: optigasto:///promotion/{id}
+          GoRoute(
+            path: '/promotion/:id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return PromotionDetailPage(promotionId: id);
+            },
+          ),
         ],
       );
 }

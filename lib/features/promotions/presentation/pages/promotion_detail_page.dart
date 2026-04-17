@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_text_styles.dart';
@@ -10,6 +12,7 @@ import '../bloc/promotion_bloc.dart';
 import '../bloc/promotion_event.dart';
 import '../bloc/promotion_state.dart';
 import '../../domain/entities/promotion_entity.dart';
+import '../widgets/shareable_promotion_card.dart';
 
 /// Página de detalle de promoción
 class PromotionDetailPage extends StatefulWidget {
@@ -851,13 +854,11 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
   }
 
   void _sharePromotion(PromotionEntity promotion) {
-    Share.share(
-      '¡Mira esta promoción en OptiGasto!\n\n'
-      '${promotion.title}\n'
-      '${promotion.discount}\n'
-      'En ${promotion.commerceName}\n\n'
-      'Descarga OptiGasto y ahorra más.',
-      subject: promotion.title,
+    showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (_) => _ShareSheet(promotion: promotion),
     );
   }
 
@@ -874,6 +875,134 @@ class _PromotionDetailPageState extends State<PromotionDetailPage> {
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ShareSheet extends StatefulWidget {
+  final PromotionEntity promotion;
+
+  const _ShareSheet({required this.promotion});
+
+  @override
+  State<_ShareSheet> createState() => _ShareSheetState();
+}
+
+class _ShareSheetState extends State<_ShareSheet> {
+  final _repaintKey = GlobalKey();
+  bool _capturing = false;
+
+  Future<void> _shareImage() async {
+    setState(() => _capturing = true);
+    try {
+      // Allow widget to render before capture
+      await Future<void>.delayed(const Duration(milliseconds: 150));
+      final bytes = await ShareablePromotionCard.capture(_repaintKey);
+      if (bytes == null || !mounted) return;
+      final dir = await getTemporaryDirectory();
+      final file = File(
+          '${dir.path}/optigasto_promo_${widget.promotion.id}.png');
+      await file.writeAsBytes(bytes);
+      if (!mounted) return;
+      Navigator.pop(context);
+      await Share.shareXFiles(
+        [XFile(file.path, mimeType: 'image/png')],
+        text:
+            'Encontré esta oferta en OptiGasto: ${widget.promotion.title} — ${widget.promotion.discount} en ${widget.promotion.commerceName}',
+      );
+    } finally {
+      if (mounted) setState(() => _capturing = false);
+    }
+  }
+
+  void _shareText() {
+    Navigator.pop(context);
+    Share.share(
+      '¡Mira esta oferta en OptiGasto!\n\n'
+      '${widget.promotion.title}\n'
+      '${widget.promotion.discount}\n'
+      'En ${widget.promotion.commerceName}\n\n'
+      'optigasto:///promotion/${widget.promotion.id}',
+      subject: widget.promotion.title,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Compartir promoción',
+            style: Theme.of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 24),
+          // Card preview
+          Center(
+            child: ShareablePromotionCard(
+              promotion: widget.promotion,
+              repaintKey: _repaintKey,
+            ),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _capturing ? null : _shareImage,
+              icon: _capturing
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Icon(Icons.image),
+              label: Text(_capturing ? 'Generando...' : 'Compartir como imagen'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _shareText,
+              icon: const Icon(Icons.text_fields),
+              label: const Text('Compartir como texto'),
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
           ),
         ],
       ),

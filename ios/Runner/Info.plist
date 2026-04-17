@@ -66,6 +66,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- Deep links: optigasto:///promotion/{id} -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>optigasto</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>optigasto</string>
+			</array>
+		</dict>
+	</array>
 	<!-- Permisos de Ubicación -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>OptiGasto necesita acceso a tu ubicación para mostrarte ofertas y promociones cercanas.</string>
