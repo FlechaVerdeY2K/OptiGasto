@@ -31,6 +31,8 @@ import '../../features/route/domain/entities/optimized_route_entity.dart';
 import '../../features/route/presentation/bloc/route_planner_bloc.dart';
 import '../../features/route/presentation/bloc/route_planner_event.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
+import '../../features/search/presentation/bloc/search_bloc.dart';
+import '../../features/search/presentation/pages/search_page.dart';
 import '../di/injection_container.dart';
 
 class AppRouter {
@@ -57,6 +59,7 @@ class AppRouter {
   static const String routePlanner = '/route/planner';
   static const String routeResult = '/route/result';
   static const String routeMapPicker = '/route/map-picker';
+  static const String search = '/search';
 
   static GoRouter router(BuildContext context) => GoRouter(
         initialLocation: onboarding,
@@ -208,6 +211,13 @@ class AppRouter {
             builder: (context, state) => BlocProvider.value(
               value: context.read<LocationBloc>(),
               child: const MapPickerPage(),
+            ),
+          ),
+          GoRoute(
+            path: search,
+            builder: (context, state) => BlocProvider(
+              create: (_) => sl<SearchBloc>(),
+              child: const SearchPage(),
             ),
           ),
         ],

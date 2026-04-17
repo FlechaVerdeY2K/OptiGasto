@@ -96,9 +96,7 @@ class _HomePageState extends State<HomePage> {
           ),
           IconButton(
             icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implementar búsqueda
-            },
+            onPressed: () => context.push(AppRouter.search),
           ),
         ],
       ),
