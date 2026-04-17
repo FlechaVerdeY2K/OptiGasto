@@ -105,7 +105,9 @@ void main() {
       final result = await repository.getSavedRoutes();
 
       // assert
-      expect(result, equals(Right(tSavedRoutes)));
+      expect(
+          result,
+          equals(Right<StorageFailure, List<SavedRouteModel>>(tSavedRoutes)));
       verify(() => mockRemoteDataSource.getSavedRoutes()).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
@@ -123,7 +125,8 @@ void main() {
       // assert
       expect(
         result,
-        equals(const Left(StorageFailure(message: 'Server error'))),
+        equals(const Left<StorageFailure, List<SavedRouteModel>>(
+            StorageFailure(message: 'Server error'))),
       );
       verify(() => mockRemoteDataSource.getSavedRoutes()).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
@@ -165,7 +168,8 @@ void main() {
       final result = await repository.createSavedRoute(tSavedRouteEntity);
 
       // assert
-      expect(result, equals(Right(tSavedRouteModel)));
+      expect(result,
+          equals(Right<StorageFailure, SavedRouteModel>(tSavedRouteModel)));
       verify(() => mockRemoteDataSource.createSavedRoute(any())).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
@@ -183,7 +187,8 @@ void main() {
       // assert
       expect(
         result,
-        equals(const Left(StorageFailure(message: 'Failed to create'))),
+        equals(const Left<StorageFailure, SavedRouteModel>(
+            StorageFailure(message: 'Failed to create'))),
       );
       verify(() => mockRemoteDataSource.createSavedRoute(any())).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
@@ -225,7 +230,8 @@ void main() {
       final result = await repository.updateSavedRoute(tSavedRouteEntity);
 
       // assert
-      expect(result, equals(Right(tSavedRouteModel)));
+      expect(result,
+          equals(Right<StorageFailure, SavedRouteModel>(tSavedRouteModel)));
       verify(() => mockRemoteDataSource.updateSavedRoute(any())).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
@@ -243,7 +249,8 @@ void main() {
       // assert
       expect(
         result,
-        equals(const Left(StorageFailure(message: 'Failed to update'))),
+        equals(const Left<StorageFailure, SavedRouteModel>(
+            StorageFailure(message: 'Failed to update'))),
       );
       verify(() => mockRemoteDataSource.updateSavedRoute(any())).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
@@ -286,7 +293,7 @@ void main() {
       final result = await repository.deleteSavedRoute(tRouteId);
 
       // assert
-      expect(result, equals(const Right(null)));
+      expect(result, equals(const Right<StorageFailure, void>(null)));
       verify(() => mockRemoteDataSource.deleteSavedRoute(tRouteId)).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
     });
@@ -304,7 +311,8 @@ void main() {
       // assert
       expect(
         result,
-        equals(const Left(StorageFailure(message: 'Failed to delete'))),
+        equals(const Left<StorageFailure, void>(
+            StorageFailure(message: 'Failed to delete'))),
       );
       verify(() => mockRemoteDataSource.deleteSavedRoute(tRouteId)).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
