@@ -128,16 +128,11 @@ CREATE INDEX idx_gamification_audit_created ON gamification_audit_log(created_at
 -- Enable RLS on audit log
 ALTER TABLE gamification_audit_log ENABLE ROW LEVEL SECURITY;
 
--- Only admins can view audit log
-CREATE POLICY "Only admins can view audit log"
+-- Only admins can view audit log (future feature - for now, no one can access)
+-- TODO: Implement admin role system before enabling this
+CREATE POLICY "Audit log access restricted"
 ON gamification_audit_log FOR SELECT
-USING (
-  EXISTS (
-    SELECT 1 FROM users 
-    WHERE id = auth.uid() 
-    AND role = 'admin'
-  )
-);
+USING (false);
 
 COMMENT ON TABLE gamification_audit_log IS 'Audit log for gamification system security events';
 
