@@ -69,6 +69,8 @@ class _LeaderboardPageState extends State<LeaderboardPage>
           title: const Text('Ranking'),
           bottom: TabBar(
             controller: _tabController,
+            isScrollable: true,
+            tabAlignment: TabAlignment.center,
             tabs: const [
               Tab(text: 'Semanal'),
               Tab(text: 'Mensual'),

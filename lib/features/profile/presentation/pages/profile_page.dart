@@ -117,6 +117,14 @@ class _ProfilePageContent extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: BlocBuilder<GamificationBloc, GamificationState>(
                         builder: (context, gamState) {
+                          if (gamState is GamificationLoading) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
                           if (gamState is GamificationStatsLoaded) {
                             return PointsDisplayWidget(
                               stats: gamState.stats,
@@ -135,6 +143,9 @@ class _ProfilePageContent extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: BlocBuilder<BadgesBloc, BadgesState>(
                         builder: (context, badgesState) {
+                          if (badgesState is BadgesLoading) {
+                            return const SizedBox.shrink();
+                          }
                           if (badgesState is UserBadgesLoaded) {
                             return BadgesShowcaseWidget(
                               userBadges: badgesState.userBadges,
@@ -214,6 +225,20 @@ class _ProfilePageContent extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
         children: [
+          _buildActionButton(
+            context: context,
+            icon: Icons.emoji_events_outlined,
+            label: 'Ver Leaderboard',
+            onTap: () => context.push('/leaderboard'),
+          ),
+          const SizedBox(height: 12),
+          _buildActionButton(
+            context: context,
+            icon: Icons.military_tech_outlined,
+            label: 'Mis Insignias',
+            onTap: () => context.push('/badges'),
+          ),
+          const SizedBox(height: 12),
           _buildActionButton(
             context: context,
             icon: Icons.history,

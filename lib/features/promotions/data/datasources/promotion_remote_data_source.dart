@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:math' show cos, sin, asin, sqrt;
+import 'dart:typed_data';
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:uuid/uuid.dart';
@@ -606,27 +608,34 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
       for (int i = 0; i < images.length; i++) {
         final file = images[i];
 
-        // Comprimir imagen
-        final compressedFile = await _compressImage(file);
+        // XFile.readAsBytes() uses Android's content resolver — works with
+        // content:// URIs that dart:io File cannot handle.
+        final rawBytes = await XFile(file.path).readAsBytes();
 
-        // Generar nombre único para el archivo
+        // Compress in-memory — no temp files or path_provider needed.
+        final compressedList = await _compressBytesImage(rawBytes);
+        final compressedBytes = compressedList is Uint8List
+            ? compressedList
+            : Uint8List.fromList(compressedList);
+
         final fileName =
             '${id}_${i}_${DateTime.now().millisecondsSinceEpoch}.jpg';
         final filePath = 'promotions/$id/$fileName';
 
-        // Subir a Supabase Storage
-        await supabase.storage.from(SupabaseConfig.promotionsBucket).upload(
+        await supabase.storage
+            .from(SupabaseConfig.promotionImagesBucket)
+            .uploadBinary(
               filePath,
-              compressedFile,
+              compressedBytes,
               fileOptions: const FileOptions(
                 cacheControl: '3600',
                 upsert: false,
+                contentType: 'image/jpeg',
               ),
             );
 
-        // Obtener URL pública
         final publicUrl = supabase.storage
-            .from(SupabaseConfig.promotionsBucket)
+            .from(SupabaseConfig.promotionImagesBucket)
             .getPublicUrl(filePath);
 
         uploadedUrls.add(publicUrl);
@@ -660,29 +669,19 @@ class PromotionRemoteDataSourceImpl implements PromotionRemoteDataSource {
   }
 
   /// Comprime una imagen para reducir su tamaño
-  Future<File> _compressImage(File file) async {
+  /// Compresses raw image bytes. Falls back to original bytes on error.
+  Future<List<int>> _compressBytesImage(List<int> rawBytes) async {
     try {
-      final filePath = file.absolute.path;
-      final lastIndex = filePath.lastIndexOf('.');
-      final outPath = '${filePath.substring(0, lastIndex)}_compressed.jpg';
-
-      final result = await FlutterImageCompress.compressAndGetFile(
-        filePath,
-        outPath,
+      final result = await FlutterImageCompress.compressWithList(
+        rawBytes is Uint8List ? rawBytes : Uint8List.fromList(rawBytes),
         quality: 85,
         minWidth: 1920,
         minHeight: 1080,
         format: CompressFormat.jpeg,
       );
-
-      if (result == null) {
-        throw ServerException(message: 'Error al comprimir imagen');
-      }
-
-      return File(result.path);
-    } catch (e) {
-      // Si falla la compresión, retornar el archivo original
-      return file;
+      return result;
+    } catch (_) {
+      return rawBytes;
     }
   }
 }

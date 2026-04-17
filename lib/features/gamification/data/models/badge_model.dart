@@ -19,11 +19,15 @@ class BadgeModel extends BadgeEntity {
       id: json['id'] as String,
       name: json['name'] as String,
       description: json['description'] as String,
-      iconUrl: json['icon_url'] as String,
+      // DB column is 'icon', entity field is 'iconUrl'
+      iconUrl: (json['icon_url'] ?? json['icon'] ?? '') as String,
       category: json['category'] as String,
-      unlockConditions:
-          Map<String, dynamic>.from(json['unlock_conditions'] as Map),
-      displayOrder: (json['display_order'] as num).toInt(),
+      // DB column is 'unlock_condition' (singular)
+      unlockConditions: Map<String, dynamic>.from((json['unlock_conditions'] ??
+          json['unlock_condition'] ??
+          <String, dynamic>{}) as Map<String, dynamic>),
+      // DB has no display_order — derive from created_at ordering
+      displayOrder: (json['display_order'] as num?)?.toInt() ?? 0,
       createdAt: DateTime.parse(json['created_at'] as String),
     );
   }

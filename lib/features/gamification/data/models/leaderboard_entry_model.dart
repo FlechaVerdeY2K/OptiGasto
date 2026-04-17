@@ -13,13 +13,20 @@ class LeaderboardEntryModel extends LeaderboardEntryEntity {
 
   /// Creates a LeaderboardEntryModel from Supabase JSON
   factory LeaderboardEntryModel.fromJson(Map<String, dynamic> json) {
+    // Views use weekly_points/monthly_points/yearly_points — fall back through all
+    final rawPoints = json['points'] ??
+        json['weekly_points'] ??
+        json['monthly_points'] ??
+        json['yearly_points'] ??
+        0;
     return LeaderboardEntryModel(
       userId: json['user_id'] as String,
-      username: json['username'] as String,
-      points: (json['points'] as num).toInt(),
-      level: (json['level'] as num).toInt(),
-      rank: (json['rank'] as num).toInt(),
-      badgeCount: (json['badge_count'] as num).toInt(),
+      username: (json['username'] ?? json['name'] ?? '') as String,
+      points: (rawPoints as num).toInt(),
+      // level and badge_count not in leaderboard views — use defaults
+      level: (json['level'] as num?)?.toInt() ?? 1,
+      rank: (json['rank'] as num?)?.toInt() ?? 0,
+      badgeCount: (json['badge_count'] as num?)?.toInt() ?? 0,
     );
   }
 

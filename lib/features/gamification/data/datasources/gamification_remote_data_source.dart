@@ -139,7 +139,7 @@ class GamificationRemoteDataSourceImpl implements GamificationRemoteDataSource {
       final response = await supabase
           .from('badges')
           .select()
-          .order('display_order', ascending: true);
+          .order('created_at', ascending: true);
 
       return (response as List)
           .map((json) => BadgeModel.fromJson(json as Map<String, dynamic>))
