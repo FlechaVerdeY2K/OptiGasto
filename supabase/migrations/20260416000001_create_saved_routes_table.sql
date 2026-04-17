@@ -1,4 +1,4 @@
-CREATE TABLE saved_routes (
+CREATE TABLE IF NOT EXISTS saved_routes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -12,13 +12,44 @@ CREATE TABLE saved_routes (
 
 ALTER TABLE saved_routes ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "User can view own saved routes"
-  ON saved_routes FOR SELECT USING (user_id = auth.uid());
-CREATE POLICY "User can insert own saved routes"
-  ON saved_routes FOR INSERT WITH CHECK (user_id = auth.uid());
-CREATE POLICY "User can update own saved routes"
-  ON saved_routes FOR UPDATE USING (user_id = auth.uid());
-CREATE POLICY "User can delete own saved routes"
-  ON saved_routes FOR DELETE USING (user_id = auth.uid());
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'saved_routes' AND policyname = 'User can view own saved routes'
+  ) THEN
+    CREATE POLICY "User can view own saved routes"
+      ON saved_routes FOR SELECT USING (user_id = auth.uid());
+  END IF;
+END $$;
 
-CREATE INDEX saved_routes_user_id_idx ON saved_routes(user_id);
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'saved_routes' AND policyname = 'User can insert own saved routes'
+  ) THEN
+    CREATE POLICY "User can insert own saved routes"
+      ON saved_routes FOR INSERT WITH CHECK (user_id = auth.uid());
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'saved_routes' AND policyname = 'User can update own saved routes'
+  ) THEN
+    CREATE POLICY "User can update own saved routes"
+      ON saved_routes FOR UPDATE USING (user_id = auth.uid());
+  END IF;
+END $$;
+
+DO $$ BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'saved_routes' AND policyname = 'User can delete own saved routes'
+  ) THEN
+    CREATE POLICY "User can delete own saved routes"
+      ON saved_routes FOR DELETE USING (user_id = auth.uid());
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS saved_routes_user_id_idx ON saved_routes(user_id);
