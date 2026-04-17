@@ -93,9 +93,9 @@ USING (auth.uid() = id);
 
 -- Create a view for user stats that's safe to query
 CREATE OR REPLACE VIEW user_gamification_stats AS
-SELECT 
+SELECT
   u.id as user_id,
-  u.username,
+  u.name as username,
   u.points,
   u.level,
   get_points_to_next_level(u.points) as points_to_next_level,
