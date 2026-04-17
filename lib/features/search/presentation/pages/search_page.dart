@@ -154,8 +154,8 @@ class _SearchPageState extends State<SearchPage> {
               if (isCurrentlyActive) {
                 // Deactivate: clear date filters
                 newFilters = _activeFilters.copyWith(
-                  dateFrom: null,
-                  dateTo: null,
+                  clearDateFrom: true,
+                  clearDateTo: true,
                 );
               } else {
                 // Activate: set last 24h
@@ -203,7 +203,7 @@ class _SearchPageState extends State<SearchPage> {
               if (isCurrentlyActive) {
                 // Deactivate: clear radius and reset sort
                 newFilters = _activeFilters.copyWith(
-                  radiusKm: null,
+                  clearRadiusKm: true,
                   sortBy: SortBy.relevance,
                 );
               } else {
@@ -329,6 +329,7 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildEmptyState(String query) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isFilterOnly = query.trim().isEmpty;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32.0),
@@ -342,7 +343,9 @@ class _SearchPageState extends State<SearchPage> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Sin resultados para "$query"',
+              isFilterOnly
+                  ? 'Sin promociones con estos filtros'
+                  : 'Sin resultados para "$query"',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -350,7 +353,9 @@ class _SearchPageState extends State<SearchPage> {
             ),
             const SizedBox(height: 12),
             Text(
-              'Probá con otros términos o ajustá los filtros.',
+              isFilterOnly
+                  ? 'Intentá con otros filtros o ampliá el rango.'
+                  : 'Probá con otros términos o ajustá los filtros.',
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).textTheme.bodySmall?.color,
                   ),

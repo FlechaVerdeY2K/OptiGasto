@@ -91,9 +91,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   ) async {
     _currentFilters = event.filters;
 
-    // Si ya hay resultados, re-buscar con los nuevos filtros
-    if (_currentQuery.isNotEmpty) {
+    if (event.filters.hasActiveFilters || _currentQuery.isNotEmpty) {
+      // Filters active or query exists → run search
       add(const SearchSubmitted());
+    } else {
+      // No filters AND no query → return to history
+      final result = await getSearchHistory();
+      result.fold(
+        (_) => emit(const SearchInitial()),
+        (history) => emit(SearchInitial(history: history)),
+      );
     }
   }
 
@@ -101,7 +108,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     SearchSubmitted event,
     Emitter<SearchState> emit,
   ) async {
-    if (_currentQuery.trim().isEmpty) return;
+    // Require at least a query OR active filters to search
+    if (_currentQuery.trim().isEmpty && !_currentFilters.hasActiveFilters) {
+      return;
+    }
 
     emit(const SearchLoading());
 
@@ -117,8 +127,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     await result.fold(
       (failure) async => emit(SearchError(message: failure.message)),
       (results) async {
-        // Save to history after successful search
-        await repository.saveToHistory(_currentQuery.trim());
+        // Save to history only when there is actual query text
+        if (_currentQuery.trim().isNotEmpty) {
+          await repository.saveToHistory(_currentQuery.trim());
+        }
 
         if (results.isEmpty) {
           emit(SearchEmpty(query: _currentQuery));
