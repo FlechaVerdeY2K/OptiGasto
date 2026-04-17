@@ -35,6 +35,8 @@ import '../../features/route/domain/usecases/calculate_ordered_route.dart';
 import '../../features/route/presentation/bloc/route_planner_bloc.dart';
 import '../../features/route/presentation/bloc/route_planner_event.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
+import '../../features/search/presentation/bloc/search_bloc.dart';
+import '../../features/search/presentation/pages/search_page.dart';
 import '../di/injection_container.dart';
 
 class AppRouter {
@@ -61,6 +63,7 @@ class AppRouter {
   static const String routePlanner = '/route/planner';
   static const String routeResult = '/route/result';
   static const String routeMapPicker = '/route/map-picker';
+  static const String search = '/search';
   static const String savedRoutes = '/route/saved';
   static const String routeEditor = '/route/editor';
 
@@ -217,6 +220,13 @@ class AppRouter {
             ),
           ),
           GoRoute(
+            path: search,
+            builder: (context, state) => BlocProvider(
+              create: (_) => sl<SearchBloc>(),
+              child: const SearchPage(),
+            ),
+          ),
+          GoRoute(
             path: savedRoutes,
             builder: (context, state) => const SavedRoutesPage(),
           ),
@@ -228,6 +238,14 @@ class AppRouter {
                 route: route,
                 calculateOrderedRoute: sl<CalculateOrderedRoute>(),
               );
+            },
+          ),
+          // Deep link handler: optigasto:///promotion/{id}
+          GoRoute(
+            path: '/promotion/:id',
+            builder: (context, state) {
+              final id = state.pathParameters['id']!;
+              return PromotionDetailPage(promotionId: id);
             },
           ),
         ],
