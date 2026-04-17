@@ -29,17 +29,8 @@ class _HomePageState extends State<HomePage> {
   ];
 
   void _onItemTapped(int index) {
-    if (index == 3) {
-      // Route planner is a full page, not a tab — push without changing _selectedIndex
-      context.push(AppRouter.routePlanner);
-      return;
-    }
     setState(() {
-      // Nav bar has 5 items; index 3 is a push-only virtual tab.
-      // Tabs 0,1,2 → pages 0,1,2; tab 4 (Perfil) → page 3.
-      final pageIndex = index < 3 ? index : index - 1;
-      assert(pageIndex < _pages.length);
-      _selectedIndex = pageIndex;
+      _selectedIndex = index;
     });
   }
 
@@ -102,7 +93,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex >= 3 ? _selectedIndex + 1 : _selectedIndex,
+        currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primary,
@@ -113,8 +104,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(icon: Icon(Icons.map), label: 'Mapa'),
           BottomNavigationBarItem(
               icon: Icon(Icons.favorite_border), label: 'Favoritos'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.route), label: 'Ruta'), // NEW
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outline), label: 'Perfil'),
         ],

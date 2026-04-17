@@ -121,7 +121,8 @@ void main() {
   });
 
   group('SearchQueryChanged', () {
-    test('emits SearchInitial with history when query is less than 3 characters',
+    test(
+        'emits SearchInitial with history when query is less than 3 characters',
         () async {
       // arrange
       when(() => mockGetSearchHistory())

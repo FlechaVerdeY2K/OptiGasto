@@ -70,6 +70,14 @@ class LocationFailure extends Failure {
   });
 }
 
+/// Fallo de almacenamiento (Supabase CRUD)
+class StorageFailure extends Failure {
+  const StorageFailure({
+    required super.message,
+    super.code,
+  });
+}
+
 /// Fallo desconocido
 class UnknownFailure extends Failure {
   const UnknownFailure({
