@@ -114,17 +114,17 @@ COMMENT ON COLUMN commerce_loyalty.loyalty_level IS 'Loyalty tier: none (0-4), c
 
 -- Weekly Leaderboard (last 7 days)
 CREATE MATERIALIZED VIEW IF NOT EXISTS leaderboard_weekly AS
-SELECT 
-  u.id as user_id, 
-  u.username, 
+SELECT
+  u.id as user_id,
+  u.name as username,
   COALESCE(SUM(pl.points), 0) as weekly_points,
   ROW_NUMBER() OVER (ORDER BY COALESCE(SUM(pl.points), 0) DESC) as rank
-FROM auth.users u
-LEFT JOIN points_ledger pl ON pl.user_id = u.id 
+FROM users u
+LEFT JOIN points_ledger pl ON pl.user_id = u.id
   AND pl.created_at > now() - interval '7 days'
-WHERE u.username IS NOT NULL
-GROUP BY u.id, u.username
-ORDER BY weekly_points DESC 
+WHERE u.name IS NOT NULL
+GROUP BY u.id, u.name
+ORDER BY weekly_points DESC
 LIMIT 100;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leaderboard_weekly_user_id ON leaderboard_weekly(user_id);
@@ -134,17 +134,17 @@ COMMENT ON MATERIALIZED VIEW leaderboard_weekly IS 'Top 100 users by points earn
 
 -- Monthly Leaderboard (last 30 days)
 CREATE MATERIALIZED VIEW IF NOT EXISTS leaderboard_monthly AS
-SELECT 
-  u.id as user_id, 
-  u.username, 
+SELECT
+  u.id as user_id,
+  u.name as username,
   COALESCE(SUM(pl.points), 0) as monthly_points,
   ROW_NUMBER() OVER (ORDER BY COALESCE(SUM(pl.points), 0) DESC) as rank
-FROM auth.users u
-LEFT JOIN points_ledger pl ON pl.user_id = u.id 
+FROM users u
+LEFT JOIN points_ledger pl ON pl.user_id = u.id
   AND pl.created_at > now() - interval '30 days'
-WHERE u.username IS NOT NULL
-GROUP BY u.id, u.username
-ORDER BY monthly_points DESC 
+WHERE u.name IS NOT NULL
+GROUP BY u.id, u.name
+ORDER BY monthly_points DESC
 LIMIT 100;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leaderboard_monthly_user_id ON leaderboard_monthly(user_id);
@@ -154,17 +154,17 @@ COMMENT ON MATERIALIZED VIEW leaderboard_monthly IS 'Top 100 users by points ear
 
 -- Yearly Leaderboard (last 365 days)
 CREATE MATERIALIZED VIEW IF NOT EXISTS leaderboard_yearly AS
-SELECT 
-  u.id as user_id, 
-  u.username, 
+SELECT
+  u.id as user_id,
+  u.name as username,
   COALESCE(SUM(pl.points), 0) as yearly_points,
   ROW_NUMBER() OVER (ORDER BY COALESCE(SUM(pl.points), 0) DESC) as rank
-FROM auth.users u
-LEFT JOIN points_ledger pl ON pl.user_id = u.id 
+FROM users u
+LEFT JOIN points_ledger pl ON pl.user_id = u.id
   AND pl.created_at > now() - interval '365 days'
-WHERE u.username IS NOT NULL
-GROUP BY u.id, u.username
-ORDER BY yearly_points DESC 
+WHERE u.name IS NOT NULL
+GROUP BY u.id, u.name
+ORDER BY yearly_points DESC
 LIMIT 100;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_leaderboard_yearly_user_id ON leaderboard_yearly(user_id);
