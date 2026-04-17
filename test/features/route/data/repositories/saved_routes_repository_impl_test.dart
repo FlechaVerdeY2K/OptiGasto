@@ -105,8 +105,7 @@ void main() {
       final result = await repository.getSavedRoutes();
 
       // assert
-      expect(
-          result,
+      expect(result,
           equals(Right<StorageFailure, List<SavedRouteModel>>(tSavedRoutes)));
       verify(() => mockRemoteDataSource.getSavedRoutes()).called(1);
       verifyNoMoreInteractions(mockRemoteDataSource);
