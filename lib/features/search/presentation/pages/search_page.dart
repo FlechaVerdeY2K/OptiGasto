@@ -62,7 +62,9 @@ class _SearchPageState extends State<SearchPage> {
         categories: categories.cast(),
         onApply: (filters) {
           setState(() => _activeFilters = filters);
-          context.read<SearchBloc>().add(SearchFiltersChanged(filters));
+          context.read<SearchBloc>()
+            ..add(SearchFiltersChanged(filters))
+            ..add(const SearchSubmitted());
         },
       ),
     );
@@ -144,11 +146,25 @@ class _SearchPageState extends State<SearchPage> {
                 DateTime.now().difference(_activeFilters.dateFrom!).inHours <=
                     24,
             onTap: () {
-              final now = DateTime.now();
-              final newFilters = _activeFilters.copyWith(
-                dateFrom: now.subtract(const Duration(hours: 24)),
-                dateTo: now,
-              );
+              final isCurrentlyActive = _activeFilters.dateFrom != null &&
+                  DateTime.now().difference(_activeFilters.dateFrom!).inHours <=
+                      24;
+
+              final SearchFilters newFilters;
+              if (isCurrentlyActive) {
+                // Deactivate: clear date filters
+                newFilters = _activeFilters.copyWith(
+                  dateFrom: null,
+                  dateTo: null,
+                );
+              } else {
+                // Activate: set last 24h
+                final now = DateTime.now();
+                newFilters = _activeFilters.copyWith(
+                  dateFrom: now.subtract(const Duration(hours: 24)),
+                  dateTo: now,
+                );
+              }
               setState(() => _activeFilters = newFilters);
               context.read<SearchBloc>().add(SearchFiltersChanged(newFilters));
             },
@@ -159,7 +175,16 @@ class _SearchPageState extends State<SearchPage> {
             icon: Icons.local_offer,
             isActive: _activeFilters.minDiscount >= 50,
             onTap: () {
-              final newFilters = _activeFilters.copyWith(minDiscount: 50);
+              final isCurrentlyActive = _activeFilters.minDiscount >= 50;
+
+              final SearchFilters newFilters;
+              if (isCurrentlyActive) {
+                // Deactivate: reset to 0
+                newFilters = _activeFilters.copyWith(minDiscount: 0);
+              } else {
+                // Activate: set to 50%
+                newFilters = _activeFilters.copyWith(minDiscount: 50);
+              }
               setState(() => _activeFilters = newFilters);
               context.read<SearchBloc>().add(SearchFiltersChanged(newFilters));
             },
@@ -171,10 +196,23 @@ class _SearchPageState extends State<SearchPage> {
             isActive: _activeFilters.radiusKm != null &&
                 _activeFilters.sortBy == SortBy.distance,
             onTap: () {
-              final newFilters = _activeFilters.copyWith(
-                radiusKm: 5.0,
-                sortBy: SortBy.distance,
-              );
+              final isCurrentlyActive = _activeFilters.radiusKm != null &&
+                  _activeFilters.sortBy == SortBy.distance;
+
+              final SearchFilters newFilters;
+              if (isCurrentlyActive) {
+                // Deactivate: clear radius and reset sort
+                newFilters = _activeFilters.copyWith(
+                  radiusKm: null,
+                  sortBy: SortBy.relevance,
+                );
+              } else {
+                // Activate: set 5km radius and distance sort
+                newFilters = _activeFilters.copyWith(
+                  radiusKm: 5.0,
+                  sortBy: SortBy.distance,
+                );
+              }
               setState(() => _activeFilters = newFilters);
               context.read<SearchBloc>().add(SearchFiltersChanged(newFilters));
             },

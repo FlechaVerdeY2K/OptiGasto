@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/search_filters.dart';
 import '../../domain/entities/search_query_entity.dart';
+import '../../domain/repositories/search_repository.dart';
 import '../../domain/usecases/clear_search_history.dart';
 import '../../domain/usecases/get_search_history.dart';
 import '../../domain/usecases/get_search_suggestions.dart';
@@ -13,6 +14,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   final GetSearchSuggestions getSearchSuggestions;
   final GetSearchHistory getSearchHistory;
   final ClearSearchHistory clearSearchHistory;
+  final SearchRepository repository;
 
   String _currentQuery = '';
   SearchFilters _currentFilters = const SearchFilters();
@@ -24,6 +26,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required this.getSearchSuggestions,
     required this.getSearchHistory,
     required this.clearSearchHistory,
+    required this.repository,
   }) : super(const SearchInitial()) {
     on<SearchInitialized>(_onInitialized);
     // concurrent (default) + check _currentQuery tras delay = debounce efectivo
@@ -111,9 +114,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       userLng: _userLng,
     );
 
-    result.fold(
-      (failure) => emit(SearchError(message: failure.message)),
-      (results) {
+    await result.fold(
+      (failure) async => emit(SearchError(message: failure.message)),
+      (results) async {
+        // Save to history after successful search
+        await repository.saveToHistory(_currentQuery.trim());
+
         if (results.isEmpty) {
           emit(SearchEmpty(query: _currentQuery));
         } else {

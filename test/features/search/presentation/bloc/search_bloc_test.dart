@@ -7,6 +7,7 @@ import 'package:optigasto/features/search/domain/entities/search_filters.dart';
 import 'package:optigasto/features/search/domain/entities/search_history_item.dart';
 import 'package:optigasto/features/search/domain/entities/search_query_entity.dart';
 import 'package:optigasto/features/search/domain/entities/search_result_entity.dart';
+import 'package:optigasto/features/search/domain/repositories/search_repository.dart';
 import 'package:optigasto/features/search/domain/usecases/clear_search_history.dart';
 import 'package:optigasto/features/search/domain/usecases/get_search_history.dart';
 import 'package:optigasto/features/search/domain/usecases/get_search_suggestions.dart';
@@ -23,24 +24,29 @@ class MockGetSearchHistory extends Mock implements GetSearchHistory {}
 
 class MockClearSearchHistory extends Mock implements ClearSearchHistory {}
 
+class MockSearchRepository extends Mock implements SearchRepository {}
+
 void main() {
   late SearchBloc bloc;
   late MockSearchPromotions mockSearchPromotions;
   late MockGetSearchSuggestions mockGetSearchSuggestions;
   late MockGetSearchHistory mockGetSearchHistory;
   late MockClearSearchHistory mockClearSearchHistory;
+  late MockSearchRepository mockRepository;
 
   setUp(() {
     mockSearchPromotions = MockSearchPromotions();
     mockGetSearchSuggestions = MockGetSearchSuggestions();
     mockGetSearchHistory = MockGetSearchHistory();
     mockClearSearchHistory = MockClearSearchHistory();
+    mockRepository = MockSearchRepository();
 
     bloc = SearchBloc(
       searchPromotions: mockSearchPromotions,
       getSearchSuggestions: mockGetSearchSuggestions,
       getSearchHistory: mockGetSearchHistory,
       clearSearchHistory: mockClearSearchHistory,
+      repository: mockRepository,
     );
   });
 
@@ -215,6 +221,8 @@ void main() {
           userLng: any(named: 'userLng'),
         ),
       ).thenAnswer((_) async => Right([tSearchResult]));
+      when(() => mockRepository.saveToHistory(any()))
+          .thenAnswer((_) async => const Right(null));
 
       // act
       bloc.add(const SearchQueryChanged('pizza'));
@@ -242,6 +250,8 @@ void main() {
           userLng: any(named: 'userLng'),
         ),
       ).thenAnswer((_) async => const Right([]));
+      when(() => mockRepository.saveToHistory(any()))
+          .thenAnswer((_) async => const Right(null));
 
       // act
       bloc.add(const SearchQueryChanged('nonexistent'));
@@ -286,6 +296,8 @@ void main() {
           userLng: any(named: 'userLng'),
         ),
       ).thenAnswer((_) async => Right([tSearchResult]));
+      when(() => mockRepository.saveToHistory(any()))
+          .thenAnswer((_) async => const Right(null));
 
       // act
       bloc.add(const SearchHistoryItemTapped('pizza'));

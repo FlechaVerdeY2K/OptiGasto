@@ -243,6 +243,7 @@ Future<void> initializeDependencies() async {
       getSearchSuggestions: sl(),
       getSearchHistory: sl(),
       clearSearchHistory: sl(),
+      repository: sl(),
     ),
   );
 
