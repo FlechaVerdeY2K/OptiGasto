@@ -166,13 +166,13 @@ void main() {
 
     test('should work with filters applied', () async {
       // arrange
-      final tFilters = SearchFilters(
+      const tFilters = SearchFilters(
         minDiscount: 30,
-        categoryIds: const ['food'],
+        categoryIds: ['food'],
         radiusKm: 5.0,
         sortBy: SortBy.discount,
       );
-      final tQuery = SearchQueryEntity(
+      const tQuery = SearchQueryEntity(
         text: 'pizza',
         filters: tFilters,
       );
