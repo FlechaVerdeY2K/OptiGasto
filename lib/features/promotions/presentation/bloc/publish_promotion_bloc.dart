@@ -231,8 +231,9 @@ class PublishPromotionBloc
     );
 
     if (uploadResult.isLeft()) {
+      final errorMsg = uploadResult.fold((f) => f.message, (_) => '');
       emit(PublishPromotionError(
-        message: 'Error al subir imágenes',
+        message: errorMsg,
         previousFormState: formState,
       ));
       return;

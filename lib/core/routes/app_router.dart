@@ -37,6 +37,8 @@ import '../../features/route/presentation/bloc/route_planner_event.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/search/presentation/bloc/search_bloc.dart';
 import '../../features/search/presentation/pages/search_page.dart';
+import '../../features/gamification/presentation/pages/badges_page.dart';
+import '../../features/gamification/presentation/pages/leaderboard_page.dart';
 import '../di/injection_container.dart';
 
 class AppRouter {
@@ -66,6 +68,8 @@ class AppRouter {
   static const String search = '/search';
   static const String savedRoutes = '/route/saved';
   static const String routeEditor = '/route/editor';
+  static const String badges = '/badges';
+  static const String leaderboard = '/leaderboard';
 
   static GoRouter router(BuildContext context) => GoRouter(
         initialLocation: onboarding,
@@ -238,6 +242,24 @@ class AppRouter {
                 route: route,
                 calculateOrderedRoute: sl<CalculateOrderedRoute>(),
               );
+            },
+          ),
+          GoRoute(
+            path: badges,
+            builder: (context, state) {
+              final authState = context.read<AuthBloc>().state;
+              final userId =
+                  authState is AuthAuthenticated ? authState.user.id : '';
+              return BadgesPage(userId: userId);
+            },
+          ),
+          GoRoute(
+            path: leaderboard,
+            builder: (context, state) {
+              final authState = context.read<AuthBloc>().state;
+              final userId =
+                  authState is AuthAuthenticated ? authState.user.id : null;
+              return LeaderboardPage(userId: userId);
             },
           ),
           // Deep link handler: optigasto:///promotion/{id}

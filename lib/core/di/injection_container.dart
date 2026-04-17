@@ -76,6 +76,20 @@ import '../../features/search/domain/usecases/get_search_suggestions.dart';
 import '../../features/search/domain/usecases/search_promotions.dart';
 import '../../features/search/presentation/bloc/search_bloc.dart';
 import '../../features/route/presentation/bloc/saved_routes_bloc.dart';
+import '../../features/gamification/data/datasources/gamification_remote_data_source.dart';
+import '../../features/gamification/data/repositories/gamification_repository_impl.dart';
+import '../../features/gamification/domain/repositories/gamification_repository.dart';
+import '../../features/gamification/domain/usecases/get_user_gamification_stats.dart';
+import '../../features/gamification/domain/usecases/get_points_history.dart';
+import '../../features/gamification/domain/usecases/get_points_balance.dart';
+import '../../features/gamification/domain/usecases/get_all_badges.dart';
+import '../../features/gamification/domain/usecases/get_user_badges.dart';
+import '../../features/gamification/domain/usecases/get_leaderboard.dart';
+import '../../features/gamification/domain/usecases/get_user_loyalty_records.dart';
+import '../../features/gamification/domain/usecases/get_commerce_loyalty.dart';
+import '../../features/gamification/presentation/bloc/gamification_bloc.dart';
+import '../../features/gamification/presentation/bloc/badges_bloc.dart';
+import '../../features/gamification/presentation/bloc/leaderboard_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -150,6 +164,11 @@ Future<void> initializeDependencies() async {
     () => SettingsService(sl()),
   );
 
+  // Gamification
+  sl.registerLazySingleton<GamificationRemoteDataSource>(
+    () => GamificationRemoteDataSourceImpl(supabase: sl()),
+  );
+
   // ========== Repositories ==========
   // Auth
   sl.registerLazySingleton<AuthRepository>(
@@ -194,6 +213,11 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  // Gamification
+  sl.registerLazySingleton<GamificationRepository>(
+    () => GamificationRepositoryImpl(remoteDataSource: sl()),
+  );
+
   // ========== Use Cases ==========
   // Auth
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
@@ -235,6 +259,16 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => GetSearchSuggestions(sl()));
   sl.registerLazySingleton(() => GetSearchHistory(sl()));
   sl.registerLazySingleton(() => ClearSearchHistory(sl()));
+
+  // Gamification
+  sl.registerLazySingleton(() => GetUserGamificationStats(sl()));
+  sl.registerLazySingleton(() => GetPointsHistory(sl()));
+  sl.registerLazySingleton(() => GetPointsBalance(sl()));
+  sl.registerLazySingleton(() => GetAllBadges(sl()));
+  sl.registerLazySingleton(() => GetUserBadges(sl()));
+  sl.registerLazySingleton(() => GetLeaderboard(sl()));
+  sl.registerLazySingleton(() => GetUserLoyaltyRecords(sl()));
+  sl.registerLazySingleton(() => GetCommerceLoyalty(sl()));
 
   // Search BLoC
   sl.registerFactory(
@@ -358,6 +392,28 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => CalculateOrderedRoute(sl()));
   sl.registerFactory(
     () => SavedRoutesBloc(repository: sl()),
+  );
+
+  // Gamification BLoCs
+  sl.registerFactory(
+    () => GamificationBloc(
+      getUserGamificationStats: sl(),
+      getPointsHistory: sl(),
+      getPointsBalance: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => BadgesBloc(
+      getAllBadges: sl(),
+      getUserBadges: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => LeaderboardBloc(
+      getLeaderboard: sl(),
+    ),
   );
 }
 

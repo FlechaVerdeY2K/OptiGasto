@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../../../core/theme/app_colors.dart';
 
 /// Widget para seleccionar y mostrar imágenes de promociones
@@ -64,8 +66,9 @@ class ImagePickerWidget extends StatelessWidget {
         );
 
         if (images.isNotEmpty) {
-          // Convertir XFile a File directamente
-          final files = images.map((xFile) => File(xFile.path)).toList();
+          final files = await Future.wait(
+            images.asMap().entries.map((e) => _xFileToTempFile(e.value, e.key)),
+          );
           onImagesSelected(files);
         }
       } else {
@@ -78,8 +81,7 @@ class ImagePickerWidget extends StatelessWidget {
         );
 
         if (image != null) {
-          // Convertir XFile a File directamente
-          final file = File(image.path);
+          final file = await _xFileToTempFile(image, 0);
           onImagesSelected([file]);
         }
       }
@@ -92,6 +94,20 @@ class ImagePickerWidget extends StatelessWidget {
           ),
         );
       }
+    }
+  }
+
+  /// Copies XFile to a temp directory so dart:io can read it (Android content:// URIs)
+  Future<File> _xFileToTempFile(XFile xFile, int index) async {
+    try {
+      final tmpDir = await getTemporaryDirectory();
+      final ext = xFile.path.contains('.') ? xFile.path.split('.').last : 'jpg';
+      final tmpPath =
+          '${tmpDir.path}/pick_${DateTime.now().millisecondsSinceEpoch}_$index.$ext';
+      final bytes = await xFile.readAsBytes();
+      return await File(tmpPath).writeAsBytes(bytes);
+    } catch (_) {
+      return File(xFile.path);
     }
   }
 
@@ -219,40 +235,59 @@ class _ImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 120,
-      margin: const EdgeInsets.only(right: 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        image: DecorationImage(
-          image: FileImage(image),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Botón para eliminar
-          Positioned(
-            top: 4,
-            right: 4,
-            child: GestureDetector(
-              onTap: onRemove,
-              child: Container(
-                padding: const EdgeInsets.all(4),
-                decoration: const BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
+    return FutureBuilder<Uint8List>(
+      // XFile.readAsBytes() handles content:// URIs and real paths on all platforms
+      future: XFile(image.path).readAsBytes(),
+      builder: (context, snapshot) {
+        final Widget imageWidget = snapshot.hasData
+            ? Container(
+                width: 120,
+                margin: const EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(
+                    image: MemoryImage(snapshot.data!),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.close,
-                  color: Colors.white,
-                  size: 16,
+              )
+            : Container(
+                width: 120,
+                margin: const EdgeInsets.only(right: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: snapshot.hasError
+                    ? const Icon(Icons.broken_image, color: Colors.grey)
+                    : const Center(child: CircularProgressIndicator()),
+              );
+
+        return Stack(
+          children: [
+            imageWidget,
+            Positioned(
+              top: 4,
+              right: 16,
+              child: GestureDetector(
+                onTap: onRemove,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: const BoxDecoration(
+                    color: Colors.red,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.white,
+                    size: 16,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      },
     );
   }
 }
