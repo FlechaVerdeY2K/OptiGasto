@@ -23,7 +23,7 @@ class PointsDisplayWidget extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               Theme.of(context).primaryColor,
-              Theme.of(context).primaryColor.withOpacity(0.7),
+              Theme.of(context).primaryColor.withValues(alpha: 0.7),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -31,7 +31,7 @@ class PointsDisplayWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).primaryColor.withOpacity(0.3),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -50,12 +50,12 @@ class PointsDisplayWidget extends StatelessWidget {
                     Text(
                       'Puntos',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      '${stats.totalPoints}',
+                      '${stats.points}',
                       style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class PointsDisplayWidget extends StatelessWidget {
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
@@ -85,7 +85,7 @@ class PointsDisplayWidget extends StatelessWidget {
                       Text(
                         stats.levelName,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               fontSize: 10,
                             ),
                       ),
@@ -105,7 +105,7 @@ class PointsDisplayWidget extends StatelessWidget {
                     Text(
                       'Progreso al siguiente nivel',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                     ),
                     Text(
@@ -122,7 +122,7 @@ class PointsDisplayWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                   child: LinearProgressIndicator(
                     value: stats.progressPercentage / 100,
-                    backgroundColor: Colors.white.withOpacity(0.3),
+                    backgroundColor: Colors.white.withValues(alpha: 0.3),
                     valueColor: const AlwaysStoppedAnimation<Color>(Colors.white),
                     minHeight: 8,
                   ),

@@ -23,7 +23,7 @@ class GetLeaderboard {
       case 'yearly':
         return await repository.getYearlyLeaderboard(limit: limit);
       default:
-        return Left(
+        return const Left(
           ValidationFailure(
             message: 'Invalid period. Must be weekly, monthly, or yearly',
           ),

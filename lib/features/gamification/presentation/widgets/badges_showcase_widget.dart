@@ -18,8 +18,6 @@ class BadgesShowcaseWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get unlocked badge IDs
-    final unlockedBadgeIds = userBadges.map((ub) => ub.badgeId).toSet();
-
     // Get recent badges (last 3 unlocked)
     final recentBadges = userBadges.take(3).toList();
 
@@ -131,7 +129,7 @@ class BadgesShowcaseWidget extends StatelessWidget {
           height: 64,
           decoration: BoxDecoration(
             color: unlocked
-                ? Theme.of(context).primaryColor.withOpacity(0.1)
+                ? Theme.of(context).primaryColor.withValues(alpha: 0.1)
                 : Colors.grey[200],
             shape: BoxShape.circle,
           ),

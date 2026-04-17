@@ -6,6 +6,14 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../../gamification/presentation/bloc/gamification_bloc.dart';
+import '../../../gamification/presentation/bloc/gamification_event.dart';
+import '../../../gamification/presentation/bloc/gamification_state.dart';
+import '../../../gamification/presentation/bloc/badges_bloc.dart';
+import '../../../gamification/presentation/bloc/badges_event.dart';
+import '../../../gamification/presentation/bloc/badges_state.dart';
+import '../../../gamification/presentation/widgets/points_display_widget.dart';
+import '../../../gamification/presentation/widgets/badges_showcase_widget.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_event.dart';
 import '../bloc/profile_state.dart';
@@ -19,12 +27,23 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final authState = context.read<AuthBloc>().state;
-        final userId = authState is AuthAuthenticated ? authState.user.id : '';
-        return sl<ProfileBloc>()..add(RefreshProfile(userId));
-      },
+    final authState = context.read<AuthBloc>().state;
+    final userId = authState is AuthAuthenticated ? authState.user.id : '';
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => sl<ProfileBloc>()..add(RefreshProfile(userId)),
+        ),
+        BlocProvider(
+          create: (_) => sl<GamificationBloc>()
+            ..add(LoadUserGamificationStats(userId)),
+        ),
+        BlocProvider(
+          create: (_) => sl<BadgesBloc>()
+            ..add(LoadUserBadges(userId))
+            ..add(const LoadAllBadges()),
+        ),
+      ],
       child: const _ProfilePageContent(),
     );
   }
@@ -89,6 +108,43 @@ class _ProfilePageContent extends StatelessWidget {
                       onEditPressed: () {
                         context.push('/edit-profile', extra: state.user);
                       },
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Gamification: points + level display
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: BlocBuilder<GamificationBloc, GamificationState>(
+                        builder: (context, gamState) {
+                          if (gamState is GamificationStatsLoaded) {
+                            return PointsDisplayWidget(
+                              stats: gamState.stats,
+                              onTap: () => context.push('/leaderboard'),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // Gamification: badges showcase
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: BlocBuilder<BadgesBloc, BadgesState>(
+                        builder: (context, badgesState) {
+                          if (badgesState is UserBadgesLoaded) {
+                            return BadgesShowcaseWidget(
+                              userBadges: badgesState.userBadges,
+                              allBadges: badgesState.allBadges,
+                              onViewAll: () => context.push('/badges'),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
                     ),
 
                     const SizedBox(height: 16),

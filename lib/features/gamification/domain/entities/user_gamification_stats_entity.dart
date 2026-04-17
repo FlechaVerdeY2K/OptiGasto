@@ -31,6 +31,9 @@ class UserGamificationStatsEntity extends Equatable {
         totalTransactions,
       ];
 
+  /// Alias for points (widget compatibility)
+  int get totalPoints => points;
+
   UserGamificationStatsEntity copyWith({
     String? userId,
     String? username,

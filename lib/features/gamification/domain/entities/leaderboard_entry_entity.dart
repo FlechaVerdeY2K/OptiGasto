@@ -28,6 +28,9 @@ class LeaderboardEntryEntity extends Equatable {
         badgeCount,
       ];
 
+  /// Alias for points (widget compatibility)
+  int get totalPoints => points;
+
   LeaderboardEntryEntity copyWith({
     String? userId,
     String? username,

@@ -210,7 +210,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Theme.of(context).primaryColor.withOpacity(0.1),
+            Theme.of(context).primaryColor.withValues(alpha: 0.1),
             Colors.white,
           ],
           begin: Alignment.topCenter,
@@ -255,7 +255,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
           width: 60,
           height: 60,
           decoration: BoxDecoration(
-            color: colors[place]!.withOpacity(0.2),
+            color: colors[place]!.withValues(alpha: 0.2),
             shape: BoxShape.circle,
             border: Border.all(
               color: colors[place]!,
@@ -289,7 +289,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
         const SizedBox(height: 4),
         // Points
         Text(
-          '${entry.totalPoints} pts',
+          '${entry.points} pts',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: Colors.grey[600],
               ),
@@ -324,7 +324,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.1),
+        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
           color: Theme.of(context).primaryColor,
@@ -374,7 +374,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${entry.totalPoints}',
+                '${entry.points}',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).primaryColor,
@@ -401,7 +401,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
     return Card(
       margin: const EdgeInsets.only(bottom: 8),
       color: isCurrentUser
-          ? Theme.of(context).primaryColor.withOpacity(0.05)
+          ? Theme.of(context).primaryColor.withValues(alpha: 0.05)
           : null,
       child: ListTile(
         leading: Container(
@@ -435,7 +435,7 @@ class _LeaderboardPageState extends State<LeaderboardPage>
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '${entry.totalPoints}',
+              '${entry.points}',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: isCurrentUser ? Theme.of(context).primaryColor : null,

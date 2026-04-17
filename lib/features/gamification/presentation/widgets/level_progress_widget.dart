@@ -38,7 +38,7 @@ class LevelProgressWidget extends StatelessWidget {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Text(
@@ -93,7 +93,7 @@ class LevelProgressWidget extends StatelessWidget {
                 _buildInfoColumn(
                   context,
                   'Puntos Actuales',
-                  '${stats.totalPoints}',
+                  '${stats.points}',
                 ),
                 _buildInfoColumn(
                   context,

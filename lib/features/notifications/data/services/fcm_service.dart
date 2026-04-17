@@ -176,15 +176,24 @@ class FCMService {
 
   /// Handle message when app is opened from notification
   void _handleMessageOpenedApp(RemoteMessage message) {
-    // Handle navigation based on message data
     final data = message.data;
     print('Message data: $data');
 
-    // You can add navigation logic here based on notification type
-    // For example:
-    // if (data['type'] == 'promotion_nearby') {
-    //   // Navigate to map page
-    // }
+    final type = data['type'] as String?;
+    switch (type) {
+      case 'badge_unlock':
+        // Deep link to badges page — consumers listen via onMessage stream
+        _messageController.add(message);
+        break;
+      case 'level_up':
+        _messageController.add(message);
+        break;
+      case 'loyalty_level_up':
+        _messageController.add(message);
+        break;
+      default:
+        break;
+    }
   }
 
   /// Show local notification

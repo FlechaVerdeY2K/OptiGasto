@@ -12,8 +12,14 @@ class CommerceLoyaltyWidget extends StatelessWidget {
     this.onTap,
   });
 
+  Color _tierColor() {
+    final hex = loyalty.tierColor.replaceAll('#', '');
+    return Color(int.parse('FF$hex', radix: 16));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final color = _tierColor();
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
@@ -32,7 +38,7 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.store,
-                    color: loyalty.tierColor,
+                    color: color,
                     size: 32,
                   ),
                   const SizedBox(width: 12),
@@ -67,10 +73,10 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: loyalty.tierColor.withOpacity(0.2),
+                  color: color.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                    color: loyalty.tierColor,
+                    color: color,
                     width: 2,
                   ),
                 ),
@@ -78,15 +84,15 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      _getTierIcon(loyalty.tier),
-                      color: loyalty.tierColor,
+                      _getTierIcon(loyalty.tierInt),
+                      color: color,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       loyalty.tierName,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: loyalty.tierColor,
+                            color: color,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
@@ -103,24 +109,28 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                     'Compras',
                     '${loyalty.purchaseCount}',
                     Icons.shopping_bag,
+                    color,
                   ),
+                  if (loyalty.discountPercentage != null)
+                    _buildStatColumn(
+                      context,
+                      'Descuento',
+                      '${loyalty.discountPercentage!.toStringAsFixed(0)}%',
+                      Icons.discount,
+                      color,
+                    ),
                   _buildStatColumn(
                     context,
-                    'Total Gastado',
-                    '\$${loyalty.totalSpent.toStringAsFixed(0)}',
-                    Icons.attach_money,
-                  ),
-                  _buildStatColumn(
-                    context,
-                    'Puntos',
-                    '${loyalty.pointsEarned}',
+                    'Nivel',
+                    loyalty.tierName,
                     Icons.stars,
+                    color,
                   ),
                 ],
               ),
               const SizedBox(height: 16),
               // Progress to next tier
-              if (loyalty.tier < 4) ...[
+              if (loyalty.tierInt < 4) ...[
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -147,9 +157,7 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                       child: LinearProgressIndicator(
                         value: _getProgressPercentage(loyalty) / 100,
                         backgroundColor: Colors.grey[200],
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          loyalty.tierColor,
-                        ),
+                        valueColor: AlwaysStoppedAnimation<Color>(color),
                         minHeight: 8,
                       ),
                     ),
@@ -166,21 +174,21 @@ class CommerceLoyaltyWidget extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: loyalty.tierColor.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     children: [
                       Icon(
                         Icons.emoji_events,
-                        color: loyalty.tierColor,
+                        color: color,
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
                           '¡Has alcanzado el nivel máximo!',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: loyalty.tierColor,
+                                color: color,
                                 fontWeight: FontWeight.w600,
                               ),
                         ),
@@ -201,14 +209,11 @@ class CommerceLoyaltyWidget extends StatelessWidget {
     String label,
     String value,
     IconData icon,
+    Color color,
   ) {
     return Column(
       children: [
-        Icon(
-          icon,
-          color: loyalty.tierColor,
-          size: 24,
-        ),
+        Icon(icon, color: color, size: 24),
         const SizedBox(height: 4),
         Text(
           value,
@@ -242,35 +247,27 @@ class CommerceLoyaltyWidget extends StatelessWidget {
   }
 
   double _getProgressPercentage(CommerceLoyaltyEntity loyalty) {
-    // Tier thresholds based on purchase count
-    const thresholds = {
-      1: 5, // Bronze to Silver
-      2: 15, // Silver to Gold
-      3: 30, // Gold to Platinum
-    };
+    // Tier thresholds: none→customer=5, customer→frequent=10, frequent→loyal=25, loyal→vip=50
+    const thresholds = {0: 5, 1: 10, 2: 25, 3: 50};
+    final tierInt = loyalty.tierInt;
+    if (tierInt >= 4) return 100.0;
 
-    if (loyalty.tier >= 4) return 100.0;
+    final nextThreshold = thresholds[tierInt] ?? 5;
+    final prevThreshold = tierInt == 0 ? 0 : (thresholds[tierInt - 1] ?? 0);
 
-    final nextThreshold = thresholds[loyalty.tier] ?? 0;
-    final currentThreshold = loyalty.tier == 1 ? 0 : thresholds[loyalty.tier - 1] ?? 0;
+    if (nextThreshold == prevThreshold) return 0.0;
 
-    if (nextThreshold == currentThreshold) return 0.0;
-
-    final progress = ((loyalty.purchaseCount - currentThreshold) /
-            (nextThreshold - currentThreshold)) *
+    final progress = ((loyalty.purchaseCount - prevThreshold) /
+            (nextThreshold - prevThreshold)) *
         100;
 
     return progress.clamp(0.0, 100.0);
   }
 
   String _getNextTierRequirement(CommerceLoyaltyEntity loyalty) {
-    const thresholds = {
-      1: 5,
-      2: 15,
-      3: 30,
-    };
-
-    final nextThreshold = thresholds[loyalty.tier];
+    const thresholds = {0: 5, 1: 10, 2: 25, 3: 50};
+    final tierInt = loyalty.tierInt;
+    final nextThreshold = thresholds[tierInt];
     if (nextThreshold == null) return '';
 
     final remaining = nextThreshold - loyalty.purchaseCount;

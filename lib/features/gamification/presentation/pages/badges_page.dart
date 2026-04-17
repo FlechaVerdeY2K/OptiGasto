@@ -116,7 +116,7 @@ class _BadgesPageState extends State<BadgesPage> {
                   // Stats header
                   Container(
                     padding: const EdgeInsets.all(16),
-                    color: Theme.of(context).primaryColor.withOpacity(0.1),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [

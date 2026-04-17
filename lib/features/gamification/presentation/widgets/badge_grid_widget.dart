@@ -7,7 +7,7 @@ import 'badge_card_widget.dart';
 class BadgeGridWidget extends StatelessWidget {
   final List<BadgeEntity> allBadges;
   final List<UserBadgeEntity> userBadges;
-  final Function(BadgeEntity, bool)? onBadgeTap;
+  final void Function(BadgeEntity, bool)? onBadgeTap;
   final String? filterRarity;
 
   const BadgeGridWidget({

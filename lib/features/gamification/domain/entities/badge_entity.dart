@@ -34,6 +34,20 @@ class BadgeEntity extends Equatable {
         createdAt,
       ];
 
+  /// Alias for iconUrl (widget compatibility)
+  String get icon => iconUrl;
+
+  /// Default rarity for display purposes
+  String get rarity => _computeRarity();
+
+  String _computeRarity() {
+    final order = displayOrder;
+    if (order <= 3) return 'common';
+    if (order <= 7) return 'rare';
+    if (order <= 12) return 'epic';
+    return 'legendary';
+  }
+
   BadgeEntity copyWith({
     String? id,
     String? name,

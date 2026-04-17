@@ -33,7 +33,7 @@ class BadgeDetailDialog extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 color: isUnlocked
-                    ? _getRarityColor(badge.rarity).withOpacity(0.2)
+                    ? _getRarityColor(badge.rarity).withValues(alpha: 0.2)
                     : Colors.grey[200],
                 shape: BoxShape.circle,
               ),
@@ -66,7 +66,7 @@ class BadgeDetailDialog extends StatelessWidget {
               ),
               decoration: BoxDecoration(
                 color: isUnlocked
-                    ? _getRarityColor(badge.rarity).withOpacity(0.2)
+                    ? _getRarityColor(badge.rarity).withValues(alpha: 0.2)
                     : Colors.grey[200],
                 borderRadius: BorderRadius.circular(16),
               ),

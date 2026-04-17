@@ -103,7 +103,7 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => PointsTransactionModel.fromJson(json))
+          .map((json) => PointsTransactionModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -142,7 +142,7 @@ class GamificationRemoteDataSourceImpl
           .order('display_order', ascending: true);
 
       return (response as List)
-          .map((json) => BadgeModel.fromJson(json))
+          .map((json) => BadgeModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -161,7 +161,7 @@ class GamificationRemoteDataSourceImpl
           .order('unlocked_at', ascending: false);
 
       return (response as List)
-          .map((json) => UserBadgeModel.fromJson(json))
+          .map((json) => UserBadgeModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -229,7 +229,7 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => LeaderboardEntryModel.fromJson(json))
+          .map((json) => LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -255,7 +255,7 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => LeaderboardEntryModel.fromJson(json))
+          .map((json) => LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -281,7 +281,7 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => LeaderboardEntryModel.fromJson(json))
+          .map((json) => LeaderboardEntryModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -331,7 +331,7 @@ class GamificationRemoteDataSourceImpl
           .order('purchase_count', ascending: false);
 
       return (response as List)
-          .map((json) => CommerceLoyaltyModel.fromJson(json))
+          .map((json) => CommerceLoyaltyModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
@@ -384,7 +384,7 @@ class GamificationRemoteDataSourceImpl
       final response = await query;
 
       return (response as List)
-          .map((json) => CommerceLoyaltyModel.fromJson(json))
+          .map((json) => CommerceLoyaltyModel.fromJson(json as Map<String, dynamic>))
           .toList();
     } on PostgrestException catch (e) {
       throw ServerException(message: e.message);
