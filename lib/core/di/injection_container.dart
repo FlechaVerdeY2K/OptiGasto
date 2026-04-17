@@ -62,6 +62,14 @@ import '../../features/route/domain/repositories/route_repository.dart';
 import '../../features/route/domain/usecases/calculate_optimal_route.dart';
 import '../../features/route/domain/usecases/build_navigation_url.dart';
 import '../../features/route/presentation/bloc/route_planner_bloc.dart';
+import '../../features/search/data/datasources/search_local_data_source.dart';
+import '../../features/search/data/datasources/search_remote_data_source.dart';
+import '../../features/search/data/repositories/search_repository_impl.dart';
+import '../../features/search/domain/repositories/search_repository.dart';
+import '../../features/search/domain/usecases/clear_search_history.dart';
+import '../../features/search/domain/usecases/get_search_history.dart';
+import '../../features/search/domain/usecases/get_search_suggestions.dart';
+import '../../features/search/domain/usecases/search_promotions.dart';
 
 final sl = GetIt.instance;
 
@@ -123,6 +131,14 @@ Future<void> initializeDependencies() async {
       supabase: sl(),
     ),
   );
+
+  // Search
+  sl.registerLazySingleton<SearchRemoteDataSource>(
+    () => SearchRemoteDataSourceImpl(supabase: sl()),
+  );
+  sl.registerLazySingleton<SearchLocalDataSource>(
+    () => SearchLocalDataSourceImpl(sharedPreferences: sl()),
+  );
   // Settings
   sl.registerLazySingleton<SettingsService>(
     () => SettingsService(sl()),
@@ -164,6 +180,14 @@ Future<void> initializeDependencies() async {
     ),
   );
 
+  // Search
+  sl.registerLazySingleton<SearchRepository>(
+    () => SearchRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
+    ),
+  );
+
   // ========== Use Cases ==========
   // Auth
   sl.registerLazySingleton(() => SignInWithEmail(sl()));
@@ -199,6 +223,12 @@ Future<void> initializeDependencies() async {
   sl.registerLazySingleton(() => GetUserStats(sl()));
   sl.registerLazySingleton(() => GetPromotionHistory(sl()));
   sl.registerLazySingleton(() => MarkPromotionAsUsed(sl()));
+
+  // Search
+  sl.registerLazySingleton(() => SearchPromotions(sl()));
+  sl.registerLazySingleton(() => GetSearchSuggestions(sl()));
+  sl.registerLazySingleton(() => GetSearchHistory(sl()));
+  sl.registerLazySingleton(() => ClearSearchHistory(sl()));
 
   // ========== BLoC ==========
   // Auth
