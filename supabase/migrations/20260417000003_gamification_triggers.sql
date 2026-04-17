@@ -346,10 +346,20 @@ COMMENT ON FUNCTION trigger_award_use_points IS 'Trigger function to award point
 -- 7. CRON JOB: Refresh leaderboard materialized views
 -- ============================================================================
 
--- Note: This requires pg_cron extension to be enabled
--- Run: CREATE EXTENSION IF NOT EXISTS pg_cron;
+-- Enable pg_cron extension if not already enabled
+CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 -- Schedule refresh every hour at minute 0
+-- Note: Wrapped in DO block to handle if cron job already exists
+DO $$
+BEGIN
+  -- Unschedule if exists
+  PERFORM cron.unschedule('refresh-leaderboards');
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END $$;
+
+-- Schedule the job
 SELECT cron.schedule(
   'refresh-leaderboards',
   '0 * * * *',  -- Every hour at minute 0
