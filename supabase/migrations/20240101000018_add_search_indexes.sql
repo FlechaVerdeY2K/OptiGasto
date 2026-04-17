@@ -7,7 +7,8 @@ ALTER TABLE promotions ADD COLUMN IF NOT EXISTS search_vector tsvector
   GENERATED ALWAYS AS (
     setweight(to_tsvector('spanish', coalesce(title, '')), 'A') ||
     setweight(to_tsvector('spanish', coalesce(description, '')), 'B') ||
-    setweight(to_tsvector('spanish', coalesce(product_name, '')), 'A')
+    setweight(to_tsvector('spanish', coalesce(commerce_name, '')), 'A') ||
+    setweight(to_tsvector('spanish', coalesce(category, '')), 'B')
   ) STORED;
 
 CREATE INDEX IF NOT EXISTS promotions_search_idx ON promotions USING GIN(search_vector);
@@ -16,7 +17,8 @@ CREATE INDEX IF NOT EXISTS promotions_search_idx ON promotions USING GIN(search_
 ALTER TABLE commerces ADD COLUMN IF NOT EXISTS search_vector tsvector
   GENERATED ALWAYS AS (
     setweight(to_tsvector('spanish', coalesce(name, '')), 'A') ||
-    setweight(to_tsvector('spanish', coalesce(description, '')), 'B')
+    setweight(to_tsvector('spanish', coalesce(type, '')), 'B') ||
+    setweight(to_tsvector('spanish', coalesce(address, '')), 'B')
   ) STORED;
 
 CREATE INDEX IF NOT EXISTS commerces_search_idx ON commerces USING GIN(search_vector);
@@ -45,25 +47,22 @@ RETURNS TABLE (
   id                   uuid,
   title                text,
   description          text,
-  product_name         text,
   discount             text,
-  original_price       numeric,
-  discounted_price     numeric,
+  original_price       double precision,
+  discounted_price     double precision,
   category             text,
   commerce_id          uuid,
   commerce_name        text,
   latitude             double precision,
   longitude            double precision,
-  image_urls           text[],
+  images               text[],
   is_active            boolean,
-  valid_from           timestamptz,
   valid_until          timestamptz,
   views                integer,
   positive_validations integer,
   negative_validations integer,
   validated_by_users   text[],
-  saved_by_users       text[],
-  user_id              uuid,
+  created_by           uuid,
   created_at           timestamptz,
   updated_at           timestamptz,
   ts_rank              real
@@ -92,7 +91,6 @@ BEGIN
     p.id,
     p.title,
     p.description,
-    p.product_name,
     p.discount,
     p.original_price,
     p.discounted_price,
@@ -101,16 +99,14 @@ BEGIN
     p.commerce_name,
     p.latitude,
     p.longitude,
-    p.image_urls,
+    p.images,
     p.is_active,
-    p.valid_from,
     p.valid_until,
     p.views,
     p.positive_validations,
     p.negative_validations,
     p.validated_by_users,
-    p.saved_by_users,
-    p.user_id,
+    p.created_by,
     p.created_at,
     p.updated_at,
     CASE
@@ -121,10 +117,7 @@ BEGIN
   WHERE
     -- Solo activas
     p.is_active = true
-    -- RLS: solo el propio usuario puede ver sus privadas (si aplica)
-    -- Las promociones públicas no tienen restricción de user_id
-    -- Respeta RLS existente via SECURITY DEFINER + auth.uid() check
-    AND (p.user_id = auth.uid() OR true)  -- promotions son públicas; ajustar si cambia
+    -- Promociones activas visibles según políticas existentes
     -- Filtro texto
     AND (v_tsquery IS NULL OR p.search_vector @@ v_tsquery)
     -- Filtro descuento mínimo
@@ -143,7 +136,7 @@ BEGIN
     -- Filtro fecha desde
     AND (v_date_from IS NULL OR p.valid_until >= v_date_from)
     -- Filtro fecha hasta
-    AND (v_date_to IS NULL OR p.valid_from <= v_date_to)
+    AND (v_date_to IS NULL OR p.valid_until <= v_date_to)
     -- Filtro distancia (Haversine simplificado en grados; usar PostGIS si disponible)
     AND (
       v_radius_km IS NULL

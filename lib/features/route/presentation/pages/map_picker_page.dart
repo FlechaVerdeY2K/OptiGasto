@@ -93,7 +93,7 @@ class _MapPickerPageState extends State<MapPickerPage> {
             child: Text(
               'Listo',
               style: TextStyle(
-                color: _selectedStops.isEmpty ? null : AppColors.primary,
+                color: _selectedStops.isEmpty ? null : AppColors.textOnPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),

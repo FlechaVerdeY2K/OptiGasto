@@ -60,7 +60,7 @@ class _SearchFiltersBottomSheetState extends State<SearchFiltersBottomSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Theme.of(context).dividerColor,
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -155,8 +155,8 @@ class _SearchFiltersBottomSheetState extends State<SearchFiltersBottomSheet> {
       children: [
         Text(
           '${_minDiscount.toInt()}% o más',
-          style:
-              const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+              color: AppColors.primary, fontWeight: FontWeight.w500),
         ),
         Slider(
           value: _minDiscount,
@@ -250,8 +250,8 @@ class _SearchFiltersBottomSheetState extends State<SearchFiltersBottomSheet> {
       children: [
         Text(
           _radiusKm != null ? '${_radiusKm!.toInt()} km' : 'Sin límite',
-          style:
-              const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500),
+          style: const TextStyle(
+              color: AppColors.primary, fontWeight: FontWeight.w500),
         ),
         Slider(
           value: _radiusKm ?? 0,

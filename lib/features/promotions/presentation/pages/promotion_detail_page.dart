@@ -903,8 +903,8 @@ class _ShareSheetState extends State<_ShareSheet> {
       final bytes = await ShareablePromotionCard.capture(_repaintKey);
       if (bytes == null || !mounted) return;
       final dir = await getTemporaryDirectory();
-      final file = File(
-          '${dir.path}/optigasto_promo_${widget.promotion.id}.png');
+      final file =
+          File('${dir.path}/optigasto_promo_${widget.promotion.id}.png');
       await file.writeAsBytes(bytes);
       if (!mounted) return;
       Navigator.pop(context);
@@ -935,8 +935,7 @@ class _ShareSheetState extends State<_ShareSheet> {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius:
-            const BorderRadius.vertical(top: Radius.circular(20)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
       child: Column(
@@ -980,7 +979,8 @@ class _ShareSheetState extends State<_ShareSheet> {
                           strokeWidth: 2, color: Colors.white),
                     )
                   : const Icon(Icons.image),
-              label: Text(_capturing ? 'Generando...' : 'Compartir como imagen'),
+              label:
+                  Text(_capturing ? 'Generando...' : 'Compartir como imagen'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: Colors.white,
