@@ -37,7 +37,7 @@ void main() {
   // ---------------------------------------------------------------------------
   const tUserId = 'user-1';
 
-  final tStats = UserGamificationStatsEntity(
+  const tStats = UserGamificationStatsEntity(
     userId: tUserId,
     username: 'TestUser',
     points: 250,
@@ -61,7 +61,7 @@ void main() {
     description: '10 promociones publicadas',
     iconUrl: '📸',
     category: 'general',
-    unlockConditions: {'metric': 'published', 'value': 10},
+    unlockConditions: const {'metric': 'published', 'value': 10},
     displayOrder: 2,
     createdAt: DateTime(2026, 4, 17),
   );
@@ -73,7 +73,7 @@ void main() {
     unlockedAt: DateTime(2026, 4, 17),
   );
 
-  final tLeaderboardEntry = LeaderboardEntryEntity(
+  const tLeaderboardEntry = LeaderboardEntryEntity(
     userId: tUserId,
     username: 'TestUser',
     points: 250,
@@ -102,7 +102,7 @@ void main() {
 
     test('returns stats on success', () async {
       when(() => repo.getUserStats(tUserId))
-          .thenAnswer((_) async => Right(tStats));
+          .thenAnswer((_) async => const Right(tStats));
 
       final result = await useCase(tUserId);
 
@@ -274,7 +274,7 @@ void main() {
 
     test('weekly — returns list on success', () async {
       when(() => repo.getWeeklyLeaderboard(limit: any(named: 'limit')))
-          .thenAnswer((_) async => Right([tLeaderboardEntry]));
+          .thenAnswer((_) async => const Right([tLeaderboardEntry]));
 
       final result = await useCase(period: 'weekly');
 
@@ -284,7 +284,7 @@ void main() {
 
     test('monthly — returns list on success', () async {
       when(() => repo.getMonthlyLeaderboard(limit: any(named: 'limit')))
-          .thenAnswer((_) async => Right([tLeaderboardEntry]));
+          .thenAnswer((_) async => const Right([tLeaderboardEntry]));
 
       final result = await useCase(period: 'monthly');
 
@@ -294,7 +294,7 @@ void main() {
 
     test('yearly — returns list on success', () async {
       when(() => repo.getYearlyLeaderboard(limit: any(named: 'limit')))
-          .thenAnswer((_) async => Right([tLeaderboardEntry]));
+          .thenAnswer((_) async => const Right([tLeaderboardEntry]));
 
       final result = await useCase(period: 'yearly');
 
