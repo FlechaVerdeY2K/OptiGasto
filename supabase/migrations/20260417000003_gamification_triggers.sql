@@ -126,11 +126,10 @@ BEGIN
       -- Monthly savings badges
       WHEN 'monthly_savings' THEN
         v_threshold := (v_condition->>'threshold')::INT;
-        SELECT COALESCE(SUM(p.discount_amount), 0) INTO v_count
-        FROM promotions p
-        WHERE p.user_id = p_user_id
-        AND p.status = 'used'
-        AND p.updated_at >= date_trunc('month', CURRENT_DATE);
+        SELECT COALESCE(SUM(ph.savings_amount), 0) INTO v_count
+        FROM promotion_history ph
+        WHERE ph.user_id = p_user_id
+        AND ph.used_at >= date_trunc('month', CURRENT_DATE);
         v_should_unlock := v_count >= v_threshold;
       
       -- Daily streak badges
@@ -230,9 +229,10 @@ DECLARE
   v_old_level TEXT;
   v_new_level TEXT;
 BEGIN
-  -- Get commerce_id from promotion
-  SELECT commerce_id INTO v_commerce_id
-  FROM promotions WHERE id = p_promotion_id;
+  -- Get commerce_id from promotion (promotion_id is from promotion_history)
+  SELECT p.commerce_id INTO v_commerce_id
+  FROM promotions p
+  WHERE p.id = p_promotion_id;
 
   IF v_commerce_id IS NULL THEN
     RETURN;
@@ -306,22 +306,19 @@ COMMENT ON FUNCTION trigger_award_publish_points IS 'Trigger function to award p
 CREATE OR REPLACE FUNCTION trigger_award_use_points()
 RETURNS TRIGGER AS $$
 BEGIN
-  -- Only award points if status changed to 'used'
-  IF NEW.status = 'used' AND (OLD.status IS NULL OR OLD.status != 'used') THEN
-    PERFORM award_points(NEW.user_id, 'use', NEW.id);
-  END IF;
+  -- Award points when promotion is added to history (used)
+  PERFORM award_points(NEW.user_id, 'use', NEW.promotion_id);
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-DROP TRIGGER IF EXISTS award_use_points ON promotions;
+DROP TRIGGER IF EXISTS award_use_points ON promotion_history;
 CREATE TRIGGER award_use_points
-AFTER UPDATE ON promotions
+AFTER INSERT ON promotion_history
 FOR EACH ROW
-WHEN (NEW.status = 'used')
 EXECUTE FUNCTION trigger_award_use_points();
 
-COMMENT ON FUNCTION trigger_award_use_points IS 'Trigger function to award points when promotion is marked as used';
+COMMENT ON FUNCTION trigger_award_use_points IS 'Trigger function to award points when promotion is added to history (used)';
 
 -- ============================================================================
 -- 6. TRIGGER: Award points on validation
