@@ -340,19 +340,25 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   /// Obtiene un mensaje de error amigable según el mensaje de error de Supabase
   String _getAuthErrorMessage(String message) {
-    if (message.contains('Invalid login credentials')) {
+    final normalizedMessage = message.toLowerCase();
+
+    if (normalizedMessage.contains('invalid login credentials')) {
       return 'Correo electrónico o contraseña incorrectos';
-    } else if (message.contains('User already registered')) {
+    } else if (normalizedMessage.contains('user already registered')) {
       return 'Ya existe una cuenta con este correo electrónico';
-    } else if (message.contains('Email not confirmed')) {
+    } else if (normalizedMessage.contains('email not confirmed')) {
       return 'Por favor confirma tu correo electrónico';
-    } else if (message.contains('Invalid email')) {
+    } else if (normalizedMessage.contains('invalid email')) {
       return 'Correo electrónico inválido';
-    } else if (message.contains('Password should be at least')) {
+    } else if (normalizedMessage.contains('password should be at least')) {
       return 'La contraseña debe tener al menos 6 caracteres';
-    } else if (message.contains('User not found')) {
+    } else if (normalizedMessage.contains('user not found')) {
       return 'No existe una cuenta con este correo electrónico';
-    } else if (message.contains('Too many requests')) {
+    } else if (normalizedMessage.contains('too many requests') ||
+        normalizedMessage.contains('email rate limit exceeded') ||
+        normalizedMessage.contains('over_email_send_rate_limit')) {
+      return 'Has alcanzado el límite de correos. Espera un momento e intenta de nuevo.';
+    } else if (normalizedMessage.contains('rate limit')) {
       return 'Demasiados intentos. Intenta más tarde';
     }
     return 'Error de autenticación: $message';

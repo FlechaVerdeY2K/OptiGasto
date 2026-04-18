@@ -37,14 +37,6 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  void _loginWithGoogle() {
-    context.read<AuthBloc>().add(const AuthSignInWithGoogleRequested());
-  }
-
-  void _loginWithApple() {
-    context.read<AuthBloc>().add(const AuthSignInWithAppleRequested());
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -207,46 +199,6 @@ class _LoginPageState extends State<LoginPage> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    // Divider
-                    Row(
-                      children: [
-                        Expanded(child: Divider(color: Colors.grey[300])),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'O continúa con',
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ),
-                        Expanded(child: Divider(color: Colors.grey[300])),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-                    // Social login buttons
-                    OutlinedButton.icon(
-                      onPressed: isLoading ? null : _loginWithGoogle,
-                      icon: const Icon(Icons.g_mobiledata, size: 32),
-                      label: const Text('Continuar con Google'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    OutlinedButton.icon(
-                      onPressed: isLoading ? null : _loginWithApple,
-                      icon: const Icon(Icons.apple, size: 32),
-                      label: const Text('Continuar con Apple'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
                       ),
                     ),
                     const SizedBox(height: 24),

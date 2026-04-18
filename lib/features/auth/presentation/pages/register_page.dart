@@ -256,62 +256,6 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    // Divider
-                    Row(
-                      children: [
-                        const Expanded(child: Divider()),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            'O regístrate con',
-                            style: TextStyle(color: Colors.grey[600]),
-                          ),
-                        ),
-                        const Expanded(child: Divider()),
-                      ],
-                    ),
-                    const SizedBox(height: 24),
-
-                    // Botón de Google
-                    OutlinedButton.icon(
-                      onPressed: isLoading
-                          ? null
-                          : () {
-                              context.read<AuthBloc>().add(
-                                    const AuthSignInWithGoogleRequested(),
-                                  );
-                            },
-                      icon: const Icon(Icons.g_mobiledata, size: 32),
-                      label: const Text('Continuar con Google'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Botón de Apple
-                    OutlinedButton.icon(
-                      onPressed: isLoading
-                          ? null
-                          : () {
-                              context.read<AuthBloc>().add(
-                                    const AuthSignInWithAppleRequested(),
-                                  );
-                            },
-                      icon: const Icon(Icons.apple, size: 32),
-                      label: const Text('Continuar con Apple'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-
                     // Link a login
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
