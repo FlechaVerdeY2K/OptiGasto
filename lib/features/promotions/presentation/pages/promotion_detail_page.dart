@@ -1,5 +1,7 @@
-import 'dart:io';
+import 'dart:io' show File;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show Clipboard, ClipboardData;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
@@ -896,9 +898,24 @@ class _ShareSheetState extends State<_ShareSheet> {
   bool _capturing = false;
 
   Future<void> _shareImage() async {
+    if (kIsWeb) {
+      // Web: no temp filesystem — copy link to clipboard as fallback
+      if (!mounted) return;
+      Navigator.pop(context);
+      await Clipboard.setData(ClipboardData(
+        text:
+            'Encontré esta oferta en OptiGasto: ${widget.promotion.title} — ${widget.promotion.discount} en ${widget.promotion.commerceName}',
+      ));
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Texto copiado al portapapeles')),
+        );
+      }
+      return;
+    }
+
     setState(() => _capturing = true);
     try {
-      // Allow widget to render before capture
       await Future<void>.delayed(const Duration(milliseconds: 150));
       final bytes = await ShareablePromotionCard.capture(_repaintKey);
       if (bytes == null || !mounted) return;
@@ -918,16 +935,27 @@ class _ShareSheetState extends State<_ShareSheet> {
     }
   }
 
-  void _shareText() {
+  Future<void> _shareText() async {
     Navigator.pop(context);
-    Share.share(
-      '¡Mira esta oferta en OptiGasto!\n\n'
-      '${widget.promotion.title}\n'
-      '${widget.promotion.discount}\n'
-      'En ${widget.promotion.commerceName}\n\n'
-      'optigasto:///promotion/${widget.promotion.id}',
-      subject: widget.promotion.title,
-    );
+    final text = '¡Mira esta oferta en OptiGasto!\n\n'
+        '${widget.promotion.title}\n'
+        '${widget.promotion.discount}\n'
+        'En ${widget.promotion.commerceName}\n\n'
+        'optigasto:///promotion/${widget.promotion.id}';
+    try {
+      await Share.share(text, subject: widget.promotion.title);
+    } catch (e) {
+      if (kIsWeb && mounted) {
+        await Clipboard.setData(ClipboardData(text: text));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Link copiado al portapapeles')),
+          );
+        }
+      } else {
+        rethrow;
+      }
+    }
   }
 
   @override

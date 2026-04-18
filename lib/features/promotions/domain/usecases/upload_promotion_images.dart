@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:dartz/dartz.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/errors/failures.dart';
 import '../repositories/promotion_repository.dart';
 
@@ -19,7 +19,7 @@ class UploadPromotionImages {
   /// - [Right(List<String>)]: URLs de las imágenes subidas
   /// - [Left(Failure)]: Si ocurrió un error
   Future<Either<Failure, List<String>>> call({
-    required List<File> images,
+    required List<XFile> images,
     String? promotionId,
   }) async {
     return await repository.uploadPromotionImages(

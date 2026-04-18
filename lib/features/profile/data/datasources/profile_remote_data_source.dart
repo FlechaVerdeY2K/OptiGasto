@@ -1,4 +1,6 @@
+import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../../../core/config/supabase_config.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../auth/data/models/user_model.dart';
 import '../models/user_stats_model.dart';
@@ -89,15 +91,27 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     required String filePath,
   }) async {
     try {
-      // Por ahora, retornar una URL de placeholder
-      // La subida de fotos requiere configuración adicional de Storage
-      // y manejo especial para web vs móvil
+      // XFile.readAsBytes() works on all platforms including Android content:// URIs
+      final bytes = await XFile(filePath).readAsBytes();
+      // Path: {userId}/{timestamp}.jpg — la policy RLS verifica foldername[1] = auth.uid()
+      final storagePath =
+          '$userId/${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-      // Generar un avatar placeholder basado en el userId
-      final avatarUrl =
-          'https://ui-avatars.com/api/?name=${Uri.encodeComponent(userId)}&size=200&background=random';
+      await supabase.storage
+          .from(SupabaseConfig.userAvatarsBucket)
+          .uploadBinary(
+            storagePath,
+            bytes,
+            fileOptions: const FileOptions(
+              cacheControl: '3600',
+              upsert: true,
+              contentType: 'image/jpeg',
+            ),
+          );
 
-      return avatarUrl;
+      return supabase.storage
+          .from(SupabaseConfig.userAvatarsBucket)
+          .getPublicUrl(storagePath);
     } catch (e) {
       throw ServerException(message: 'Error al subir foto: $e');
     }

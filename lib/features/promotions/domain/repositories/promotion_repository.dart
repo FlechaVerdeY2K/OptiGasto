@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:dartz/dartz.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/errors/failures.dart';
 import '../entities/promotion_entity.dart';
 import '../entities/category_entity.dart';
@@ -105,7 +105,7 @@ abstract class PromotionRepository {
 
   /// Sube imágenes de promoción a Supabase Storage
   Future<Either<Failure, List<String>>> uploadPromotionImages({
-    required List<File> images,
+    required List<XFile> images,
     String? promotionId,
   });
 

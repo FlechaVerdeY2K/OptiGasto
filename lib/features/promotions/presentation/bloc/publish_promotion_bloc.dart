@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 import '../../domain/entities/promotion_entity.dart';
 import '../../domain/usecases/create_promotion.dart';
@@ -59,7 +59,7 @@ class PublishPromotionBloc
     Emitter<PublishPromotionState> emit,
   ) {
     final currentState = _getCurrentFormState();
-    final updatedImages = List<File>.from(currentState.selectedImages)
+    final updatedImages = List<XFile>.from(currentState.selectedImages)
       ..addAll(event.images);
 
     if (updatedImages.length > 5) {
@@ -81,7 +81,7 @@ class PublishPromotionBloc
     Emitter<PublishPromotionState> emit,
   ) {
     final currentState = _getCurrentFormState();
-    final updatedImages = List<File>.from(currentState.selectedImages)
+    final updatedImages = List<XFile>.from(currentState.selectedImages)
       ..removeAt(event.index);
 
     final newState = currentState.copyWith(
@@ -231,8 +231,9 @@ class PublishPromotionBloc
     );
 
     if (uploadResult.isLeft()) {
+      final errorMsg = uploadResult.fold((f) => f.message, (_) => '');
       emit(PublishPromotionError(
-        message: 'Error al subir imágenes',
+        message: errorMsg,
         previousFormState: formState,
       ));
       return;
