@@ -17,8 +17,8 @@ mkdir -p "${FLUTTER_CACHE_DIR}"
 
 CURRENT_FLUTTER_VERSION=""
 
-if [ -x "${FLUTTER_DIR}/bin/flutter" ]; then
-  CURRENT_FLUTTER_VERSION="$("${FLUTTER_DIR}/bin/flutter" --version 2>/dev/null | sed -n 's/^Flutter \([^ ]*\).*/\1/p' | head -n 1 || true)"
+if [ -f "${FLUTTER_DIR}/version" ]; then
+  CURRENT_FLUTTER_VERSION="$(tr -d '[:space:]' < "${FLUTTER_DIR}/version")"
 fi
 
 if [ "${CURRENT_FLUTTER_VERSION}" != "${FLUTTER_VERSION}" ]; then
@@ -30,6 +30,8 @@ if [ "${CURRENT_FLUTTER_VERSION}" != "${FLUTTER_VERSION}" ]; then
 
   tar -xJf "${FLUTTER_ARCHIVE_PATH}" -C "$(dirname "${FLUTTER_DIR}")"
 fi
+
+git config --global --add safe.directory "${FLUTTER_DIR}"
 
 "${FLUTTER_DIR}/bin/flutter" --version
 "${FLUTTER_DIR}/bin/flutter" config --enable-web
