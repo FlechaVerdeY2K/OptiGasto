@@ -364,9 +364,9 @@ Crear en la **raíz del proyecto** el archivo `vercel.json`:
 
 ```json
 {
-  "buildCommand": "if cd flutter; then git pull && cd ..; else git clone --depth 1 https://github.com/flutter/flutter.git; fi && flutter/bin/flutter config --enable-web && flutter/bin/flutter pub get && flutter/bin/flutter build web --release --dart-define=SUPABASE_URL=$SUPABASE_URL --dart-define=SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY --dart-define=GOOGLE_MAPS_API_KEY=$GOOGLE_MAPS_API_KEY && sed -i 's/GOOGLE_MAPS_PLACEHOLDER/$GOOGLE_MAPS_API_KEY/g' build/web/index.html",
+  "buildCommand": "./scripts/vercel-build.sh",
   "outputDirectory": "build/web",
-  "installCommand": "echo 'Flutter install is handled inside buildCommand'",
+  "installCommand": "echo 'Flutter build is handled inside scripts/vercel-build.sh'",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
