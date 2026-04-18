@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/config/supabase_config.dart';
+import '../models/sign_up_result_model.dart';
 import '../models/user_model.dart';
 
 /// Data source remoto para autenticación con Supabase
@@ -18,7 +19,7 @@ abstract class AuthRemoteDataSource {
   });
 
   /// Registra un nuevo usuario con email y contraseña
-  Future<UserModel> signUpWithEmail({
+  Future<SignUpResultModel> signUpWithEmail({
     required String email,
     required String password,
     required String name,
@@ -105,32 +106,37 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel> signUpWithEmail({
+  Future<SignUpResultModel> signUpWithEmail({
     required String email,
     required String password,
     required String name,
   }) async {
     try {
+      // Pass name as metadata so the handle_new_user() trigger can use it.
+      // The trigger runs with SECURITY DEFINER and bypasses RLS, which means
+      // it works even when email confirmation is enabled (session is null after
+      // signUp → auth.uid() would be null → RLS would block a manual INSERT).
       final response = await supabase.auth.signUp(
         email: email,
         password: password,
+        data: {'name': name},
       );
 
       if (response.user == null) {
         throw ServerException(message: 'Error al crear usuario');
       }
 
-      // Crear el registro del usuario en la tabla users
-      final userModel = UserModel(
+      final user = UserModel(
         id: response.user!.id,
-        email: email,
+        email: response.user!.email ?? email,
         name: name,
         createdAt: DateTime.now(),
       );
 
-      await supabase.from(SupabaseConfig.usersTable).insert(userModel.toJson());
-
-      return userModel;
+      return SignUpResultModel(
+        user: user,
+        requiresEmailConfirmation: response.session == null,
+      );
     } on AuthException catch (e) {
       throw ServerException(message: _getAuthErrorMessage(e.message));
     } catch (e) {

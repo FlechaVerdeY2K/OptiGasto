@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
+import '../entities/sign_up_result_entity.dart';
 import '../entities/user_entity.dart';
 
 /// Repositorio abstracto de autenticación (capa de dominio)
@@ -14,7 +15,7 @@ abstract class AuthRepository {
   });
 
   /// Registra un nuevo usuario con email y contraseña
-  Future<Either<Failure, UserEntity>> signUpWithEmail({
+  Future<Either<Failure, SignUpResultEntity>> signUpWithEmail({
     required String email,
     required String password,
     required String name,

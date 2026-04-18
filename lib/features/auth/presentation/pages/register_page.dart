@@ -51,6 +51,17 @@ class _RegisterPageState extends State<RegisterPage> {
         listener: (context, state) {
           if (state is AuthAuthenticated) {
             context.go('/home');
+          } else if (state is AuthRegistrationEmailConfirmationRequired) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Cuenta creada para ${state.email}. '
+                  'Confirma tu correo antes de iniciar sesión.',
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+            context.go('/login');
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
