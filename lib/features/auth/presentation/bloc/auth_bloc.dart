@@ -101,7 +101,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
       (failure) => emit(AuthError(message: failure.message)),
-      (user) => emit(AuthAuthenticated(user: user)),
+      (result) {
+        if (result.requiresEmailConfirmation) {
+          emit(
+            AuthRegistrationEmailConfirmationRequired(
+              user: result.user,
+              email: event.email,
+            ),
+          );
+          return;
+        }
+
+        emit(AuthAuthenticated(user: result.user));
+      },
     );
   }
 

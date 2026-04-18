@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import '../entities/user_entity.dart';
+import '../entities/sign_up_result_entity.dart';
 import '../repositories/auth_repository.dart';
 
 /// Caso de uso: Registrar nuevo usuario con email y contraseña
@@ -9,7 +9,7 @@ class SignUpWithEmail {
 
   SignUpWithEmail(this.repository);
 
-  Future<Either<Failure, UserEntity>> call({
+  Future<Either<Failure, SignUpResultEntity>> call({
     required String email,
     required String password,
     required String name,

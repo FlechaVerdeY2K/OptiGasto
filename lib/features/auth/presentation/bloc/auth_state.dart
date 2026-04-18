@@ -29,6 +29,20 @@ class AuthAuthenticated extends AuthState {
   List<Object?> get props => [user];
 }
 
+/// Estado: Cuenta creada, pendiente de confirmación por correo.
+class AuthRegistrationEmailConfirmationRequired extends AuthState {
+  final UserEntity user;
+  final String email;
+
+  const AuthRegistrationEmailConfirmationRequired({
+    required this.user,
+    required this.email,
+  });
+
+  @override
+  List<Object?> get props => [user, email];
+}
+
 /// Estado: No autenticado
 class AuthUnauthenticated extends AuthState {
   const AuthUnauthenticated();
