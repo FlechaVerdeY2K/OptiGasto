@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/errors/exceptions.dart';
@@ -81,6 +82,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<void> initialize() async {
+    if (kIsWeb) return; // flutter_local_notifications not supported on web
     try {
       // Android initialization settings
       const androidSettings =
@@ -273,6 +275,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
     required String body,
     Map<String, dynamic>? data,
   }) async {
+    if (kIsWeb) return;
     try {
       const androidDetails = AndroidNotificationDetails(
         'optigasto_channel',
@@ -313,6 +316,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
     required DateTime scheduledDate,
     Map<String, dynamic>? data,
   }) async {
+    if (kIsWeb) return;
     try {
       const androidDetails = AndroidNotificationDetails(
         'optigasto_channel',
@@ -349,6 +353,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<void> cancelScheduledNotification(int notificationId) async {
+    if (kIsWeb) return;
     try {
       await localNotifications.cancel(notificationId);
     } catch (e) {
@@ -358,6 +363,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<void> cancelAllScheduledNotifications() async {
+    if (kIsWeb) return;
     try {
       await localNotifications.cancelAll();
     } catch (e) {
@@ -367,6 +373,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<bool> requestPermissions() async {
+    if (kIsWeb) return false;
     try {
       final androidImplementation =
           localNotifications.resolvePlatformSpecificImplementation<
@@ -399,6 +406,7 @@ class NotificationRemoteDataSourceImpl implements NotificationRemoteDataSource {
 
   @override
   Future<bool> areNotificationsEnabled() async {
+    if (kIsWeb) return false;
     try {
       final androidImplementation =
           localNotifications.resolvePlatformSpecificImplementation<

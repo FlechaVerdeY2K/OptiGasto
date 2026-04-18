@@ -1,12 +1,13 @@
-import 'dart:io';
+import 'dart:io' show File;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/theme/app_colors.dart';
 
 /// Widget para seleccionar y mostrar imágenes de promociones
 class ImagePickerWidget extends StatelessWidget {
-  final List<File> selectedImages;
-  final void Function(List<File>) onImagesSelected;
+  final List<XFile> selectedImages;
+  final void Function(List<XFile>) onImagesSelected;
   final void Function(int) onImageRemoved;
   final int maxImages;
 
@@ -32,31 +33,36 @@ class ImagePickerWidget extends StatelessWidget {
     final ImagePicker picker = ImagePicker();
 
     // Mostrar opciones: cámara o galería
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera),
-              title: const Text('Tomar foto'),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Seleccionar de galería'),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
-            ),
-          ],
+    // Camera not available on web
+    ImageSource? source;
+    if (kIsWeb) {
+      source = ImageSource.gallery;
+    } else {
+      source = await showModalBottomSheet<ImageSource>(
+        context: context,
+        builder: (context) => SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.photo_camera),
+                title: const Text('Tomar foto'),
+                onTap: () => Navigator.pop(context, ImageSource.camera),
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library),
+                title: const Text('Seleccionar de galería'),
+                onTap: () => Navigator.pop(context, ImageSource.gallery),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
 
     if (source == null) return;
 
     try {
       if (source == ImageSource.gallery) {
-        // Selección múltiple de galería
         final List<XFile> images = await picker.pickMultiImage(
           maxWidth: 1920,
           maxHeight: 1080,
@@ -64,12 +70,9 @@ class ImagePickerWidget extends StatelessWidget {
         );
 
         if (images.isNotEmpty) {
-          // Convertir XFile a File directamente
-          final files = images.map((xFile) => File(xFile.path)).toList();
-          onImagesSelected(files);
+          onImagesSelected(images);
         }
       } else {
-        // Tomar foto con cámara
         final XFile? image = await picker.pickImage(
           source: source,
           maxWidth: 1920,
@@ -78,9 +81,7 @@ class ImagePickerWidget extends StatelessWidget {
         );
 
         if (image != null) {
-          // Convertir XFile a File directamente
-          final file = File(image.path);
-          onImagesSelected([file]);
+          onImagesSelected([image]);
         }
       }
     } catch (e) {
@@ -209,7 +210,7 @@ class _AddImageButton extends StatelessWidget {
 
 /// Vista previa de imagen seleccionada
 class _ImagePreview extends StatelessWidget {
-  final File image;
+  final XFile image;
   final VoidCallback onRemove;
 
   const _ImagePreview({
@@ -219,13 +220,19 @@ class _ImagePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Web: XFile.path is a blob URL — use Image.network
+    // Mobile: XFile.path is a file path — use Image.file
+    final imageProvider = kIsWeb
+        ? NetworkImage(image.path) as ImageProvider
+        : FileImage(File(image.path)) as ImageProvider;
+
     return Container(
       width: 120,
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         image: DecorationImage(
-          image: FileImage(image),
+          image: imageProvider,
           fit: BoxFit.cover,
         ),
       ),

@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 
 /// Eventos para el PublishPromotionBloc
 abstract class PublishPromotionEvent extends Equatable {
@@ -11,7 +11,7 @@ abstract class PublishPromotionEvent extends Equatable {
 
 /// Evento para seleccionar imágenes
 class SelectImagesEvent extends PublishPromotionEvent {
-  final List<File> images;
+  final List<XFile> images;
 
   const SelectImagesEvent(this.images);
 

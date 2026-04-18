@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:dartz/dartz.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/promotion_entity.dart';
@@ -311,7 +311,7 @@ class PromotionRepositoryImpl implements PromotionRepository {
 
   @override
   Future<Either<Failure, List<String>>> uploadPromotionImages({
-    required List<File> images,
+    required List<XFile> images,
     String? promotionId,
   }) async {
     try {

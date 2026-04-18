@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/errors/exceptions.dart';
@@ -38,37 +39,47 @@ class FCMService {
   /// Initialize FCM service
   Future<void> initialize() async {
     try {
-      // Request notification permissions (iOS)
-      final settings = await _firebaseMessaging.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-        provisional: false,
-      );
+      if (!kIsWeb) {
+        // Request notification permissions (iOS/Android only)
+        final settings = await _firebaseMessaging.requestPermission(
+          alert: true,
+          badge: true,
+          sound: true,
+          provisional: false,
+        );
 
-      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-        print('User granted notification permissions');
-      } else if (settings.authorizationStatus ==
-          AuthorizationStatus.provisional) {
-        print('User granted provisional notification permissions');
-      } else {
-        print('User declined or has not accepted notification permissions');
-        return;
+        if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+          print('User granted notification permissions');
+        } else if (settings.authorizationStatus ==
+            AuthorizationStatus.provisional) {
+          print('User granted provisional notification permissions');
+        } else {
+          print('User declined or has not accepted notification permissions');
+          return;
+        }
+
+        // Get FCM token (mobile only — web push notifications not in scope)
+        final token = await getToken();
+        if (token != null) {
+          await _saveTokenToDatabase(token);
+        }
+
+        // Listen for token refresh
+        _firebaseMessaging.onTokenRefresh.listen(_saveTokenToDatabase);
+
+        // Set background message handler (not supported on web)
+        FirebaseMessaging.onBackgroundMessage(
+            firebaseMessagingBackgroundHandler);
       }
 
-      // Get FCM token
-      final token = await getToken();
-      if (token != null) {
-        await _saveTokenToDatabase(token);
-      }
-
-      // Listen for token refresh
-      _firebaseMessaging.onTokenRefresh.listen(_saveTokenToDatabase);
-
-      // Handle foreground messages
+      // Handle foreground messages (works on web too, log only)
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         print('Received foreground message: ${message.messageId}');
         _messageController.add(message);
+        if (kIsWeb) {
+          debugPrint('[Web] Notification: ${message.notification?.title}');
+          return;
+        }
         _handleForegroundMessage(message);
       });
 
@@ -78,15 +89,15 @@ class FCMService {
         _handleMessageOpenedApp(message);
       });
 
-      // Check if app was opened from a terminated state
-      final initialMessage = await _firebaseMessaging.getInitialMessage();
-      if (initialMessage != null) {
-        print('App opened from terminated state: ${initialMessage.messageId}');
-        _handleMessageOpenedApp(initialMessage);
+      if (!kIsWeb) {
+        // Check if app was opened from a terminated state (mobile only)
+        final initialMessage = await _firebaseMessaging.getInitialMessage();
+        if (initialMessage != null) {
+          print(
+              'App opened from terminated state: ${initialMessage.messageId}');
+          _handleMessageOpenedApp(initialMessage);
+        }
       }
-
-      // Set background message handler
-      FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
       print('FCM Service initialized successfully');
     } catch (e) {
@@ -193,6 +204,7 @@ class FCMService {
     required String body,
     String? payload,
   }) async {
+    if (kIsWeb) return;
     const androidDetails = AndroidNotificationDetails(
       'optigasto_fcm_channel',
       'OptiGasto Push Notifications',

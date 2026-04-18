@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../domain/entities/promotion_entity.dart';
 
 /// Estados para el PublishPromotionBloc
@@ -17,7 +17,7 @@ class PublishPromotionInitial extends PublishPromotionState {
 
 /// Estado del formulario en edición
 class PublishPromotionFormState extends PublishPromotionState {
-  final List<File> selectedImages;
+  final List<XFile> selectedImages;
   final String? commerceId;
   final String? commerceName;
   final double? commerceLatitude;
@@ -34,7 +34,7 @@ class PublishPromotionFormState extends PublishPromotionState {
   final String? errorMessage;
 
   const PublishPromotionFormState({
-    this.selectedImages = const [],
+    this.selectedImages = const <XFile>[],
     this.commerceId,
     this.commerceName,
     this.commerceLatitude,
@@ -53,7 +53,7 @@ class PublishPromotionFormState extends PublishPromotionState {
 
   /// Copia el estado con campos actualizados
   PublishPromotionFormState copyWith({
-    List<File>? selectedImages,
+    List<XFile>? selectedImages,
     String? commerceId,
     String? commerceName,
     double? commerceLatitude,
